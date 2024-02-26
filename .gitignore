@@ -12,7 +12,8 @@ package-lock.json
 !.yarn/versions
 
 ## Env ##
-.env
+.env*
+!.env.example
 
 ### intellij ###
 .idea/
@@ -21,4 +22,5 @@ package-lock.json
 logs
 *.log
 
+coverage/
 dist/

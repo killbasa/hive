@@ -1,10 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-	bundle: false,
+	bundle: true,
 	clean: true,
 	dts: false,
-	entry: ['src/index.ts'],
+	entry: ['src/server.ts'],
 	format: ['esm'],
 	keepNames: true,
 	minify: false,
@@ -12,7 +12,7 @@ export default defineConfig({
 	skipNodeModulesBundle: true,
 	splitting: false,
 	sourcemap: true,
-	target: 'es2022',
+	target: 'esnext',
 	treeshake: true,
 	tsconfig: './tsconfig.json'
 });

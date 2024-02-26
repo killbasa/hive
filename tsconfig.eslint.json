@@ -5,5 +5,12 @@
 		"allowJs": true,
 		"checkJs": true
 	},
-	"include": ["src", "tests", ".eslintrc.cjs", ".prettierrc.cjs", "tsup.config.ts", "vitest.config.ts"]
+	"include": [
+		"src", //
+		"tests",
+		".eslintrc.cjs",
+		".prettierrc.cjs",
+		"tsup.config.ts",
+		"vitest.config.ts"
+	]
 }
