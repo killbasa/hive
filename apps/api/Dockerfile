@@ -11,6 +11,7 @@ ENV NODE_ENV=production
 WORKDIR /temp
 
 COPY .yarn .yarn/
+COPY scripts ./scripts/
 COPY .yarnrc.yml yarn.lock package.json ./
 COPY apps/api ./apps/api/
 

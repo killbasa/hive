@@ -23,7 +23,8 @@
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:backup": "docker buildx build -t killbasa/hive-backup -f apps/backup/Dockerfile .",
-		"docker:chat": "docker buildx build -t killbasa/hive-chat -f apps/chat/Dockerfile ."
+		"docker:chat": "docker buildx build -t killbasa/hive-chat -f apps/chat/Dockerfile .",
+		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile ."
 	},
 	"devDependencies": {
 		"@killbasa/eslint-config": "^1.0.0",

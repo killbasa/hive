@@ -13,8 +13,8 @@ services:
       dockerfile: apps/api/Dockerfile
       context: .
     environment:
-      NODE_ENV: development
-      HOST: localhost
+      NODE_ENV: production
+      HOST: 0.0.0.0
       PORT: 3001
       DATABASE_URL: postgres://user:password@hive-postgres:5432/hive
       <<: *x-redis-env
@@ -28,6 +28,7 @@ services:
       dockerfile: apps/backup/Dockerfile
       context: .
     environment:
+      NODE_ENV: production
       MINIO_ENDPOINT: hive-minio
       MINIO_PORT: 9000
       MINIO_BUCKET: hive
@@ -44,6 +45,22 @@ services:
       dockerfile: apps/chat/Dockerfile
       context: .
     environment:
+      NODE_ENV: production
       <<: *x-redis-env
     depends_on:
       - hive
+
+  web:
+    image: killbasa/hive-web
+    container_name: hive-web
+    build:
+      dockerfile: apps/web/Dockerfile
+      context: .
+      args:
+        API_URL: localhost:3001
+    ports:
+      - 127.0.0.1:3000:80
+    depends_on:
+      - hive
+      - backup
+      - chat

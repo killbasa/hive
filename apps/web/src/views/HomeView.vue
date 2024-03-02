@@ -4,9 +4,18 @@ import { RouterLink } from 'vue-router';
 
 <script lang="ts">
 import { ref } from 'vue';
+import { config } from '@/lib/config';
 
 const messages = ref<string[]>([]);
-const socket = new WebSocket('ws://localhost:3001/notifications');
+const socket = new WebSocket(`ws://${config.apiUrl}/notifications`);
+
+socket.onopen = function () {
+	console.log('WebSocket open.');
+};
+
+socket.onclose = function () {
+	console.log('WebSocket closed.');
+};
 
 socket.onmessage = function (event) {
 	messages.value.push(event.data);
