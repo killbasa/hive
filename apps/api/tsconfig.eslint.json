@@ -5,7 +5,10 @@
 		"checkJs": true
 	},
 	"include": [
-		"scripts", //
-		".eslintrc.cjs"
+		"src", //
+		"tests",
+		".eslintrc.cjs",
+		"tsup.config.ts",
+		"vitest.config.ts"
 	]
 }

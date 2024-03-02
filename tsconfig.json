@@ -1,15 +1,3 @@
 {
-	"extends": "@kbotdev/ts-config",
-	"compilerOptions": {
-		"rootDir": "./src",
-		"baseUrl": "./src",
-		"outDir": "./dist",
-		"noEmit": true,
-		"moduleResolution": "Bundler",
-		"paths": {
-			"#/*": ["*"]
-		}
-	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules"]
+	"extends": "@killbasa/ts-config"
 }
