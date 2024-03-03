@@ -8,6 +8,7 @@ Setup .env files
 cp apps/api/.env.example apps/api/.env
 cp apps/backup/.env.example apps/backup/.env
 cp apps/chat/.env.example apps/chat/.env
+cp apps/web/.env.example apps/web/.env
 ```
 
 Start services
