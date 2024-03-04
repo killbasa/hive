@@ -1,0 +1,47 @@
+{
+	"folders": [
+		{
+			"name": "root",
+			"path": "../"
+		},
+		{
+			"name": "api",
+			"path": "../apps/api"
+		},
+		{
+			"name": "backup",
+			"path": "../apps/backup"
+		},
+		{
+			"name": "chat",
+			"path": "../apps/chat"
+		},
+		{
+			"name": "web",
+			"path": "../apps/web"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"apps": true,
+			"node_modules": true
+		},
+		"typescript.tsdk": "./node_modules/typescript/lib",
+		"eslint.format.enable": true,
+		"eslint.validate": ["javascript", "typescript"],
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"[javascript]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"[typescript]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"[vue]": {
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		},
+		"files.associations": {
+			"*.css": "css"
+		}
+	}
+}

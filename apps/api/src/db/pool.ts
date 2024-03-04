@@ -7,6 +7,8 @@ import pg from 'pg';
 export let db: ReturnType<typeof drizzle<typeof schema>>;
 
 export const initDb = async (): Promise<void> => {
+	console.log('Initializing datebase');
+
 	// eslint-disable-next-line import/no-named-as-default-member
 	const pool = await new pg.Pool({
 		connectionString: config.DATABASE_URL

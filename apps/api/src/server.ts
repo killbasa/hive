@@ -9,7 +9,10 @@ export const server = await app();
 
 await initDb();
 await initQueues();
-await initWorkers();
+
+if (!config.DISABLE_WORKERS) {
+	await initWorkers();
+}
 
 await server.register(routes);
 

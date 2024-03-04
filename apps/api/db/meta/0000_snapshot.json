@@ -1,5 +1,5 @@
 {
-	"id": "495dbbfe-653d-42b1-8f3c-d3bb75546570",
+	"id": "d04aa451-9aa3-492c-9a8f-deb3560f2680",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "5",
 	"dialect": "pg",
@@ -16,7 +16,19 @@
 				},
 				"name": {
 					"name": "name",
-					"type": "varchar(256)",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"photo": {
+					"name": "photo",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"custom_url": {
+					"name": "custom_url",
+					"type": "text",
 					"primaryKey": false,
 					"notNull": true
 				}
@@ -32,7 +44,7 @@
 			"columns": {
 				"id": {
 					"name": "id",
-					"type": "uuid",
+					"type": "text",
 					"primaryKey": true,
 					"notNull": true
 				},
@@ -40,25 +52,25 @@
 					"name": "channel_id",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
 				},
 				"title": {
 					"name": "title",
-					"type": "varchar(256)",
+					"type": "text",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
 				},
 				"thumbnail": {
 					"name": "thumbnail",
-					"type": "varchar(256)",
+					"type": "text",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
 				},
 				"status": {
 					"name": "status",
 					"type": "status",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
 				}
 			},
 			"indexes": {},

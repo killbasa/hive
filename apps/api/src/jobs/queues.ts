@@ -7,6 +7,8 @@ export let notifications: Queue;
 let internal: Queue;
 
 export async function initQueues(): Promise<void> {
+	console.log('Starting queues');
+
 	const options: QueueOptions = {
 		connection: {
 			host: config.REDIS_HOST,
@@ -33,9 +35,16 @@ export async function initJobs(): Promise<void> {
 		{ page: 0 },
 		{ repeat: { pattern: '0 */15 * * * *' } }
 	);
+
 	await internal.add(
 		'checkVideos', //
 		{ page: 0 },
 		{ repeat: { pattern: '0 */30 * * * *' } }
+	);
+
+	await internal.add(
+		'channelMetadata', //
+		{ page: 0 },
+		{ repeat: { pattern: '0 */15 * * * *' } }
 	);
 }

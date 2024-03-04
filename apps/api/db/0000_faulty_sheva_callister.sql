@@ -6,13 +6,15 @@ END $$;
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "channels" (
 	"id" text PRIMARY KEY NOT NULL,
-	"name" varchar(256) NOT NULL
+	"name" text NOT NULL,
+	"photo" text NOT NULL,
+	"custom_url" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "videos" (
-	"id" uuid PRIMARY KEY NOT NULL,
-	"channel_id" text,
-	"title" varchar(256),
-	"thumbnail" varchar(256),
-	"status" "status"
+	"id" text PRIMARY KEY NOT NULL,
+	"channel_id" text NOT NULL,
+	"title" text NOT NULL,
+	"thumbnail" text NOT NULL,
+	"status" "status" NOT NULL
 );

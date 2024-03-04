@@ -6,7 +6,9 @@ import { pgEnum, pgTable, text } from 'drizzle-orm/pg-core';
  */
 export const channels = pgTable('channels', {
 	id: text('id').primaryKey(),
-	name: text('name').notNull()
+	customUrl: text('custom_url').notNull(),
+	name: text('name').notNull(),
+	photo: text('photo').notNull()
 });
 
 export const channelsRelations = relations(channels, ({ many }) => ({
