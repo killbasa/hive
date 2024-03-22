@@ -15,9 +15,6 @@ package-lock.json
 .env*
 !.env.example
 
-### intellij ###
-.idea/
-
 ## Logs ##
 logs
 *.log

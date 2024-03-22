@@ -1,26 +1,6 @@
-import { fileURLToPath, URL } from 'node:url';
+import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import tailwind from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-	base: '/',
-	plugins: [vue()],
-	css: {
-		postcss: {
-			plugins: [tailwind(), autoprefixer()]
-		}
-	},
-	resolve: {
-		alias: {
-			'@': fileURLToPath(new URL('./src', import.meta.url))
-		}
-	},
-	server: {
-		port: 3000
-	},
-	preview: {
-		port: 3000
-	}
+	plugins: [sveltekit()]
 });

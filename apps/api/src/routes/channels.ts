@@ -1,14 +1,8 @@
-import { db } from '../db/pool';
-import { channels } from '../db/schema';
-import { syncChannelMetadata } from '../jobs/workers';
-import { doesChannelExist, fetchChannels } from '../lib/youtube/channels';
+import { db } from '../db/client';
+import { doesChannelExist } from '../lib/youtube/channels';
+import { indexer } from '../queues/indexer';
 import { z } from 'zod';
-import { sql } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
-
-const channelSchema = z.object({
-	id: z.string()
-});
 
 export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 	server.get(
@@ -21,53 +15,40 @@ export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 		}
 	);
 
+	const ChannelSchema = z.object({
+		id: z.string()
+	});
+
 	server.post(
 		'/', //
 		{ schema: { tags: ['Channels'] } },
 		async (request, reply): Promise<void> => {
-			const data = channelSchema.parse(request.body);
+			const data = ChannelSchema.parse(request.body);
+
+			// TODO: exists utility
+			// ref: https://github.com/drizzle-team/drizzle-orm/pull/1405
+			const alreadyDownloaded = await db.query.channels.findFirst({
+				where: ({ id }, { eq }) => eq(id, data.id),
+				columns: { id: true }
+			});
+			if (alreadyDownloaded) {
+				return await reply.status(409).send({ message: 'Channel already downloaded' });
+			}
 
 			const exists = await doesChannelExist(data.id);
 			if (!exists) {
-				return await reply.status(400).send({ message: 'Channel does not exist' });
+				return await reply.status(404).send({ message: 'Channel does not exist' });
 			}
 
-			const channel = await fetchChannels([data.id]);
-			const { customUrl, title, thumbnails } = channel[0].snippet;
-
-			const result = await db
-				.insert(channels)
-				.values({
-					id: data.id,
-					customUrl,
-					name: title,
-					photo: thumbnails.high.url
-				})
-				.returning();
-
-			await reply.status(201).send(result[0]);
-		}
-	);
-
-	server.get<{ Params: { videoId: string } }>(
-		'/stats', //
-		{ schema: { tags: ['Channels'] } },
-		async (_, reply): Promise<void> => {
-			const result = await db.select({ total: sql`COUNT(*)` }).from(channels);
-
-			await reply.send({
-				count: result[0].total
-			});
-		}
-	);
-
-	server.post<{ Params: { videoId: string } }>(
-		'/sync', //
-		{ schema: { tags: ['Channels'] } },
-		async (_, reply): Promise<void> => {
-			await syncChannelMetadata();
-
-			await reply.status(200).send();
+			await indexer.add(
+				`channel/${data.id}`,
+				{
+					type: 'channel',
+					channelId: data.id
+				},
+				{ removeOnComplete: true }
+			);
+			await reply.status(201).send();
 		}
 	);
 

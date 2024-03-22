@@ -1,4 +1,13 @@
 import { ytFetch } from './fetch';
+import type { YouTubeChannel, YouTubeChannelList } from './types';
+
+export function parseTags(tags: string): string[] {
+	return tags.split(',');
+}
+
+export function formatTags(tags: string[]): string {
+	return tags.join(',');
+}
 
 export async function doesChannelExist(channelId: string): Promise<boolean> {
 	const url = new URL(`https://www.youtube.com/channel/${channelId}`);
@@ -10,31 +19,10 @@ export async function doesChannelExist(channelId: string): Promise<boolean> {
 	return response.status === 200;
 }
 
-export type YouTubeChannelList = {
-	items: YouTubeChannel[];
-};
-
-export type YouTubeChannel = {
-	id: string;
-	snippet: YouTubeChannelSnippet;
-};
-
-export type YouTubeChannelSnippet = {
-	title: string;
-	customUrl: string;
-	thumbnails: {
-		high: {
-			url: string;
-			width: number;
-			height: number;
-		};
-	};
-};
-
 // ref: https://developers.google.com/youtube/v3/docs/channels/list
 export async function fetchChannels(channelIds: string[]): Promise<YouTubeChannel[]> {
 	const response = await ytFetch<YouTubeChannelList>('/channels', {
-		part: 'snippet',
+		resources: ['snippet', 'brandingSettings'],
 		ids: channelIds
 	});
 

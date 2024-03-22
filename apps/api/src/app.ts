@@ -1,22 +1,18 @@
+import { isDev } from './lib/constants';
 import FastifySwagger from '@fastify/swagger';
 import FastifyHelmet from '@fastify/helmet';
 import FastifyCors from '@fastify/cors';
+import FastifyCompress from '@fastify/compress';
+import FastifyStatic from '@fastify/static';
 import FastifyWebsocket from '@fastify/websocket';
 import FastifyRateLimit from '@fastify/rate-limit';
 import Fastify from 'fastify';
-import type { FastifyInstance } from 'fastify';
+import { resolve } from 'node:path';
+import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
 export async function app(): Promise<FastifyInstance> {
 	const server = Fastify({
-		logger: {
-			transport: {
-				target: 'pino-pretty',
-				options: {
-					translateTime: 'HH:MM:ss Z',
-					ignore: 'pid,hostname'
-				}
-			}
-		}
+		logger: getLogger()
 	});
 
 	await server.register(FastifySwagger, {
@@ -36,12 +32,40 @@ export async function app(): Promise<FastifyInstance> {
 	});
 
 	await server.register(FastifyRateLimit, {
-		max: 100,
+		max: 1000,
 		timeWindow: 60_000
 	});
 
-	await server.register(FastifyHelmet);
+	// Register compression before static
+	await server.register(FastifyCompress);
+	await server.register(FastifyStatic, {
+		prefix: '/assets',
+		root: resolve('data/media')
+	});
+
+	await server.register(FastifyHelmet, {
+		crossOriginResourcePolicy: { policy: 'same-site' }
+	});
 	await server.register(FastifyWebsocket);
 
 	return await server;
+}
+
+function getLogger(): FastifyServerOptions['logger'] {
+	if (!isDev) {
+		return {
+			level: 'info'
+		};
+	}
+
+	return {
+		level: 'debug',
+		transport: {
+			target: 'pino-pretty',
+			options: {
+				translateTime: 'HH:MM:ss Z',
+				ignore: 'pid,hostname'
+			}
+		}
+	};
 }

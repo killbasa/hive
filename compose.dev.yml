@@ -1,10 +1,5 @@
 version: "3.9"
 
-x-redis-env: &x-redis-env
-  REDIS_HOST: hive-redis
-  REDIS_PORT: 6379
-  REDIS_PASSWORD: password
-
 services:
   hive:
     image: killbasa/hive
@@ -18,39 +13,13 @@ services:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 3001
-      DATABASE_URL: postgres://user:password@hive-postgres:5432/hive
-      <<: *x-redis-env
+      REDIS_HOST: hive-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+    volumes:
+      - ./apps/api:/data
     ports:
       - 127.0.0.1:3001:3001
-
-  backup:
-    image: killbasa/hive-backup
-    container_name: hive-backup
-    build:
-      dockerfile: apps/backup/Dockerfile
-      context: .
-    environment:
-      NODE_ENV: production
-      MINIO_ENDPOINT: hive-minio
-      MINIO_PORT: 9000
-      MINIO_BUCKET: hive
-      MINIO_KEYID: user
-      MINIO_SECRET: password
-      <<: *x-redis-env
-    depends_on:
-      - hive
-
-  chat:
-    image: killbasa/hive-chat
-    container_name: hive-chat
-    build:
-      dockerfile: apps/chat/Dockerfile
-      context: .
-    environment:
-      NODE_ENV: production
-      <<: *x-redis-env
-    depends_on:
-      - hive
 
   web:
     image: killbasa/hive-web
@@ -64,5 +33,3 @@ services:
       - 127.0.0.1:3000:80
     depends_on:
       - hive
-      - backup
-      - chat

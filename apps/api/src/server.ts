@@ -1,26 +1,27 @@
+import { initQueues, initTasks, initWorkers } from './queues';
 import { routes } from './routes';
 import { app } from './app';
-import { initDb } from './db/pool';
+import { initDb } from './db/client';
 import { config } from './lib/config';
-import { initJobs, initQueues } from './jobs/queues';
-import { initWorkers } from './jobs/workers';
+import { DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants';
+import { getYtdlpVersion } from './lib/ytdlp/constants';
+import { validateDirs } from './lib/utils';
 
+await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
 export const server = await app();
-
-await initDb();
-await initQueues();
-
-if (!config.DISABLE_WORKERS) {
-	await initWorkers();
-}
-
-await server.register(routes);
 
 const start = async (): Promise<void> => {
 	try {
+		await initDb();
+		await initQueues();
+		await initWorkers();
+
+		await server.register(routes);
 		await server.listen({ host: config.HOST, port: config.PORT });
-		await initJobs();
-	} catch (err) {
+		server.log.info(`yt-dlp version: ${getYtdlpVersion()}`);
+
+		await initTasks();
+	} catch (err: unknown) {
 		server.log.error(err);
 		process.exit(1);
 	}

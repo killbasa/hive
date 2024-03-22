@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { ConnectionOptions } from 'bullmq';
 
 const envBool = z
 	.string()
@@ -17,3 +18,9 @@ const EnvSchema = z.object({
 });
 
 export const config = EnvSchema.parse(process.env);
+
+export const RedisConnectionOptions: ConnectionOptions = {
+	host: config.REDIS_HOST,
+	port: config.REDIS_PORT,
+	password: config.REDIS_PASSWORD
+};

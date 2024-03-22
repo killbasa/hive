@@ -4,7 +4,7 @@ const parser = new XMLParser();
 
 export type XMLString = string & { _: true };
 
-export type FeedResponse = {
+export type XMLFeedResponse = {
 	feed: {
 		title: string;
 		author: {
@@ -12,11 +12,11 @@ export type FeedResponse = {
 			uri: string;
 		};
 		published: string;
-		entry: FeedEntry[];
+		entry: XMLFeedEntry[];
 	};
 };
 
-export type FeedEntry = {
+export type XMLFeedEntry = {
 	'yt:videoId': string;
 	'yt:channelId': string;
 	title: string;
@@ -35,6 +35,6 @@ export async function fetchChannelXML(channelId: string): Promise<XMLString> {
 	return xml as XMLString;
 }
 
-export function parseChannelXML(xml: XMLString): FeedResponse {
+export function parseChannelXML(xml: XMLString): XMLFeedResponse {
 	return parser.parse(xml);
 }

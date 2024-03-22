@@ -6,7 +6,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "tsup",
+		"build": "yarn check && tsup",
 		"check": "tsc",
 		"start": "node --env-file .env --enable-source-maps dist/server.js",
 		"dev": "tsup --watch --onSuccess \"yarn start\"",
@@ -14,32 +14,38 @@
 		"format": "prettier --write .",
 		"test": "vitest --coverage --run",
 		"dry-run": "yarn format && yarn lint && yarn build && yarn test",
-		"migrate": "drizzle-kit generate:pg"
+		"generate": "drizzle-kit generate:sqlite"
 	},
 	"dependencies": {
+		"@fastify/compress": "^7.0.0",
 		"@fastify/cors": "^9.0.1",
 		"@fastify/helmet": "^11.1.1",
 		"@fastify/rate-limit": "^9.1.0",
+		"@fastify/static": "^7.0.1",
 		"@fastify/swagger": "^8.14.0",
-		"@fastify/websocket": "^9.0.0",
-		"bullmq": "^5.4.1",
-		"drizzle-orm": "^0.29.4",
-		"fast-xml-parser": "^4.3.5",
+		"@fastify/websocket": "^10.0.1",
+		"better-sqlite3": "^9.4.3",
+		"bullmq": "^5.4.4",
+		"drizzle-orm": "^0.30.4",
+		"fast-xml-parser": "^4.3.6",
 		"fastify": "^4.26.2",
-		"pg": "^8.11.3",
-		"pino-pretty": "^10.3.1",
+		"redis": "^4.6.13",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {
-		"@swc/core": "^1.4.2",
-		"@types/pg": "^8.11.2",
+		"@swc/core": "^1.4.8",
+		"@types/better-sqlite3": "^7.6.9",
 		"@types/ws": "^8.5.10",
-		"@vitest/coverage-istanbul": "^1.3.1",
+		"@vitest/coverage-istanbul": "^1.4.0",
 		"drizzle-kit": "^0.20.14",
 		"eslint": "^8.57.0",
+		"pino-pretty": "^11.0.0",
 		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
-		"typescript": "^5.3.3",
-		"vitest": "^1.3.1"
+		"typescript": "^5.4.3",
+		"vitest": "^1.4.0"
+	},
+	"volta": {
+		"node": "21.1.0"
 	}
 }

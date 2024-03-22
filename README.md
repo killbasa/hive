@@ -2,22 +2,28 @@
 
 ## Contibuting
 
-Setup .env files
+1. Download yt-dlp binary
+
+```sh
+wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+chmod +x yt-dlp
+mv ./yt-dlp ./apps/api/data
+```
+
+1. Setup .env files
 
 ```sh
 cp apps/api/.env.example apps/api/.env
-cp apps/backup/.env.example apps/backup/.env
-cp apps/chat/.env.example apps/chat/.env
 cp apps/web/.env.example apps/web/.env
 ```
 
-Start services
+3. Start services
 
 ```sh
 docker compose up -d
 ```
 
-Build applications
+4. Build applications
 
 ```sh
 yarn build

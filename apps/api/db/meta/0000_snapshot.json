@@ -1,100 +1,467 @@
 {
-	"id": "d04aa451-9aa3-492c-9a8f-deb3560f2680",
-	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "5",
-	"dialect": "pg",
+	"dialect": "sqlite",
+	"id": "01249fdf-7c88-4a3a-b2e6-b465034d7b9a",
+	"prevId": "00000000-0000-0000-0000-000000000000",
 	"tables": {
 		"channels": {
 			"name": "channels",
-			"schema": "",
 			"columns": {
 				"id": {
 					"name": "id",
 					"type": "text",
 					"primaryKey": true,
-					"notNull": true
-				},
-				"name": {
-					"name": "name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"photo": {
-					"name": "photo",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
 				},
 				"custom_url": {
 					"name": "custom_url",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"tags": {
+					"name": "tags",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "CURRENT_TIMESTAMP"
 				}
 			},
-			"indexes": {},
+			"indexes": {
+				"channel_idx": {
+					"name": "channel_idx",
+					"columns": ["id"],
+					"isUnique": false
+				}
+			},
 			"foreignKeys": {},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {}
 		},
-		"videos": {
-			"name": "videos",
-			"schema": "",
+		"comments": {
+			"name": "comments",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "integer",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"video_id": {
+					"name": "video_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"text": {
+					"name": "text",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"author": {
+					"name": "author",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"author_id": {
+					"name": "author_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"timestamp": {
+					"name": "timestamp",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"is_uploader": {
+					"name": "is_uploader",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"is_favorited": {
+					"name": "is_favorited",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"comment_idx": {
+					"name": "comment_idx",
+					"columns": ["id"],
+					"isUnique": false
+				},
+				"comment_video_idx": {
+					"name": "comment_video_idx",
+					"columns": ["video_id"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {
+				"comments_video_id_videos_id_fk": {
+					"name": "comments_video_id_videos_id_fk",
+					"tableFrom": "comments",
+					"tableTo": "videos",
+					"columnsFrom": ["video_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {}
+		},
+		"playlists": {
+			"name": "playlists",
 			"columns": {
 				"id": {
 					"name": "id",
 					"type": "text",
 					"primaryKey": true,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
 				},
 				"channel_id": {
 					"name": "channel_id",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
 				},
 				"title": {
 					"name": "title",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
 				},
-				"thumbnail": {
-					"name": "thumbnail",
+				"description": {
+					"name": "description",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"playlist_idx": {
+					"name": "playlist_idx",
+					"columns": ["id"],
+					"isUnique": false
+				},
+				"playlist_channel_idx": {
+					"name": "playlist_channel_idx",
+					"columns": ["channel_id"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {
+				"playlists_channel_id_channels_id_fk": {
+					"name": "playlists_channel_id_channels_id_fk",
+					"tableFrom": "playlists",
+					"tableTo": "channels",
+					"columnsFrom": ["channel_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {}
+		},
+		"settings": {
+			"name": "settings",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"key": {
+					"name": "key",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"value": {
+					"name": "value",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"setting_idx": {
+					"name": "setting_idx",
+					"columns": ["id"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {}
+		},
+		"stream_comments": {
+			"name": "stream_comments",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "integer",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"video_id": {
+					"name": "video_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"author": {
+					"name": "author",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"text": {
+					"name": "text",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"timestamp": {
+					"name": "timestamp",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"is_mod": {
+					"name": "is_mod",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"is_verified": {
+					"name": "is_verified",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"is_uploader": {
+					"name": "is_uploader",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"streamcomment_idx": {
+					"name": "streamcomment_idx",
+					"columns": ["id"],
+					"isUnique": false
+				},
+				"streamcomment_video_idx": {
+					"name": "streamcomment_video_idx",
+					"columns": ["video_id"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {
+				"stream_comments_video_id_videos_id_fk": {
+					"name": "stream_comments_video_id_videos_id_fk",
+					"tableFrom": "stream_comments",
+					"tableTo": "videos",
+					"columnsFrom": ["video_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {}
+		},
+		"videos": {
+			"name": "videos",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"channel_id": {
+					"name": "channel_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"playlist_id": {
+					"name": "playlist_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"title": {
+					"name": "title",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"duration": {
+					"name": "duration",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"file_size": {
+					"name": "file_size",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"upload_date": {
+					"name": "upload_date",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"type": {
+					"name": "type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
 				},
 				"status": {
 					"name": "status",
-					"type": "status",
+					"type": "text",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"autoincrement": false
+				},
+				"download_status": {
+					"name": "download_status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "CURRENT_TIMESTAMP"
 				}
 			},
-			"indexes": {},
-			"foreignKeys": {},
+			"indexes": {
+				"video_idx": {
+					"name": "video_idx",
+					"columns": ["id"],
+					"isUnique": false
+				},
+				"video_channel_idx": {
+					"name": "video_channel_idx",
+					"columns": ["channel_id"],
+					"isUnique": false
+				},
+				"video_playlist_idx": {
+					"name": "video_playlist_idx",
+					"columns": ["playlist_id"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {
+				"videos_channel_id_channels_id_fk": {
+					"name": "videos_channel_id_channels_id_fk",
+					"tableFrom": "videos",
+					"tableTo": "channels",
+					"columnsFrom": ["channel_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"videos_playlist_id_playlists_id_fk": {
+					"name": "videos_playlist_id_playlists_id_fk",
+					"tableFrom": "videos",
+					"tableTo": "playlists",
+					"columnsFrom": ["playlist_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {}
 		}
 	},
-	"enums": {
-		"status": {
-			"name": "status",
-			"values": {
-				"none": "none",
-				"new": "new",
-				"live": "live",
-				"upcoming": "upcoming",
-				"past": "past"
-			}
-		}
-	},
-	"schemas": {},
+	"enums": {},
 	"_meta": {
-		"columns": {},
 		"schemas": {},
-		"tables": {}
+		"tables": {},
+		"columns": {}
 	}
 }

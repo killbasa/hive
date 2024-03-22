@@ -1,7 +1,8 @@
 {
 	"typescript.tsdk": "./node_modules/typescript/lib",
+	"typescript.referencesCodeLens.enabled": true,
 	"eslint.format.enable": true,
-	"eslint.validate": ["javascript", "typescript"],
+	"eslint.validate": ["javascript", "typescript", "svelte"],
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"[javascript]": {
@@ -10,8 +11,8 @@
 	"[typescript]": {
 		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
 	},
-	"[vue]": {
-		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
 	},
 	"files.associations": {
 		"*.css": "css"

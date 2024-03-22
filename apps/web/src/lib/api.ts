@@ -1,15 +1,19 @@
 import { config } from './config';
+import type { FetchFunction } from './types';
 
-export async function apiFetch<T>(path: string, options?: RequestInit): Promise<{ raw: Response; json: () => Promise<T> }> {
+export async function apiFetch<T>(
+	path: string,
+	options: RequestInit & { fetch: FetchFunction }
+): Promise<{ raw: Response; json: () => Promise<T> }> {
 	const url = new URL(path, `http://${config.apiUrl}`);
 
 	const headers: HeadersInit = options?.headers ?? {};
 	if (options?.body) {
-		// @ts-ignore
+		// @ts-expect-error asd
 		headers['Content-Type'] = 'application/json';
 	}
 
-	const response = await fetch(url.href, {
+	const response = await options.fetch(url.href, {
 		...options,
 		headers
 	});

@@ -37,4 +37,11 @@ COPY --from=builder --chown=hive:hive /temp/apps/api/db db/
 COPY --from=builder --chown=hive:hive /temp/apps/api/dist dist/
 COPY --from=builder --chown=hive:hive /temp/apps/api/package.json ./
 
+RUN apk add --no-cache ffmpeg && \
+	mkdir -p /data/ && \
+	wget -q https://github.com/yt-dlp/yt-dlp-master-builds/releases/download/2024.03.09.155247/yt-dlp && \
+	mv yt-dlp /data/ && \
+	chmod +x /data/yt-dlp && \
+	chown -R hive:hive /data/
+
 CMD ["node", "--enable-source-maps", "dist/server.js"]

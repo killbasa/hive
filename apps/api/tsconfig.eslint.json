@@ -8,6 +8,7 @@
 		"src", //
 		"tests",
 		".eslintrc.cjs",
+		"drizzle.config.ts",
 		"tsup.config.ts",
 		"vitest.config.ts"
 	]

@@ -13,7 +13,7 @@ export const referenceRoutes: FastifyPluginCallback = (server, _, done) => {
 		}
 	);
 
-	const cdnUrl = 'https://cdn.jsdelivr.net/npm/@scalar/api-reference';
+	const cdnUrl = 'https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.18.1/dist/browser/standalone.min.js';
 	const html = scalarHTML(cdnUrl);
 
 	const csp: string[] = [
