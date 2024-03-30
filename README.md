@@ -5,7 +5,7 @@
 1. Download yt-dlp binary
 
 ```sh
-wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+wget https://github.com/yt-dlp/yt-dlp/releases/download/2024.03.10/yt-dlp
 chmod +x yt-dlp
 mv ./yt-dlp ./apps/api/data
 ```
