@@ -5,7 +5,7 @@ import { fetchChannelXML, parseChannelXML } from '../lib/xml';
 import { server } from '../server';
 
 export async function handleScrapeTask(): Promise<void> {
-	server.log.debug('Syncing videos...');
+	server.log.info('Syncing videos...');
 
 	const result = await db.query.channels.findMany({
 		orderBy: (channels, { asc }) => [asc(channels.updatedAt)],
@@ -16,8 +16,6 @@ export async function handleScrapeTask(): Promise<void> {
 	for (const channel of result) {
 		const xml = await fetchChannelXML(channel.id);
 		const data = parseChannelXML(xml);
-
-		console.log(data.feed.entry[0]);
 
 		await db
 			.insert(videos)

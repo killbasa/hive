@@ -26,5 +26,5 @@ docker compose up -d
 4. Build applications
 
 ```sh
-yarn build
+pnpm build
 ```

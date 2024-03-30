@@ -2,6 +2,7 @@ export type ChannelMetadata = {
 	id: string;
 	channel: string;
 	channel_id: string;
+	uploader_id: string;
 	description: string;
 	tags: string[];
 };
@@ -13,7 +14,6 @@ export type VideoMetadata = {
 	upload_date: string;
 	duration_string: string;
 	was_live: boolean;
-	comments?: CommentMetadata[];
 	filesize_approx: number;
 	width: number;
 	height: number;

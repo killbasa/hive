@@ -6,7 +6,7 @@ import { server } from '../server';
 import { eq } from 'drizzle-orm';
 
 export async function handleVideoStatus(page = 0): Promise<void> {
-	server.log.debug(`Checking videos... (page: ${page})`);
+	server.log.info(`Checking videos... (page: ${page})`);
 
 	const result = await db.query.videos.findMany({
 		where: (videos, { eq, or }) => {
@@ -53,7 +53,12 @@ export async function handleVideoStatus(page = 0): Promise<void> {
 					if (dbVideo.status === 'upcoming') {
 						await downloader.add(
 							`video/${video.id}`, //
-							{ type: 'video', videoId: video.id, channelId: dbVideo.channelId, live: true },
+							{
+								type: 'video',
+								videoId: video.id,
+								channelId: dbVideo.channelId,
+								live: true
+							},
 							{ priority: 1 }
 						);
 
@@ -85,73 +90,82 @@ export async function handleVideoStatus(page = 0): Promise<void> {
 }
 
 export async function checkNewVideos(page = 0): Promise<void> {
-	server.log.debug(`Checking new videos... (page: ${page})`);
+	await new Promise<void>(async (resolve) => {
+		server.log.info(`Checking new videos... (page: ${page})`);
 
-	const result = await db.query.videos.findMany({
-		where: (videos, { eq }) => eq(videos.status, 'new'),
-		columns: { id: true, status: true, channelId: true, title: true },
-		limit: page * 50 + 50
-	});
+		const result = await db.query.videos.findMany({
+			where: (videos, { eq }) => eq(videos.status, 'new'),
+			columns: { id: true, status: true, channelId: true, title: true },
+			limit: page * 50 + 50
+		});
 
-	const videoIds = result.map((row) => row.id);
-	const ytVideos = await fetchVideos(videoIds);
+		const videoIds = result.map((row) => row.id);
+		const ytVideos = await fetchVideos(videoIds);
 
-	await Promise.all(
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
-		ytVideos.map(async (video) => {
-			const dbVideo = result.find((row) => row.id === video.id);
-			if (!dbVideo) {
-				throw new Error(`Video not found in database (${video.id})`);
-			}
-
-			let status: 'live' | 'none' | 'past' | 'upcoming' = 'none';
-
-			if (video.liveStreamingDetails) {
-				const { actualStartTime, actualEndTime } = video.liveStreamingDetails;
-
-				if (actualEndTime) {
-					status = 'past';
-
-					if (dbVideo.status === 'live') {
-						server.websocketServer.emit('livestream', {
-							status: 'end',
-							videoId: video.id,
-							title: dbVideo.title
-						});
-					}
-				} else if (actualStartTime) {
-					status = 'live';
-
-					if (dbVideo.status === 'upcoming') {
-						await downloader.add(
-							`video/${video.id}`, //
-							{ type: 'video', videoId: video.id, channelId: dbVideo.channelId, live: true },
-							{ priority: 1 }
-						);
-
-						server.websocketServer.emit('livestream', {
-							status: 'start',
-							videoId: video.id,
-							title: dbVideo.title
-						});
-					}
-				} else {
-					status = 'upcoming';
+		await Promise.all(
+			// eslint-disable-next-line @typescript-eslint/promise-function-async
+			ytVideos.map(async (video) => {
+				const dbVideo = result.find((row) => row.id === video.id);
+				if (!dbVideo) {
+					throw new Error(`Video not found in database (${video.id})`);
 				}
-			}
 
-			return await db //
-				.update(videos)
-				.set({ status, updatedAt: new Date() })
-				.where(eq(videos.id, video.id));
-		})
-	);
+				let status: 'live' | 'none' | 'past' | 'upcoming' = 'none';
 
-	if (result.length === 50) {
-		setTimeout(async () => {
-			await checkNewVideos(page + 1);
-		}, 1000);
-	} else {
-		server.log.info(`Checked ${page * 50 + result.length} new videos. Done!`);
-	}
+				if (video.liveStreamingDetails) {
+					const { actualStartTime, actualEndTime } = video.liveStreamingDetails;
+
+					if (actualEndTime) {
+						status = 'past';
+
+						if (dbVideo.status === 'live') {
+							server.websocketServer.emit('livestream', {
+								status: 'end',
+								videoId: video.id,
+								title: dbVideo.title
+							});
+						}
+					} else if (actualStartTime) {
+						status = 'live';
+
+						if (dbVideo.status === 'upcoming') {
+							await downloader.add(
+								`video/${video.id}`, //
+								{
+									type: 'video',
+									videoId: video.id,
+									channelId: dbVideo.channelId,
+									live: true
+								},
+								{ priority: 1 }
+							);
+
+							server.websocketServer.emit('livestream', {
+								status: 'start',
+								videoId: video.id,
+								title: dbVideo.title
+							});
+						}
+					} else {
+						status = 'upcoming';
+					}
+				}
+
+				return await db //
+					.update(videos)
+					.set({ status, updatedAt: new Date() })
+					.where(eq(videos.id, video.id));
+			})
+		);
+
+		if (result.length === 50) {
+			setTimeout(async () => {
+				await checkNewVideos(page + 1);
+				resolve();
+			}, 1000);
+		} else {
+			server.log.info(`Checked ${page * 50 + result.length} new videos. Done!`);
+			resolve();
+		}
+	});
 }

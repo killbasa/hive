@@ -39,7 +39,7 @@ COPY --from=builder --chown=hive:hive /temp/apps/api/package.json ./
 
 RUN apk add --no-cache ffmpeg && \
 	mkdir -p /data/ && \
-	wget -q https://github.com/yt-dlp/yt-dlp-master-builds/releases/download/2024.03.09.155247/yt-dlp && \
+	wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.03.10/yt-dlp && \
 	mv yt-dlp /data/ && \
 	chmod +x /data/yt-dlp && \
 	chown -R hive:hive /data/

@@ -2,7 +2,6 @@
 	const links = [
 		{ name: 'Dashboard', path: '/' },
 		{ name: 'Channels', path: '/channels' },
-		{ name: 'Videos', path: '/videos' },
 		{ name: 'Downloads', path: '/downloads' },
 		{ name: 'Settings', path: '/settings' }
 	];

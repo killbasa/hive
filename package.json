@@ -5,9 +5,6 @@
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
-	"workspaces": [
-		"apps/*"
-	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/killbasa/hive.git",
@@ -15,11 +12,11 @@
 	},
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
-		"build": "yarn workspaces foreach --all -p run build",
-		"check": "yarn workspaces foreach --all -p run check",
-		"lint": "yarn workspaces foreach --all -p run lint",
-		"format": "yarn workspaces foreach --all -p run format",
-		"dry-run": "yarn check && yarn lint && yarn format && yarn build",
+		"build": "pnpm -r run build",
+		"check": "pnpm -r run check",
+		"lint": "pnpm -r run lint",
+		"format": "pnpm -r run format",
+		"dry-run": "pnpm check && pnpm lint && pnpm format && pnpm build",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:backup": "docker buildx build -t killbasa/hive-backup -f apps/backup/Dockerfile .",
@@ -30,7 +27,7 @@
 		"@killbasa/eslint-config": "^1.0.0",
 		"@killbasa/prettier-config": "^1.0.0",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^20.11.30",
+		"@types/node": "^20.12.2",
 		"eslint": "^8.57.0",
 		"lint-staged": "^15.2.2",
 		"prettier": "^3.2.5",
@@ -48,6 +45,5 @@
 	},
 	"engines": {
 		"node": ">=20.x"
-	},
-	"packageManager": "yarn@4.1.1"
+	}
 }

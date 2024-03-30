@@ -6,6 +6,7 @@ import { config } from './lib/config';
 import { DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants';
 import { getYtdlpVersion } from './lib/ytdlp/constants';
 import { validateDirs } from './lib/utils';
+import { setupGracefulShutdown } from './lib/process';
 
 await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
 export const server = await app();
@@ -21,6 +22,7 @@ const start = async (): Promise<void> => {
 		server.log.info(`yt-dlp version: ${getYtdlpVersion()}`);
 
 		await initTasks();
+		setupGracefulShutdown();
 	} catch (err: unknown) {
 		server.log.error(err);
 		process.exit(1);

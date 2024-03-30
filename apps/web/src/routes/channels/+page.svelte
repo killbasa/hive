@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import Card from '$components/Card.svelte';
 	import TextInput from '$components/TextInput.svelte';
 	import { apiFetch } from '$lib/api';
@@ -13,21 +14,21 @@
 	$: channels = data.channels;
 
 	async function addChannel() {
-		const response = await apiFetch<Channel>('/channels', {
+		await apiFetch<Channel>('/channels', {
 			fetch,
 			method: 'POST',
 			body: JSON.stringify({ id: channelId })
 		});
 
 		channelId = '';
-		if (response.raw.ok) {
-			const channelRes = await response.json();
-			channels = [...channels, channelRes];
-		}
 	}
 
 	function toggleModal() {
 		modal.showModal();
+	}
+
+	async function refresh() {
+		await invalidate('state:channels');
 	}
 </script>
 
@@ -39,13 +40,13 @@
 	<Card title="Channels">
 		<div class="flex gap-2">
 			<button class="btn btn-success" on:click={toggleModal}>Add</button>
+			<button class="btn btn-primary" on:click={refresh}>Refresh</button>
 		</div>
 		<table class="table">
 			<thead>
 				<tr>
 					<th></th>
 					<th>Name</th>
-					<th>ID</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -59,8 +60,8 @@
 								<div class="avatar">
 									<div class="mask mask-squircle h-12 w-12">
 										<img
-											src="http://{config.apiUrl}/assets/{channel.id}/assets/thumbnail.17.jpg"
-											alt="Avatar Tailwind CSS Component"
+											src="http://{config.apiUrl}/assets/{channel.id}/assets/thumbnail.avatar_uncropped.jpg"
+											alt="Channel avatar"
 										/>
 									</div>
 								</div>
@@ -72,14 +73,11 @@
 							</div>
 						</td>
 						<td>
-							{channel.id}
-						</td>
-						<td>
 							<a
 								role="button"
 								class="btn btn-primary"
 								target="_blank"
-								href="https://www.youtube.com/{channel.customUrl}"
+								href="https://www.youtube.com/channel/{channel.customUrl}"
 							>
 								Link
 							</a>
@@ -89,25 +87,6 @@
 			</tbody>
 		</table>
 	</Card>
-
-	<ul>
-		{#each channels as channel (channel.id)}
-			<li>
-				<div class="card card-compact w-96 bg-base-100 shadow">
-					<figure>
-						<img
-							src="http://{config.apiUrl}/assets/{channel.id}/assets/thumbnail.12.jpg"
-							alt="Avatar Tailwind CSS Component"
-						/>
-					</figure>
-					<div class="card-body">
-						<h2 class="card-title">{channel.name}</h2>
-						<p>If a dog chews shoes whose shoes does he choose?</p>
-					</div>
-				</div>
-			</li>
-		{/each}
-	</ul>
 
 	<dialog id="AddModal" class="modal" bind:this={modal}>
 		<div class="modal-box">

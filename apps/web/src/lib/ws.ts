@@ -1,7 +1,9 @@
+import { config } from './config';
 import type { Awaitable } from './types';
 
 export class Socket extends WebSocket {
-	public constructor(url: string) {
+	public constructor(path: string) {
+		const url = new URL(path, `ws://${config.apiUrl}`);
 		super(url);
 	}
 

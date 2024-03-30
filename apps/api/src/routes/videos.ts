@@ -1,7 +1,7 @@
 import { db } from '../db/client';
 import { videos } from '../db/schema';
 import { z } from 'zod';
-import { eq, inArray } from 'drizzle-orm';
+import { count, eq, inArray } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
@@ -16,20 +16,30 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 		async (request, reply): Promise<void> => {
 			const query = QuerySchema.parse(request.query);
 
-			const result = await db.query.videos.findMany({
-				where: (video, { eq }) => {
-					if (query.status) {
-						return eq(video.downloadStatus, query.status);
-					}
+			const [result, countRes] = await Promise.all([
+				db.query.videos.findMany({
+					where: (video, { eq }) => {
+						if (query.status) {
+							return eq(video.downloadStatus, query.status);
+						}
 
-					return undefined;
-				},
-				orderBy: (video, { desc }) => desc(video.updatedAt),
-				limit: 100,
-				offset: (query.page - 1) * 24
-			});
+						return undefined;
+					},
+					orderBy: (video, { desc }) => desc(video.updatedAt),
+					limit: 25,
+					offset: (query.page - 1) * 24
+				}),
+				db //
+					.select({ total: count() })
+					.from(videos)
+					.where(
+						query.status //
+							? eq(videos.downloadStatus, query.status)
+							: undefined
+					)
+			]);
 
-			return await reply.send({ videos: result });
+			return await reply.send({ videos: result, total: countRes[0].total });
 		}
 	);
 
@@ -39,6 +49,7 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 
 	server.post(
 		'/ignore', //
+		{ schema: { tags: ['Videos'] } },
 		async (request, reply): Promise<void> => {
 			const data = VideoIgnoreSchema.parse(request.body);
 
@@ -93,6 +104,18 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 
 			await reply.send(result.at(0));
 		}
+	);
+
+	server.get<{ Params: { videoId: string } }>(
+		'/:videoId/progress', //
+		{ schema: { tags: ['Videos'] } },
+		async (): Promise<void> => {}
+	);
+
+	server.post<{ Params: { videoId: string } }>(
+		'/:videoId/progress', //
+		{ schema: { tags: ['Videos'] } },
+		async (): Promise<void> => {}
 	);
 
 	done();

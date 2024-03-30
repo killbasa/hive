@@ -5,70 +5,121 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Card from '$components/Card.svelte';
-	import type { Video, YtdlpProgress } from '$lib/types';
+	import type { DownloadProgress, DownloadStatus } from '$lib/types';
 	import { apiFetch } from '$lib/api';
+	import { invalidate } from '$app/navigation';
+	import { StatusEvent } from '$lib/utils';
 
 	export let data: PageData;
 
 	let socket: Socket;
 	let allChecked = false;
-	let messages: string[] = [];
-	let downloads: { video: Video; download: boolean }[] = data.videos.map((video) => {
-		return { video, download: false };
-	});
+	$: downloads = data.videos;
 
-	let progress = '';
-	let currentDownload: Video | null = null;
+	let downloadProgress = '';
+	let video: { id: string; channelId: string; title: string } | null = null;
+	let current: DownloadProgress | null = null;
 
-	function selectAll() {
-		downloads = downloads.map((entry) => {
-			return { ...entry, download: !allChecked };
-		});
+	let scanProgress: { current: number; total: number; channelId: string } | null = null;
+
+	let videosToIgnore: string[];
+	$: videosToIgnore = [];
+
+	function ignoreVideo(videoId: string) {
+		if (videosToIgnore.includes(videoId)) {
+			videosToIgnore = videosToIgnore.filter((id) => id !== videoId);
+		} else {
+			videosToIgnore = [...videosToIgnore, videoId];
+		}
 	}
 
-	async function ignoreVideos() {
-		const videoIds = downloads //
-			.filter(({ download }) => download)
-			.map(({ video }) => video.id);
-
-		await apiFetch(`http://${config.apiUrl}/videos/ignore`, {
-			fetch,
-			method: 'POST',
-			body: JSON.stringify({ videoIds })
-		});
+	function selectAll() {
+		if (allChecked) {
+			videosToIgnore = [];
+		} else {
+			videosToIgnore = downloads.map(({ id }) => id);
+		}
 	}
 
 	async function startDownloads() {
-		await apiFetch(`http://${config.apiUrl}/downloads/start`, {
+		await apiFetch('/downloads/start', {
 			fetch,
 			method: 'POST'
 		});
 	}
 
-	async function ping() {
-		await apiFetch(`http://${config.apiUrl}/status`, {
+	async function scan() {
+		await apiFetch('/downloads/scan', {
 			fetch,
 			method: 'POST'
 		});
+	}
+
+	async function stop() {
+		await apiFetch('/downloads/stop', {
+			fetch,
+			method: 'POST'
+		});
+	}
+
+	async function ignore() {
+		await apiFetch('/videos/ignore', {
+			fetch,
+			method: 'POST',
+			body: JSON.stringify({ videoIds: Array.from(videosToIgnore) })
+		});
+
+		await invalidate('state:downloads');
+		allChecked = false;
+		videosToIgnore = [];
 	}
 
 	onMount(() => {
-		socket = new Socket('ws://localhost:3001/status');
+		socket = new Socket('/status/downloads');
 
-		socket.onMessage<string>((event) => {
-			if (messages.length > 25) {
-				messages.shift();
-			}
-
-			const ytdlpProgress: YtdlpProgress = JSON.parse(event.data);
-			progress = ytdlpProgress.percentage.trim().slice(0, -1);
-			currentDownload = data.videos.find((video) => video.id === ytdlpProgress.id) ?? null;
-
-			messages = [...messages, event.data];
+		socket.onOpen(() => {
+			console.log('[hive] connected');
 		});
+		socket.onClose(() => {
+			console.log('[hive] disconnected');
+		});
+
+		socket.onMessage<string>(async (event) => {
+			const update: DownloadStatus = JSON.parse(`${event.data}`);
+			if (update.type === StatusEvent.DownloadCancelled) {
+				video = null;
+				current = null;
+			} else if (update.type === StatusEvent.DownloadUpdate) {
+				downloadProgress = update.data.percentage.trim().slice(0, -1);
+
+				video = {
+					title: update.title,
+					id: update.data.id,
+					channelId: update.channelId
+				};
+				current = update.data;
+
+				if (update.data.status === 'finished') {
+					await invalidate('state:downloads');
+				}
+			} else if (update.type === StatusEvent.ScanComplete) {
+				scanProgress = null;
+				await invalidate('state:downloads');
+			} else if (update.type === StatusEvent.ScanUpdate) {
+				scanProgress = {
+					channelId: update.channelId,
+					current: update.current,
+					total: update.total
+				};
+			}
+		});
+
+		return () => {
+			socket.close();
+		};
 	});
 
-	$: disabled = downloads.filter(({ download }) => download).length === 0;
+	$: disabled = videosToIgnore.length === 0;
 </script>
 
 <svelte:head>
@@ -76,36 +127,61 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<Card title="Logs">
-		<div class="terminal">
-			<div class="window">
-				{#each messages as message, i (i)}
-					<pre>{message}</pre>
-				{/each}
-			</div>
-		</div>
-	</Card>
-	<Card title="Downloading">
-		{#if currentDownload}
-			<div class="flex items-center gap-3">
-				<div class="w-48">
+	<Card title="Scanning">
+		{#if scanProgress}
+			<div class="avatar">
+				<div class="mask mask-squircle h-12 w-12">
 					<img
-						src="http://{config.apiUrl}/assets/{currentDownload.channelId}/videos/{currentDownload.id}/thumbnail.png"
-						alt="Video thumbnail"
+						src="http://{config.apiUrl}/assets/{scanProgress.channelId}/assets/thumbnail.avatar_uncropped.jpg"
+						alt="Channel avatar"
 					/>
 				</div>
 			</div>
-			<span>{progress}%</span>
-			<progress class="progress progress-success" value={progress} max="100"></progress>
+			<a
+				class="font-bold"
+				target="_blank"
+				href="https://www.youtube.com/channel/{scanProgress.channelId}"
+			>
+				{scanProgress.channelId}
+			</a>
+			<span>{scanProgress.current} / {scanProgress.total}</span>
+			<progress
+				class="progress progress-success"
+				value={scanProgress.current}
+				max={scanProgress.total}
+			></progress>
 		{:else}
 			None
 		{/if}
 	</Card>
-	<Card title="Downloads">
+	<Card title="Downloading">
+		{#if video}
+			<div class="flex items-center gap-3">
+				<div class="w-96">
+					<img
+						src="http://{config.apiUrl}/assets/{video.channelId}/videos/{video.id}/thumbnail.png"
+						alt="Video thumbnail"
+					/>
+				</div>
+			</div>
+			<a class="font-bold" target="_blank" href="https://www.youtube.com/watch?v={video.id}">
+				{video.title}
+			</a>
+			{#if current}
+				<span>{downloadProgress}% ({current.eta} @ {current.speed})</span>
+				<progress class="progress progress-success" value={downloadProgress} max="100"
+				></progress>
+			{/if}
+			<button class="btn btn-error w-min" type="button" on:click={stop}>Stop</button>
+		{:else}
+			None
+		{/if}
+	</Card>
+	<Card title="Downloads ({downloads.length}/{data.total})">
 		<div class="flex gap-2">
 			<button class="btn btn-success" on:click={startDownloads}>Download</button>
-			<button class="btn btn-error" {disabled} on:click={ignoreVideos}>Ignore</button>
-			<button class="btn btn-success" on:click={ping}>Ping</button>
+			<button class="btn btn-error" {disabled} on:click={ignore}>Ignore</button>
+			<button class="btn btn-success" on:click={scan}>Scan channels</button>
 		</div>
 		<table class="table">
 			<thead>
@@ -126,13 +202,18 @@
 					<th>Size</th>
 				</tr>
 			</thead>
-
 			<tbody>
-				{#each downloads as { video, download } (video.id)}
+				{#each downloads as video (video.id)}
 					<tr>
 						<th>
 							<label>
-								<input type="checkbox" class="checkbox" bind:checked={download} />
+								<input
+									name="select-video"
+									type="checkbox"
+									class="checkbox"
+									on:change={() => ignoreVideo(video.id)}
+									checked={videosToIgnore.includes(video.id)}
+								/>
 							</label>
 						</th>
 						<td>
@@ -163,30 +244,3 @@
 		</table>
 	</Card>
 </section>
-
-<style>
-	.terminal {
-		background-color: rgba(156, 163, 175, 0.7);
-		width: 100%;
-		height: 100%;
-		text-align: left;
-		font-family: consolas, Monaco;
-		border-radius: 0.25rem;
-		line-height: 1.25rem;
-		font-size: 0.85rem;
-	}
-
-	.window {
-		overflow-y: scroll;
-		padding: 0.5rem;
-		background-color: rgba(8, 8, 8, 0.5);
-		height: 100%;
-		color: #e8e8e8;
-		min-height: 200px;
-	}
-
-	.window pre {
-		font-family: inherit;
-		margin: 0px;
-	}
-</style>

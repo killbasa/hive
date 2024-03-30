@@ -4,20 +4,20 @@
 
 	export let data: PageData;
 
-	const videoKey = 'videoVolume';
-	const baseUrl = `http://${config.apiUrl}/assets/${data.channelId}/${data.id}/`;
+	const volumeKey = 'videoVolume';
+	const baseUrl = `http://${config.apiUrl}/assets/${data.channelId}/videos/${data.id}`;
+
+	let video: HTMLVideoElement;
 
 	function onVolumeChange() {
-		localStorage.setItem(videoKey, video.volume.toString());
+		localStorage.setItem(volumeKey, video.volume.toString());
 	}
 
 	function setPlayerVolume(): void {
-		const data = localStorage.getItem(videoKey) ?? '1';
-		const parsed = parseInt(data);
+		const data = localStorage.getItem(volumeKey) ?? '1';
+		const parsed = parseFloat(data);
 		video.volume = isNaN(parsed) ? 1 : parsed;
 	}
-
-	let video: HTMLVideoElement;
 </script>
 
 <svelte:head>
@@ -30,21 +30,24 @@
 		on:volumechange={onVolumeChange}
 		on:loadstart={setPlayerVolume}
 		controls
-		autoplay
 		playsinline
 		id="video-item"
 		width="100%"
 		bind:this={video}
 	>
-		<source src="{baseUrl}/video.f137.mp4" type="video/mp4" id="video-source" />
+		<source src="{baseUrl}/video.mp4" type="video/mp4" />
 		<track kind="captions" />
 	</video>
 	<div>
-		{#each data.comments as comment, i (i)}
-			<div>
-				<h2>{comment.author}</h2>
-				<p>{comment.text}</p>
-			</div>
-		{/each}
+		<h2>{data.title}</h2>
+		<p>{data.description}</p>
 	</div>
+	<ul>
+		{#each data.comments as comment (comment.id)}
+			<li>
+				<strong>{comment.author}</strong>
+				<p>{comment.text}</p>
+			</li>
+		{/each}
+	</ul>
 </section>

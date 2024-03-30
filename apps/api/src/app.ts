@@ -27,7 +27,7 @@ export async function app(): Promise<FastifyInstance> {
 
 	await server.register(FastifyCors, {
 		maxAge: 600,
-		origin: true,
+		origin: '*',
 		credentials: true
 	});
 

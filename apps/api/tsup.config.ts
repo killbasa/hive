@@ -1,5 +1,18 @@
-import { tsupConfig } from '../../scripts/tsup';
+import { defineConfig } from 'tsup';
 
-export default tsupConfig({
-	entry: ['src/server.ts']
+export default defineConfig({
+	bundle: true,
+	clean: true,
+	dts: false,
+	entry: ['src/server.ts'],
+	format: ['esm'],
+	keepNames: true,
+	minify: false,
+	shims: false,
+	skipNodeModulesBundle: true,
+	splitting: false,
+	sourcemap: true,
+	target: 'esnext',
+	treeshake: true,
+	tsconfig: './tsconfig.json'
 });

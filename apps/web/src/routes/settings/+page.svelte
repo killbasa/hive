@@ -14,7 +14,12 @@
 <section class="flex flex-col gap-4">
 	<Card title="Settings">
 		<span>Version: {data.api}</span>
-		<span>yt-dlp version: {data.ytdlp}</span>
+		<span>
+			yt-dlp version:
+			<a href="https://github.com/yt-dlp/yt-dlp/releases/tag/{data.ytdlp}" target="_blank">
+				{data.ytdlp}
+			</a>
+		</span>
 	</Card>
 	<Card title="Schedules">
 		<TextInput id="check-subscriptions" title="Check subscriptions" />

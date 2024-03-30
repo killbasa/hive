@@ -3,8 +3,9 @@ import { channels } from '../../db/schema';
 import { formatTags } from '../youtube/channels';
 import { mv, mvDir } from '../utils';
 import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
-import { readFile, readdir } from 'node:fs/promises';
+import { open, readFile, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import type { ChannelMetadata } from './types';
 
 export const CHANNEL_DL_PATH = (channelId: string): string => `${DOWNLOADS_DIR}/${channelId}`;
@@ -43,6 +44,8 @@ export async function moveChannel(channelId: string): Promise<void> {
 	const target = CHANNEL_PATH(channelId);
 
 	await mv(`${source}/assets/thumbnail.info.json`, `${source}/assets/metadata.json`);
+	const fh = await open(`${source}/assets/archive.txt`, 'w');
+	await fh.close();
 	await mvDir(`${source}/assets`, `${target}/assets`);
 }
 
@@ -51,6 +54,14 @@ export async function readChannelMetadata(channelId: string): Promise<ChannelMet
 	return JSON.parse(data);
 }
 
-export function isChannelDownloaded(channelId: string): boolean {
-	return existsSync(`${CHANNEL_PATH(channelId)}/assets/metadata.json`);
+export function isChannelDownloaded(channelId: string, options: { dir: 'download' | 'media' }): boolean {
+	let path: string;
+
+	if (options.dir === 'download') {
+		path = `${CHANNEL_DL_PATH(channelId)}/assets/thumbnail.info.json`;
+	} else {
+		path = `${CHANNEL_PATH(channelId)}/assets/metadata.json`;
+	}
+
+	return existsSync(resolve(path));
 }

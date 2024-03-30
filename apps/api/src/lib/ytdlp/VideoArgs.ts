@@ -1,7 +1,4 @@
-import { CHANNEL_PATH } from '../fs/channels';
 import type { YtdlpArgs } from './cli';
-
-type YtdlpFormats = 'best' | 'bestaudio' | 'bestvideo' | 'bestvideo+bestaudio';
 
 export class YtdlpVideoArgs implements YtdlpArgs {
 	public readonly data: string[] = [];
@@ -10,7 +7,7 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 		this.data.push('--no-warnings');
 	}
 
-	public format(data: YtdlpFormats): this {
+	public format(data: string): this {
 		this.data.push('--format', data);
 		return this;
 	}
@@ -36,7 +33,11 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 	}
 
 	public downloadArchive(channelId: string): this {
-		this.data.push('--download-archive', `${CHANNEL_PATH(channelId)}/assets/archive.txt`, '--force-write-archive');
+		this.data.push(
+			'--download-archive', //
+			`media/${channelId}/assets/archive.txt`,
+			'--force-write-archive'
+		);
 		return this;
 	}
 

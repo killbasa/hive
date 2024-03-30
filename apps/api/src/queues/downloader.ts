@@ -9,7 +9,8 @@ export async function initDownloaderQueue(): Promise<void> {
 	const options: QueueOptions = {
 		connection: RedisConnectionOptions,
 		defaultJobOptions: {
-			removeOnComplete: true
+			removeOnComplete: true,
+			removeOnFail: true
 		}
 	};
 

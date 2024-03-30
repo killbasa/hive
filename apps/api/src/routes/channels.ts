@@ -1,6 +1,6 @@
 import { db } from '../db/client';
 import { doesChannelExist } from '../lib/youtube/channels';
-import { indexer } from '../queues/indexer';
+import { scanner } from '../queues/scanner';
 import { z } from 'zod';
 import type { FastifyPluginCallback } from 'fastify';
 
@@ -35,19 +35,21 @@ export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 				return await reply.status(409).send({ message: 'Channel already downloaded' });
 			}
 
-			const exists = await doesChannelExist(data.id);
+			const exists = await doesChannelExist(data.id, 'youtube');
 			if (!exists) {
 				return await reply.status(404).send({ message: 'Channel does not exist' });
 			}
 
-			await indexer.add(
-				`channel/${data.id}`,
-				{
-					type: 'channel',
-					channelId: data.id
-				},
-				{ removeOnComplete: true }
-			);
+			const existingJob = await scanner.getJob(`channel/${data.id}/download`);
+			if (existingJob !== undefined) {
+				return await reply.status(409).send({ message: 'Channel already queued for download' });
+			}
+
+			await scanner.add(`channel/${data.id}/download`, {
+				type: 'channel',
+				channelId: data.id
+			});
+
 			await reply.status(201).send();
 		}
 	);

@@ -1,7 +1,6 @@
 import { DATA_DIR } from '../constants';
-import { spawnAsync } from '../utils';
 import { server } from '../../server';
-import { exec } from 'node:child_process';
+import { exec, spawn } from 'node:child_process';
 import type { Awaitable } from '../types';
 
 export type YtdlpProgress = {
@@ -46,8 +45,9 @@ export async function ytdlp(
 		onComplete?: (progress: YtdlpProgress) => Awaitable<void>;
 		onUpdate?: (progress: YtdlpProgress) => Awaitable<void>;
 		onError?: (data: Buffer) => Awaitable<void>;
-	}
-): Promise<void> {
+	},
+	signal?: AbortSignal
+): Promise<boolean> {
 	if (typeof urls === 'string') {
 		urls = [urls];
 	}
@@ -56,22 +56,55 @@ export async function ytdlp(
 		args.data.push(url);
 	}
 
+	server.log.debug(`Starting process (${new Date().toISOString()})`);
 	server.log.debug(`yt-dlp ${args.data.join(' ')}`);
-	await spawnAsync('./yt-dlp', args.data, {
-		cwd: 'data',
-		stdout: async (data) => {
-			const parsed = parseDownloadProgress(data);
-			if (!parsed.valid) return;
 
-			if (parsed.data.status === 'downloading') {
-				await cb?.onUpdate?.(parsed.data);
-			} else if (parsed.data.status === 'finished') {
-				await cb?.onComplete?.(parsed.data);
-			}
-		},
-		stderr: async (data) => {
-			await cb?.onError?.(data);
+	const subprocess = spawn('./yt-dlp', args.data, {
+		shell: false,
+		detached: false,
+		cwd: 'data'
+	});
+
+	const handle = (): void => {
+		server.log.info('Aborting yt-dlp...');
+		subprocess.kill();
+	};
+
+	signal?.addEventListener('abort', handle);
+
+	subprocess.stdout.on('data', async (data) => {
+		const parsed = parseDownloadProgress(data);
+		if (!parsed.valid || parsed.data.eta === 'Unknown') {
+			return;
 		}
+
+		if (parsed.data.status === 'downloading') {
+			await cb?.onUpdate?.(parsed.data);
+		} else if (parsed.data.status === 'finished') {
+			await cb?.onComplete?.(parsed.data);
+		}
+	});
+
+	subprocess.stderr.on('data', async (data) => {
+		await cb?.onError?.(data);
+	});
+
+	return await new Promise<boolean>((resolve, reject) => {
+		subprocess.on('error', (err) => {
+			if (!signal?.aborted) {
+				reject(err);
+			}
+		});
+
+		subprocess.on('close', (code) => {
+			signal?.removeEventListener('abort', handle);
+
+			if (code === 0 || code === 1 || signal?.aborted) {
+				resolve(true);
+			} else {
+				resolve(false);
+			}
+		});
 	});
 }
 
@@ -83,6 +116,9 @@ export async function ytdlpExec(urls: string[] | string, args: YtdlpArgs): Promi
 	for (const url of urls) {
 		args.data.push(url);
 	}
+
+	server.log.debug(`Starting exec (${new Date().toISOString()})`);
+	server.log.debug(`yt-dlp ${args.data.join(' ')}`);
 
 	return await new Promise((resolve, reject) => {
 		exec(`"${DATA_DIR}/yt-dlp" ${args.data.join(' ')}`, (err, stdout) => {

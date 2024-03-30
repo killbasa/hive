@@ -1,3 +1,10 @@
+export enum StatusEvent {
+	DownloadCancelled = 'DownloadCancelled',
+	DownloadUpdate = 'DownloadUpdate',
+	ScanComplete = 'ScanComplete',
+	ScanUpdate = 'ScanUpdate'
+}
+
 export function stringToNum(value: string | undefined | null, fallback = 0): number {
 	if (value === undefined || value === null) return fallback;
 
