@@ -8,7 +8,7 @@ let scanner: Worker;
 export type ScannerTasks = ScannerDownloadChannelTask | ScannerScanChannelTask;
 
 export type ScannerDownloadChannelTask = { type: 'channel'; channelId: string };
-export type ScannerScanChannelTask = { type: 'scan'; channelId: string };
+export type ScannerScanChannelTask = { type: 'scan'; channelId: string; position: number; total: number };
 
 export async function initScannerWorker(): Promise<void> {
 	scanner = new Worker(

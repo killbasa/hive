@@ -1,7 +1,7 @@
 {
 	"version": "5",
 	"dialect": "sqlite",
-	"id": "01249fdf-7c88-4a3a-b2e6-b465034d7b9a",
+	"id": "54dd8d2c-ba6b-48a2-bc64-6c5a1847d3cd",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"tables": {
 		"channels": {
@@ -215,20 +215,6 @@
 					"primaryKey": true,
 					"notNull": true,
 					"autoincrement": false
-				},
-				"key": {
-					"name": "key",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
-				},
-				"value": {
-					"name": "value",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false
 				}
 			},
 			"indexes": {
@@ -328,6 +314,52 @@
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {}
 		},
+		"users": {
+			"name": "users",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "integer",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"username": {
+					"name": "username",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"password": {
+					"name": "password",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"users_username_unique": {
+					"name": "users_username_unique",
+					"columns": ["username"],
+					"isUnique": true
+				},
+				"user_idx": {
+					"name": "user_idx",
+					"columns": ["id"],
+					"isUnique": false
+				},
+				"user_username_idx": {
+					"name": "user_username_idx",
+					"columns": ["username"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {}
+		},
 		"videos": {
 			"name": "videos",
 			"columns": {
@@ -372,6 +404,14 @@
 					"primaryKey": false,
 					"notNull": false,
 					"autoincrement": false
+				},
+				"watch_progress": {
+					"name": "watch_progress",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'0'"
 				},
 				"file_size": {
 					"name": "file_size",

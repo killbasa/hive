@@ -39,9 +39,10 @@ export const videos = sqliteTable(
 			.notNull(),
 		playlistId: text('playlist_id') //
 			.references(() => playlists.id),
-		title: text('title').notNull(),
+		title: text('title').notNull().notNull(),
 		description: text('description').notNull(),
-		duration: text('duration'),
+		duration: integer('duration'),
+		watchProgress: integer('watch_progress').default(0),
 		fileSize: integer('file_size'),
 		uploadDate: text('upload_date'),
 		type: text('type', { enum: ['video', 'short', 'stream'] }).notNull(),
@@ -166,13 +167,30 @@ export const streamCommentsRelations = relations(streamComments, ({ one }) => ({
 export const settings = sqliteTable(
 	'settings',
 	{
-		id: text('id').primaryKey(),
-		key: text('key').notNull(),
-		value: text('value').notNull()
+		id: text('id').primaryKey()
 	},
 	(table) => {
 		return {
 			idx: index('setting_idx').on(table.id)
+		};
+	}
+);
+
+/**
+ * Users
+ */
+
+export const users = sqliteTable(
+	'users',
+	{
+		id: integer('id').primaryKey(),
+		username: text('username').unique().notNull(),
+		password: text('password').notNull()
+	},
+	(table) => {
+		return {
+			idx: index('user_idx').on(table.id),
+			usernameIdx: index('user_username_idx').on(table.username)
 		};
 	}
 );

@@ -1,11 +1,14 @@
 import { isDev } from './lib/constants';
+import { config } from './lib/config';
 import FastifySwagger from '@fastify/swagger';
+import FastifyCookie from '@fastify/cookie';
+import FastifyJwt from '@fastify/jwt';
 import FastifyHelmet from '@fastify/helmet';
 import FastifyCors from '@fastify/cors';
+import FastifyRateLimit from '@fastify/rate-limit';
 import FastifyCompress from '@fastify/compress';
 import FastifyStatic from '@fastify/static';
 import FastifyWebsocket from '@fastify/websocket';
-import FastifyRateLimit from '@fastify/rate-limit';
 import Fastify from 'fastify';
 import { resolve } from 'node:path';
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
@@ -15,6 +18,9 @@ export async function app(): Promise<FastifyInstance> {
 		logger: getLogger()
 	});
 
+	/**
+	 * Plugins
+	 */
 	await server.register(FastifySwagger, {
 		mode: 'dynamic',
 		openapi: {
@@ -25,9 +31,17 @@ export async function app(): Promise<FastifyInstance> {
 		}
 	});
 
+	await server.register(FastifyCookie);
+	await server.register(FastifyJwt, {
+		secret: config.AUTH_SECRET,
+		cookie: {
+			cookieName: config.AUTH_COOKIE_NAME,
+			signed: false
+		}
+	});
+
 	await server.register(FastifyCors, {
-		maxAge: 600,
-		origin: '*',
+		origin: config.AUTH_ORIGIN,
 		credentials: true
 	});
 

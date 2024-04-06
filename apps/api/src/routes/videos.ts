@@ -1,42 +1,45 @@
 import { db } from '../db/client';
 import { videos } from '../db/schema';
+import { checkToken } from '../lib/auth';
 import { z } from 'zod';
-import { count, eq, inArray } from 'drizzle-orm';
+import { and, count, eq, gt, inArray, like } from 'drizzle-orm';
+import type { SQLWrapper } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
+	server.addHook('onRequest', checkToken);
+
 	const QuerySchema = z.object({
-		page: z.coerce.number().optional().default(1),
-		status: z.enum(['done', 'pending']).optional()
+		page: z.coerce.number().default(1),
+		status: z.enum(['done', 'pending']).optional(),
+		channelId: z.string().optional(),
+		search: z.string().optional(),
+		inProgress: z.coerce.boolean().default(false)
 	});
 
-	server.get<{ Querystring: { page?: string; status?: string } }>(
+	server.get<{ Querystring: { page?: string; status?: string; channelId: string } }>(
 		'/', //
 		{ schema: { tags: ['Videos'] } },
 		async (request, reply): Promise<void> => {
 			const query = QuerySchema.parse(request.query);
+			const whereArgs: (SQLWrapper | undefined)[] = [];
+
+			if (query.status) whereArgs.push(eq(videos.downloadStatus, query.status));
+			if (query.channelId) whereArgs.push(eq(videos.channelId, query.channelId));
+			if (query.search) whereArgs.push(like(videos.title, `%${query.search}%`));
+			if (query.inProgress) whereArgs.push(gt(videos.watchProgress, 0));
 
 			const [result, countRes] = await Promise.all([
 				db.query.videos.findMany({
-					where: (video, { eq }) => {
-						if (query.status) {
-							return eq(video.downloadStatus, query.status);
-						}
-
-						return undefined;
-					},
+					where: and(...whereArgs),
 					orderBy: (video, { desc }) => desc(video.updatedAt),
-					limit: 25,
+					limit: query.inProgress ? 4 : 25,
 					offset: (query.page - 1) * 24
 				}),
 				db //
 					.select({ total: count() })
 					.from(videos)
-					.where(
-						query.status //
-							? eq(videos.downloadStatus, query.status)
-							: undefined
-					)
+					.where(and(...whereArgs))
 			]);
 
 			return await reply.send({ videos: result, total: countRes[0].total });
@@ -106,16 +109,26 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 		}
 	);
 
-	server.get<{ Params: { videoId: string } }>(
-		'/:videoId/progress', //
-		{ schema: { tags: ['Videos'] } },
-		async (): Promise<void> => {}
-	);
+	const VideoProgressSchema = z.object({
+		progress: z.number()
+	});
 
 	server.post<{ Params: { videoId: string } }>(
 		'/:videoId/progress', //
 		{ schema: { tags: ['Videos'] } },
-		async (): Promise<void> => {}
+		async (request, reply): Promise<void> => {
+			const data = VideoProgressSchema.parse(request.body);
+
+			await db //
+				.update(videos)
+				.set({
+					watchProgress: data.progress
+				})
+				.where(eq(videos.id, request.params.videoId))
+				.execute();
+
+			await reply.status(204).send();
+		}
 	);
 
 	done();

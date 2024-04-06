@@ -3,5 +3,5 @@ export type Config = {
 };
 
 export const config: Config = {
-	apiUrl: import.meta.env.VITE_API_URL ?? 'localhost:3001'
+	apiUrl: import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
 };

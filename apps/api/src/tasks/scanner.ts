@@ -42,7 +42,7 @@ export async function handleDownloadChannelTask({ channelId }: ScannerDownloadCh
 	server.log.info(`Indexed channel: ${channelId}`);
 }
 
-export async function handleChannelScanTask({ channelId }: ScannerScanChannelTask): Promise<void> {
+export async function handleChannelScanTask({ channelId, position, total }: ScannerScanChannelTask): Promise<void> {
 	server.log.info(`Scanning channel videos: ${channelId}`);
 	scansInProgress.scan = true;
 
@@ -73,8 +73,10 @@ export async function handleChannelScanTask({ channelId }: ScannerScanChannelTas
 		server.websocketServer.emit('status', {
 			type: StatusEvent.ScanUpdate,
 			channelId,
-			current: index + 1,
-			total: newVideoIds.length
+			channelPos: position + 1,
+			channelTotal: total,
+			videoPos: index + 1,
+			videoTotal: newVideoIds.length
 		});
 	}
 

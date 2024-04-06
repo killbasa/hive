@@ -4,9 +4,14 @@ import { downloader } from '../queues/downloader';
 import { scanner } from '../queues/scanner';
 import { downloadControllers } from '../tasks/downloader';
 import { scansInProgress } from '../tasks/scanner';
+import { checkToken } from '../lib/auth';
+import { z } from 'zod';
 import type { FastifyPluginCallback } from 'fastify';
+import type { SQLWrapper } from 'drizzle-orm';
 
 export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
+	server.addHook('onRequest', checkToken);
+
 	server.get(
 		'/queue', //
 		{ schema: { tags: ['Downloads'] } },
@@ -41,17 +46,29 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 		}
 	);
 
+	const DownloadStartSchema = z.object({
+		videoIds: z.array(z.string()).optional()
+	});
+
 	server.post(
 		'/start', //
 		{ schema: { tags: ['Downloads'] } },
-		async (_, reply): Promise<void> => {
+		async (request, reply): Promise<void> => {
+			const data = DownloadStartSchema.parse(request.body);
+
 			const [videoIds, runningJobs] = await Promise.all([
 				db.query.videos.findMany({
-					where: (video, { and, eq, or }) => {
-						return and(
+					where: (video, { and, eq, or, inArray }) => {
+						const whereArgs: (SQLWrapper | undefined)[] = [
 							eq(video.downloadStatus, 'pending'), //
 							or(eq(video.status, 'none'), eq(video.status, 'past'))
-						);
+						];
+
+						if (data.videoIds && data.videoIds.length > 0) {
+							whereArgs.push(inArray(video.id, data.videoIds));
+						}
+
+						return and(...whereArgs);
 					},
 					columns: { id: true, channelId: true, status: true }
 				}),
@@ -139,10 +156,12 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 				columns: { id: true }
 			});
 
-			for (const channel of channels) {
+			for (const [index, channel] of channels.entries()) {
 				await scanner.add(`channel/${channel.id}/scan`, {
 					type: 'scan',
-					channelId: channel.id
+					channelId: channel.id,
+					position: index,
+					total: channels.length
 				});
 			}
 

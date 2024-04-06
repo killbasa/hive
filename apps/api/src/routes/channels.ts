@@ -1,17 +1,35 @@
 import { db } from '../db/client';
 import { doesChannelExist } from '../lib/youtube/channels';
 import { scanner } from '../queues/scanner';
+import { channels } from '../db/schema';
+import { checkToken } from '../lib/auth';
 import { z } from 'zod';
+import { count } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
-	server.get(
+	server.addHook('onRequest', checkToken);
+
+	const QuerySchema = z.object({
+		page: z.coerce.number().optional().default(1),
+		status: z.enum(['done', 'pending']).optional()
+	});
+
+	server.get<{ Querystring: { page?: string } }>(
 		'/', //
 		{ schema: { tags: ['Channels'] } },
-		async (_, reply): Promise<void> => {
-			const result = await db.query.channels.findMany();
+		async (request, reply): Promise<void> => {
+			const query = QuerySchema.parse(request.query);
 
-			await reply.send({ channels: result });
+			const [result, countRes] = await Promise.all([
+				db.query.channels.findMany({
+					limit: 25,
+					offset: (query.page - 1) * 24
+				}),
+				db.select({ total: count() }).from(channels)
+			]);
+
+			await reply.send({ channels: result, total: countRes[0].total });
 		}
 	);
 

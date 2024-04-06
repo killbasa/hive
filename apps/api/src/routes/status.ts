@@ -1,6 +1,9 @@
+import { checkToken } from '../lib/auth';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const statusRoutes: FastifyPluginCallback = (server, _, done) => {
+	server.addHook('onRequest', checkToken);
+
 	server.get(
 		'/downloads', //
 		{ websocket: true, schema: { tags: ['Websockets'] } },

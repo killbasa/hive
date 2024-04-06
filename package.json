@@ -27,16 +27,16 @@
 		"@killbasa/eslint-config": "^1.0.0",
 		"@killbasa/prettier-config": "^1.0.0",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^20.12.2",
+		"@types/node": "^20.12.5",
 		"eslint": "^8.57.0",
 		"lint-staged": "^15.2.2",
 		"prettier": "^3.2.5",
-		"typescript": "^5.4.3",
+		"typescript": "^5.4.4",
 		"vitest": "^1.4.0"
 	},
 	"lint-staged": {
 		"*.{mjs,cjs,js,ts}": [
-			"eslint --fix --ext js,ts",
+			"eslint --fix --ext .js,.ts",
 			"prettier --write --log-level=warn \"**/*.{mjs,cjs,js,ts}\""
 		],
 		"*.{json,yml,yaml,md}": [

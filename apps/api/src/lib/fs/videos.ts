@@ -1,7 +1,7 @@
 import { CHANNEL_DL_PATH, CHANNEL_PATH } from './channels';
 import { db } from '../../db/client';
 import { comments, videos } from '../../db/schema';
-import { mv } from '../utils';
+import { mv, stringToNum } from '../utils';
 import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
 import { server } from '../../server';
 import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
@@ -35,7 +35,7 @@ export async function indexVideo(channelId: string, videoId: string): Promise<vo
 			channelId,
 			title: metadata.title,
 			description: metadata.description,
-			duration: metadata.duration_string,
+			duration: stringToNum(metadata.duration_string, 0),
 			fileSize: metadata.filesize_approx,
 			uploadDate: metadata.upload_date,
 			type: metadata.was_live ? 'stream' : 'video',

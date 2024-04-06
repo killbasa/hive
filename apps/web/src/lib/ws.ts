@@ -1,9 +1,12 @@
 import { config } from './config';
-import type { Awaitable } from './types';
+import type { Awaitable } from './types/generic';
 
-export class Socket extends WebSocket {
+export class HiveWS extends WebSocket {
 	public constructor(path: string) {
-		const url = new URL(path, `ws://${config.apiUrl}`);
+		const api = new URL(config.apiUrl);
+		api.protocol = 'ws';
+
+		const url = new URL(path, api);
 		super(url);
 	}
 

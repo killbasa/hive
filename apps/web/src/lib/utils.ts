@@ -13,19 +13,32 @@ export function stringToNum(value: string | undefined | null, fallback = 0): num
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function throttle(cb: (...args: any[]) => any, delay: number) {
+export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number): T {
 	let wait = false;
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (...args: any[]) => {
-		if (wait) {
-			return;
-		}
+	return function (this: unknown, ...args: Parameters<T>) {
+		if (wait) return;
 
-		cb(...args);
+		fn.apply(this, args);
 		wait = true;
-		setTimeout(() => {
+
+		window.setTimeout(() => {
 			wait = false;
 		}, delay);
-	};
+	} as T;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number): T {
+	let timeoutId: number | undefined = undefined;
+
+	return function (this: unknown, ...args: Parameters<T>) {
+		if (timeoutId !== undefined) {
+			window.clearTimeout(timeoutId);
+		}
+
+		timeoutId = window.setTimeout(() => {
+			fn.apply(this, args);
+		}, delay);
+	} as T;
 }

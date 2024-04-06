@@ -8,7 +8,8 @@ export const enum Time {
 	Second = 1000,
 	Minute = 60 * Second,
 	Hour = 60 * Minute,
-	Day = 24 * Hour
+	Day = 24 * Hour,
+	Week = 7 * Day
 }
 
 export enum StatusEvent {
@@ -28,6 +29,13 @@ export async function validateDirs(...dirs: string[]): Promise<void> {
 			await mkdir(dir, { recursive: true });
 		}
 	}
+}
+
+export function stringToNum(value: string | null | undefined, fallback = 0): number {
+	if (value === undefined || value === null) return fallback;
+
+	const coerce = parseInt(value, 10);
+	return isNaN(coerce) ? fallback : coerce;
 }
 
 export async function mv(oldPath: string, newPath: string): Promise<void> {
