@@ -27,7 +27,7 @@
 
 <input
 	type="text"
-	class="input input-bordered"
+	class="input input-bordered focus:input-primary"
 	{placeholder}
 	bind:value={filterValue}
 	on:input={handleFilter}

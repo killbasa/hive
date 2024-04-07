@@ -1,13 +1,12 @@
-import { rootRoutes } from './routes/root';
-import { referenceRoutes } from './routes/reference';
-import { authRoutes } from './routes/auth';
-import { settingsRoutes } from './routes/settings';
-import { channelRoutes } from './routes/channels';
-import { videoRoutes } from './routes/videos';
-import { downloadsRoutes } from './routes/downloads';
-import { notificationRoutes } from './routes/notifications';
-import { statusRoutes } from './routes/status';
-import { userRoutes } from './routes/users';
+import { rootRoutes } from './plugins/core/routes';
+import { referenceRoutes } from './plugins/openapi/routes';
+import { authRoutes } from './plugins/auth/credentials/routes';
+import { settingsRoutes } from './plugins/settings/routes';
+import { channelRoutes } from './plugins/channels/routes';
+import { videoRoutes } from './plugins/videos/routes/videos';
+import { downloadsRoutes } from './plugins/downloads/routes/downloads';
+import { notificationRoutes } from './plugins/videos/routes/notifications';
+import { userRoutes } from './plugins/users/routes';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const routes: FastifyPluginCallback = async (server) => {
@@ -21,5 +20,4 @@ export const routes: FastifyPluginCallback = async (server) => {
 	await server.register(videoRoutes, { prefix: 'videos' });
 	await server.register(downloadsRoutes, { prefix: 'downloads' });
 	await server.register(notificationRoutes, { prefix: 'notifications' });
-	await server.register(statusRoutes, { prefix: 'status' });
 };

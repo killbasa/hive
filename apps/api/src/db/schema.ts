@@ -167,7 +167,10 @@ export const streamCommentsRelations = relations(streamComments, ({ one }) => ({
 export const settings = sqliteTable(
 	'settings',
 	{
-		id: text('id').primaryKey()
+		id: integer('id').primaryKey(),
+		cronSubscription: text('cron_subscription'),
+		cronDownload: text('cron_download'),
+		downloadLimit: integer('download_limit')
 	},
 	(table) => {
 		return {

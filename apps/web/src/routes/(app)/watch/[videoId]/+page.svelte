@@ -3,7 +3,7 @@
 	import { config } from '$lib/config';
 	import { MIMETypes } from '$lib/constants';
 	import type { PageData } from './$types';
-	import { debounce } from '$lib/utils';
+	import { debounce, throttle } from '$lib/utils';
 
 	export let data: PageData;
 
@@ -11,7 +11,6 @@
 	const baseUrl = `${config.apiUrl}/assets/${data.channelId}/videos/${data.id}`;
 
 	let video: HTMLVideoElement;
-	let times: number[] = [];
 	let hasPlayed = false;
 
 	function onVolumeChange() {
@@ -31,18 +30,13 @@
 		if (!hasPlayed) return;
 
 		const time = video.currentTime;
-		if (video.paused) return debounceUpdate(time);
+		if (video.paused) return await debounceUpdate(time);
 
-		if (times.length >= 2) times.shift();
-		times.push(time);
-
-		// Save progress every second
-		if (Math.floor(times[0]) + 1 === Math.floor(times[1])) {
-			await postUpdate(time);
-		}
+		await throttleUpdate(time);
 	}
 
 	const debounceUpdate = debounce(postUpdate, 500);
+	const throttleUpdate = throttle(postUpdate, 2000);
 
 	async function postUpdate(time: number) {
 		await apiFetch(`/videos/${data.id}/progress`, {

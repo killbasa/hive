@@ -12,6 +12,7 @@
 	import SearchInput from '$components/SearchInput.svelte';
 	import { config } from '$lib/config';
 	import type { DownloadProgress, DownloadStatus } from '$lib/types/ws';
+	import { toast } from '$lib/stores/toasts';
 
 	type DownloadInfo = {
 		id: string;
@@ -67,10 +68,16 @@
 	}
 
 	async function scan() {
-		await apiFetch('/downloads/scan', {
+		const response = await apiFetch('/downloads/scan', {
 			fetch,
 			method: 'POST'
 		});
+
+		if (response.raw.ok) {
+			toast.success('Scan started');
+		} else {
+			toast.error('Something went wrong');
+		}
 	}
 
 	async function stop() {
@@ -94,7 +101,7 @@
 	}
 
 	onMount(() => {
-		ws = new HiveWS('/status/downloads');
+		ws = new HiveWS('/downloads/status');
 
 		ws.onOpen(() => {
 			console.log('[hive] connected');
@@ -105,9 +112,15 @@
 
 		ws.onMessage<string>(async (event) => {
 			const update: DownloadStatus = JSON.parse(`${event.data}`);
-			if (update.type === StatusEvent.DownloadCancelled) {
+
+			if (update.type === StatusEvent.DownloadComplete) {
 				downloadInfo = null;
-			} else if (update.type === StatusEvent.DownloadUpdate) {
+
+				await invalidate('state:downloads');
+				return;
+			}
+
+			if (update.type === StatusEvent.DownloadUpdate) {
 				downloadInfo = {
 					id: update.data.id,
 					channelId: update.channelId,
@@ -116,13 +129,24 @@
 					percentage: update.data.percentage.trim().slice(0, -1)
 				};
 
-				if (update.data.status === 'finished') {
-					await invalidate('state:downloads');
-				}
-			} else if (update.type === StatusEvent.ScanComplete) {
+				return;
+			}
+
+			if (update.type === StatusEvent.DownloadCancelled) {
+				downloadInfo = null;
+				toast.error('Download cancelled');
+				return;
+			}
+
+			if (update.type === StatusEvent.ScanComplete) {
 				scanInfo = null;
+				toast.success('Scan complete');
+
 				await invalidate('state:downloads');
-			} else if (update.type === StatusEvent.ScanUpdate) {
+				return;
+			}
+
+			if (update.type === StatusEvent.ScanUpdate) {
 				scanInfo = {
 					channelId: update.channelId,
 					channelPos: update.channelPos,
@@ -200,10 +224,10 @@
 			>
 				{downloadInfo.title}
 			</a>
-			<span>
-				{downloadInfo.percentage}% ({downloadInfo.progress.eta} @ {downloadInfo.progress
-					.speed})
-			</span>
+			<div>
+				<span>{downloadInfo.percentage}%</span>
+				<span>({downloadInfo.progress.eta} @ {downloadInfo.progress.speed})</span>
+			</div>
 			<progress class="progress progress-success" value={downloadInfo.percentage} max="100" />
 			<button class="btn btn-error w-min" type="button" on:click={stop}>Stop</button>
 		{:else}

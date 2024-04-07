@@ -83,21 +83,21 @@
 					type="text"
 					name="username"
 					placeholder="New username"
-					class="input input-bordered"
+					class="input input-bordered focus:input-primary"
 					bind:value={newUsername}
 				/>
 				<input
 					type="password"
 					name="password"
 					placeholder="New password"
-					class="input input-bordered"
+					class="input input-bordered focus:input-primary"
 					bind:value={newPassword}
 				/>
 				<input
 					type="password"
 					name="password"
 					placeholder="Old password"
-					class="input input-bordered"
+					class="input input-bordered focus:input-primary"
 					bind:value={oldPassword}
 				/>
 				<div class="flex justify-end">
@@ -107,14 +107,14 @@
 		</CardSection>
 	</Card>
 	<Card title="Schedules">
-		<TextInput id="check-subscriptions" title="Check subscriptions" />
-		<TextInput id="download-queue" title="Download queue" />
+		<TextInput id="check-subscriptions" title="Check subscriptions" placeholder="0 0 * * *" />
+		<TextInput id="download-queue" title="Download queue" placeholder="0 1 * * *" />
 		<div class="flex justify-end">
 			<button class="btn btn-success" type="button" disabled>Save</button>
 		</div>
 	</Card>
 	<Card title="Downloads">
-		<NumberInput id="download-limit" title="Download speed limit" positive />
+		<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />
 		<div class="flex justify-end">
 			<button class="btn btn-success" type="button" disabled>Save</button>
 		</div>

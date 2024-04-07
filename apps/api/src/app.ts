@@ -1,5 +1,5 @@
 import { isDev } from './lib/constants';
-import { config } from './lib/config';
+import { RedisConnectionOptions, config } from './lib/config';
 import FastifySwagger from '@fastify/swagger';
 import FastifyCookie from '@fastify/cookie';
 import FastifyJwt from '@fastify/jwt';
@@ -10,7 +10,9 @@ import FastifyCompress from '@fastify/compress';
 import FastifyStatic from '@fastify/static';
 import FastifyWebsocket from '@fastify/websocket';
 import Fastify from 'fastify';
+import { Queue } from 'bullmq';
 import { resolve } from 'node:path';
+import type { QueueOptions } from 'bullmq';
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
 export async function app(): Promise<FastifyInstance> {
@@ -62,13 +64,31 @@ export async function app(): Promise<FastifyInstance> {
 	});
 	await server.register(FastifyWebsocket);
 
-	return await server;
+	return decorate(server);
+}
+
+export function decorate(instance: FastifyInstance): FastifyInstance {
+	const options: QueueOptions = {
+		connection: RedisConnectionOptions,
+		defaultJobOptions: {
+			removeOnComplete: true,
+			removeOnFail: true
+		}
+	};
+
+	instance.decorate('tasks', {
+		scanner: new Queue('scanner', options),
+		downloader: new Queue('downloader', options),
+		internal: new Queue('internal', options)
+	});
+
+	return instance;
 }
 
 function getLogger(): FastifyServerOptions['logger'] {
 	if (!isDev) {
 		return {
-			level: 'info'
+			level: 'warn'
 		};
 	}
 

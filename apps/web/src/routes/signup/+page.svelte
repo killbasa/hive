@@ -26,6 +26,7 @@
 		});
 
 		if (response.raw.ok) {
+			toast.success('Account created');
 			await goto('/login');
 		} else {
 			const data: { message: string } = await response //

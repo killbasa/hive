@@ -1,6 +1,6 @@
-import { fetchChannelXML, parseChannelXML } from '../src/lib/xml';
+import { fetchChannelXML, parseChannelXML } from '../src/plugins/tasks/xml';
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { XMLString } from '../src/lib/xml';
+import type { XMLString } from '../src/plugins/tasks/xml';
 
 const channelId = 'UCZlDXzGoo7d44bwdNObFacg';
 

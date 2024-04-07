@@ -1,6 +1,7 @@
 export enum StatusEvent {
-	DownloadCancelled = 'DownloadCancelled',
+	DownloadComplete = 'DownloadComplete',
 	DownloadUpdate = 'DownloadUpdate',
+	DownloadCancelled = 'DownloadCancelled',
 	ScanComplete = 'ScanComplete',
 	ScanUpdate = 'ScanUpdate'
 }

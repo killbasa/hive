@@ -1,4 +1,5 @@
 import { server } from '../server';
+
 export function setupGracefulShutdown(): void {
 	const gracefullyClose = async (signal: string): Promise<void> => {
 		console.warn(`Fastify is gracefully closing from signal="${signal}" ...`);

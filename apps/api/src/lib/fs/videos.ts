@@ -1,9 +1,9 @@
-import { CHANNEL_DL_PATH, CHANNEL_PATH } from './channels';
-import { db } from '../../db/client';
-import { comments, videos } from '../../db/schema';
-import { mv, stringToNum } from '../utils';
+import { mv } from './utils';
+import { stringToNum } from '../utils';
 import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
 import { server } from '../../server';
+import { db } from '../../db/client';
+import { comments, videos } from '../../db/schema';
 import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -13,19 +13,8 @@ export const VIDEO_DL_PATH = (channelId: string, videoId: string): string => `${
 
 export const VIDEO_PATH = (channelId: string, videoId: string): string => `${MEDIA_DIR}/${channelId}/videos/${videoId}`;
 
-export async function indexVideos(channelId: string): Promise<void> {
-	const videosDir = await readdir(`${CHANNEL_PATH(channelId)}/videos`);
-
-	await Promise.all(
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
-		videosDir.map((videoId) => {
-			return indexVideo(channelId, videoId);
-		})
-	);
-}
-
 export async function indexVideo(channelId: string, videoId: string): Promise<void> {
-	server.log.debug(`Indexing video: ${videoId}`);
+	server.log.debug(`indexing video: ${videoId}`);
 	const metadata = await readVideoMetadata(channelId, videoId);
 
 	await db
@@ -45,15 +34,15 @@ export async function indexVideo(channelId: string, videoId: string): Promise<vo
 		.onConflictDoNothing({ target: videos.id })
 		.execute();
 
-	server.log.debug(`Indexed video: ${videoId}`);
+	server.log.debug(`indexed video: ${videoId}`);
 }
 
 export async function indexComments(channelId: string, videoId: string): Promise<void> {
-	server.log.debug(`Indexing comments: ${videoId}`);
+	server.log.debug(`indexing comments: ${videoId}`);
 	const metadata = await readVideoComments(channelId, videoId);
 
 	if (metadata.comments.length === 0) {
-		server.log.debug('No comments found in metadata');
+		server.log.debug('no comments found in metadata');
 		return;
 	}
 
@@ -75,25 +64,7 @@ export async function indexComments(channelId: string, videoId: string): Promise
 		.onConflictDoNothing({ target: comments.id })
 		.execute();
 
-	server.log.debug(`Indexed comments: ${videoId}`);
-}
-
-export async function moveVideo(channelId: string, videoId: string): Promise<void> {
-	const source = VIDEO_DL_PATH(channelId, videoId);
-	const target = VIDEO_PATH(channelId, videoId);
-
-	await mv(`${source}/video.mp4`, `${target}/video.mp4`);
-}
-
-export async function moveVideoAssetsBulk(channelId: string): Promise<void> {
-	const videoIds = await readdir(`${CHANNEL_DL_PATH(channelId)}/videos`);
-
-	await Promise.all(
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
-		videoIds.map((videoId) => {
-			return moveVideoAssets(channelId, videoId);
-		})
-	);
+	server.log.debug(`indexed comments: ${videoId}`);
 }
 
 export async function moveVideoAssets(channelId: string, videoId: string): Promise<void> {

@@ -11,5 +11,5 @@
 
 <div class="flex flex-col max-w-96">
 	<label for={id}>{title}</label>
-	<input bind:value type="number" class="input input-bordered" {id} />
+	<input bind:value type="number" class="input input-bordered focus:input-primary" {id} />
 </div>

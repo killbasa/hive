@@ -1,9 +1,9 @@
+import { mv, mvDir } from './utils';
+import { formatTags } from '../youtube/channels';
+import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
 import { db } from '../../db/client';
 import { channels } from '../../db/schema';
-import { formatTags } from '../youtube/channels';
-import { mv, mvDir } from '../utils';
-import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
-import { open, readFile, readdir } from 'node:fs/promises';
+import { open, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { ChannelMetadata } from './types';
@@ -11,17 +11,6 @@ import type { ChannelMetadata } from './types';
 export const CHANNEL_DL_PATH = (channelId: string): string => `${DOWNLOADS_DIR}/${channelId}`;
 
 export const CHANNEL_PATH = (channelId: string): string => `${MEDIA_DIR}/${channelId}`;
-
-export async function indexChannels(): Promise<void> {
-	const channelsDir = await readdir(MEDIA_DIR);
-
-	await Promise.all(
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
-		channelsDir.map((channelId) => {
-			return indexChannel(channelId);
-		})
-	);
-}
 
 export async function indexChannel(channelId: string): Promise<void> {
 	const metadata = await readChannelMetadata(channelId);

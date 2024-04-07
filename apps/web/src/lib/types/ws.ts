@@ -18,6 +18,7 @@ export type DownloaderVideoTask =
 	| undefined;
 
 export type DownloadStatus =
+	| { type: StatusEvent.DownloadComplete }
 	| { type: StatusEvent.DownloadCancelled }
 	| { type: StatusEvent.DownloadUpdate; channelId: string; title: string; data: DownloadProgress }
 	| { type: StatusEvent.ScanComplete }

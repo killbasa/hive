@@ -1,7 +1,7 @@
 {
 	"version": "5",
 	"dialect": "sqlite",
-	"id": "54dd8d2c-ba6b-48a2-bc64-6c5a1847d3cd",
+	"id": "a5d98a5e-2709-47a0-9e0b-034df2f779d1",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"tables": {
 		"channels": {
@@ -211,9 +211,30 @@
 			"columns": {
 				"id": {
 					"name": "id",
-					"type": "text",
+					"type": "integer",
 					"primaryKey": true,
 					"notNull": true,
+					"autoincrement": false
+				},
+				"cron_subscription": {
+					"name": "cron_subscription",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"cron_download": {
+					"name": "cron_download",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"download_limit": {
+					"name": "download_limit",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
 					"autoincrement": false
 				}
 			},
@@ -400,18 +421,18 @@
 				},
 				"duration": {
 					"name": "duration",
-					"type": "text",
+					"type": "integer",
 					"primaryKey": false,
 					"notNull": false,
 					"autoincrement": false
 				},
 				"watch_progress": {
 					"name": "watch_progress",
-					"type": "text",
+					"type": "integer",
 					"primaryKey": false,
 					"notNull": false,
 					"autoincrement": false,
-					"default": "'0'"
+					"default": 0
 				},
 				"file_size": {
 					"name": "file_size",

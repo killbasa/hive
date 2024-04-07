@@ -1,9 +1,9 @@
 import { YtdlpVideoArgs } from './VideoArgs';
 import { ytdlp, ytdlpExec } from './cli';
 import { YTDLP_VIDEO_PATH } from './constants';
-import { server } from '../../server';
 import { readVideoMetadata } from '../fs/videos';
-import { StatusEvent } from '../utils';
+import { StatusEvent } from '../constants';
+import { server } from '../../server';
 
 export async function downloadVideoAssets(
 	videoId: string, //

@@ -56,7 +56,7 @@ export async function ytdlp(
 		args.data.push(url);
 	}
 
-	server.log.debug(`Starting process (${new Date().toISOString()})`);
+	server.log.debug(`starting process (${new Date().toISOString()})`);
 	server.log.debug(`yt-dlp ${args.data.join(' ')}`);
 
 	const subprocess = spawn('./yt-dlp', args.data, {
@@ -66,7 +66,7 @@ export async function ytdlp(
 	});
 
 	const handle = (): void => {
-		server.log.info('Aborting yt-dlp...');
+		server.log.info('aborting yt-dlp...');
 		subprocess.kill();
 	};
 
@@ -117,7 +117,7 @@ export async function ytdlpExec(urls: string[] | string, args: YtdlpArgs): Promi
 		args.data.push(url);
 	}
 
-	server.log.debug(`Starting exec (${new Date().toISOString()})`);
+	server.log.debug(`starting exec (${new Date().toISOString()})`);
 	server.log.debug(`yt-dlp ${args.data.join(' ')}`);
 
 	return await new Promise((resolve, reject) => {
