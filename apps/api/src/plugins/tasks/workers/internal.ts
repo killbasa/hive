@@ -1,22 +1,22 @@
-import { RedisConnectionOptions } from '../../../lib/config';
-import { server } from '../../../server';
-import { handleScrapeTask } from '../handlers/scrapeVideos';
-import { handleVideoStatus } from '../handlers/updateVideoStatus';
+import { RedisConnectionOptions } from '../../../lib/config.js';
+import { server } from '../../../server.js';
+import { handleScrapeTask } from '../handlers/scrapeChannel.js';
+import { handleVideoStatus } from '../handlers/updateVideoStatus.js';
 import { Worker } from 'bullmq';
 
 let internal: Worker;
 
 export async function initInternalWorker(): Promise<void> {
 	internal = new Worker(
-		'internal',
+		server.tasks.internal.name,
 		async (task) => {
 			try {
 				switch (task.name) {
-					case 'scrapeChannelXML': {
+					case 'ScrapeChannel': {
 						await handleScrapeTask();
 						return;
 					}
-					case 'checkVideos': {
+					case 'SyncVideoStatus': {
 						await handleVideoStatus();
 						return;
 					}

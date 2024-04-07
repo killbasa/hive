@@ -1,18 +1,13 @@
-import { RedisConnectionOptions } from '../../../lib/config';
-import { server } from '../../../server';
-import { handleChannelScanTask, handleDownloadChannelTask } from '../handlers/scanner';
+import { RedisConnectionOptions } from '../../../lib/config.js';
+import { server } from '../../../server.js';
+import { handleChannelScanTask, handleDownloadChannelTask } from '../handlers/scanner.js';
 import { Worker } from 'bullmq';
 
 let scanner: Worker;
 
-export type ScannerTasks = ScannerDownloadChannelTask | ScannerScanChannelTask;
-
-export type ScannerDownloadChannelTask = { type: 'channel'; channelId: string };
-export type ScannerScanChannelTask = { type: 'scan'; channelId: string; position: number; total: number };
-
 export async function initScannerWorker(): Promise<void> {
 	scanner = new Worker(
-		'scanner',
+		server.tasks.scanner.name,
 		async (task) => {
 			try {
 				switch (task.data.type) {

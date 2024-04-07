@@ -1,9 +1,9 @@
-import { YtdlpVideoArgs } from './VideoArgs';
-import { ytdlp, ytdlpExec } from './cli';
-import { YTDLP_VIDEO_PATH } from './constants';
-import { readVideoMetadata } from '../fs/videos';
-import { StatusEvent } from '../constants';
-import { server } from '../../server';
+import { YtdlpVideoArgs } from './VideoArgs.js';
+import { ytdlp, ytdlpExec } from './cli.js';
+import { YTDLP_VIDEO_PATH } from './constants.js';
+import { readVideoMetadata } from '../fs/videos.js';
+import { server } from '../../server.js';
+import { StatusEvent } from '@hive/common';
 
 export async function downloadVideoAssets(
 	videoId: string, //
@@ -14,7 +14,8 @@ export async function downloadVideoAssets(
 		.saveThumbnail()
 		.skipDownload()
 		.writeTo(`${YTDLP_VIDEO_PATH}/metadata.%(ext)s`)
-		.writeTo(`${YTDLP_VIDEO_PATH}/thumbnail.%(ext)s`, { type: 'thumbnail' });
+		.writeTo(`${YTDLP_VIDEO_PATH}/thumbnail.%(ext)s`, { type: 'thumbnail' })
+		.ignoreNoFormatError();
 
 	return await ytdlp(
 		`https://youtube.com/watch?v=${videoId}`,
@@ -51,7 +52,7 @@ export async function downloadVideo(
 		args,
 		{
 			onComplete: async (data) => {
-				server.websocketServer.emit('status', {
+				server.notifications.emit('status', {
 					type: StatusEvent.DownloadUpdate,
 					channelId,
 					title: metadata.title,
@@ -59,7 +60,7 @@ export async function downloadVideo(
 				});
 			},
 			onUpdate: (data) => {
-				server.websocketServer.emit('status', {
+				server.notifications.emit('status', {
 					type: StatusEvent.DownloadUpdate,
 					channelId,
 					title: metadata.title,

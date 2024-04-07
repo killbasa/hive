@@ -1,13 +1,16 @@
 import { config } from './config';
-import type { FetchFunction } from './types/generic';
 
 export async function apiFetch<T>(
 	path: string,
 	options: RequestInit & {
-		fetch: FetchFunction;
+		fetch: typeof window.fetch;
 		searhParams?: Record<string, string | number | boolean | undefined | null>;
 	}
-): Promise<{ raw: Response; json: () => Promise<T> }> {
+): Promise<{
+	raw: Response;
+	json: () => Promise<T>;
+	error: () => Promise<{ message: string }>;
+}> {
 	const url = new URL(path, config.apiUrl);
 
 	if (options.searhParams) {
@@ -24,6 +27,7 @@ export async function apiFetch<T>(
 
 	return {
 		raw: response,
-		json: async () => (await response.json()) as Promise<T>
+		json: async () => (await response.json()) as Promise<T>,
+		error: async () => await response.json().catch(() => ({ message: 'Something went wrong' }))
 	};
 }

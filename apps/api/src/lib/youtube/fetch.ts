@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config } from '../config.js';
 
 const YT_BASE_URL = 'https://www.googleapis.com/youtube';
 const YT_API_VERSION = 'v3';

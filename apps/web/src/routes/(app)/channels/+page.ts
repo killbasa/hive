@@ -1,6 +1,6 @@
 import { apiFetch } from '$lib/fetch';
 import { getNumberParam } from '$lib/navigation';
-import type { Channel } from '$lib/types/api';
+import type { Channel } from '@hive/common';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, depends, url }) => {

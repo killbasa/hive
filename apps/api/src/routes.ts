@@ -1,12 +1,12 @@
-import { rootRoutes } from './plugins/core/routes';
-import { referenceRoutes } from './plugins/openapi/routes';
-import { authRoutes } from './plugins/auth/credentials/routes';
-import { settingsRoutes } from './plugins/settings/routes';
-import { channelRoutes } from './plugins/channels/routes';
-import { videoRoutes } from './plugins/videos/routes/videos';
-import { downloadsRoutes } from './plugins/downloads/routes/downloads';
-import { notificationRoutes } from './plugins/videos/routes/notifications';
-import { userRoutes } from './plugins/users/routes';
+import { rootRoutes } from './plugins/core/routes.js';
+import { referenceRoutes } from './plugins/openapi/routes.js';
+import { authRoutes } from './plugins/auth/credentials/routes.js';
+import { settingsRoutes } from './plugins/settings/routes.js';
+import { channelRoutes } from './plugins/channels/routes.js';
+import { videoRoutes } from './plugins/videos/routes.js';
+import { downloadsRoutes } from './plugins/downloads/routes/downloads.js';
+import { notificationRoutes } from './plugins/notifications/routes.js';
+import { userRoutes } from './plugins/users/routes.js';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const routes: FastifyPluginCallback = async (server) => {

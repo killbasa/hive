@@ -1,5 +1,5 @@
 import { apiFetch } from '$lib/fetch';
-import type { VersionData } from '$lib/types/api';
+import type { VersionData } from '@hive/common';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {

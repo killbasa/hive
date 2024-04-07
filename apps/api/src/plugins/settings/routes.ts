@@ -1,6 +1,5 @@
-import { hiveSettings } from './service';
-import { SettingsPatchSchema } from './schemas';
-import { checkToken } from '../auth/tokens';
+import { SettingsPatchSchema } from './schemas.js';
+import { checkToken } from '../auth/tokens.js';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const settingsRoutes: FastifyPluginCallback = (server, _, done) => {
@@ -10,7 +9,7 @@ export const settingsRoutes: FastifyPluginCallback = (server, _, done) => {
 		'/', //
 		{ schema: { tags: ['Settings'] } },
 		async (_, reply): Promise<void> => {
-			const result = await hiveSettings.get();
+			const result = await server.settings.get();
 
 			await reply.code(200).send(result);
 		}
@@ -22,7 +21,7 @@ export const settingsRoutes: FastifyPluginCallback = (server, _, done) => {
 		async (request, reply): Promise<void> => {
 			const data = SettingsPatchSchema.parse(request.body);
 
-			await hiveSettings.set(data);
+			await server.settings.set(data);
 
 			await reply.code(200).send();
 		}

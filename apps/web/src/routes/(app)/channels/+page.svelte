@@ -6,8 +6,8 @@
 	import { apiFetch } from '$lib/fetch';
 	import { config } from '$lib/config';
 	import { MIMETypes } from '$lib/constants';
-	import type { Channel } from '$lib/types/api';
 	import type { PageData } from './$types';
+	import type { Channel } from '@hive/common';
 
 	export let data: PageData;
 
@@ -48,7 +48,6 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Space used</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -72,7 +71,6 @@
 								</div>
 							</div>
 						</td>
-						<td></td>
 						<td>
 							<a
 								role="button"

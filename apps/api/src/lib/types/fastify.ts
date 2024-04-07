@@ -5,15 +5,18 @@ import 'fastify';
 import '@fastify/jwt';
 
 import type { Queue } from 'bullmq';
-import type { ScannerTasks } from '../../plugins/tasks/workers/scanner';
-import type { DownloaderTasks } from '../../plugins/tasks/workers/downloader';
+import type { HiveSettings } from '../../plugins/settings/service.js';
+import type { DownloaderTasks, ScannerTasks } from '../../plugins/tasks/types.js';
+import type { HiveNotifier } from '../../plugins/notifications/emitter.js';
 
 declare module 'fastify' {
 	interface FastifyInstance {
+		settings: HiveSettings;
+		notifications: HiveNotifier;
 		tasks: {
-			scanner: Queue<ScannerTasks>;
-			downloader: Queue<DownloaderTasks>;
 			internal: Queue;
+			downloader: Queue<DownloaderTasks>;
+			scanner: Queue<ScannerTasks>;
 		};
 	}
 }

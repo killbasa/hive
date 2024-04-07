@@ -1,14 +1,14 @@
-import { checkNewVideos } from './updateVideoStatus';
-import { db } from '../../../db/client';
-import { channels } from '../../../db/schema';
-import { StatusEvent } from '../../../lib/constants';
-import { isChannelDownloaded, readChannelMetadata } from '../../../lib/fs/channels';
-import { indexVideo, isVideoDownloaded, moveVideoAssets } from '../../../lib/fs/videos';
-import { formatTags } from '../../../lib/youtube/channels';
-import { downloadChannel } from '../../../lib/ytdlp/channels';
-import { downloadVideoAssets, getVideoIds } from '../../../lib/ytdlp/videos';
-import { server } from '../../../server';
-import type { ScannerDownloadChannelTask, ScannerScanChannelTask } from '../workers/scanner';
+import { checkNewVideos } from './updateVideoStatus.js';
+import { db } from '../../../db/client.js';
+import { channels } from '../../../db/schema.js';
+import { isChannelDownloaded, readChannelMetadata } from '../../../lib/fs/channels.js';
+import { indexVideo, isVideoDownloaded, moveVideoAssets } from '../../../lib/fs/videos.js';
+import { formatTags } from '../../../lib/youtube/channels.js';
+import { downloadChannel } from '../../../lib/ytdlp/channels.js';
+import { downloadVideoAssets, getVideoIds } from '../../../lib/ytdlp/videos.js';
+import { server } from '../../../server.js';
+import { StatusEvent } from '@hive/common';
+import type { ScannerDownloadChannelTask, ScannerScanChannelTask } from '../types.js';
 
 export const scansInProgress: Record<'download' | 'scan', boolean> = {
 	download: false,
@@ -70,7 +70,7 @@ export async function handleChannelScanTask({ channelId, position, total }: Scan
 		await moveVideoAssets(channelId, videoId);
 		await indexVideo(channelId, videoId);
 
-		server.websocketServer.emit('status', {
+		server.notifications.emit('status', {
 			type: StatusEvent.ScanUpdate,
 			channelId,
 			channelPos: position + 1,
@@ -82,7 +82,7 @@ export async function handleChannelScanTask({ channelId, position, total }: Scan
 
 	await checkNewVideos();
 
-	server.websocketServer.emit('status', {
+	server.notifications.emit('status', {
 		type: StatusEvent.ScanComplete
 	});
 

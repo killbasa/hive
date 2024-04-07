@@ -1,6 +1,6 @@
-import { ytFetch } from './fetch';
-import { db } from '../../db/client';
-import type { YouTubeChannel, YouTubeChannelList } from './types';
+import { ytFetch } from './fetch.js';
+import { db } from '../../db/client.js';
+import type { YouTubeChannel, YouTubeChannelList } from './types.js';
 
 export function parseTags(tags: string): string[] {
 	return tags.split(',');

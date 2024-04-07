@@ -1,4 +1,4 @@
-import { checkToken } from '../../auth/tokens';
+import { checkToken } from '../auth/tokens.js';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const notificationRoutes: FastifyPluginCallback = (server, _, done) => {
@@ -12,10 +12,10 @@ export const notificationRoutes: FastifyPluginCallback = (server, _, done) => {
 				socket.send(JSON.stringify(data));
 			};
 
-			server.websocketServer.on('livestream', handleNotif);
+			server.notifications.on('livestream', handleNotif);
 
 			socket.on('close', () => {
-				server.websocketServer.off('livestream', handleNotif);
+				server.notifications.off('livestream', handleNotif);
 			});
 
 			socket.send('Connected');

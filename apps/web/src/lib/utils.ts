@@ -1,18 +1,3 @@
-export enum StatusEvent {
-	DownloadComplete = 'DownloadComplete',
-	DownloadUpdate = 'DownloadUpdate',
-	DownloadCancelled = 'DownloadCancelled',
-	ScanComplete = 'ScanComplete',
-	ScanUpdate = 'ScanUpdate'
-}
-
-export function stringToNum(value: string | undefined | null, fallback = 0): number {
-	if (value === undefined || value === null) return fallback;
-
-	const coerce = parseInt(value, 10);
-	return isNaN(coerce) ? fallback : coerce;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number): T {
 	let wait = false;

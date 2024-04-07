@@ -1,3 +1,6 @@
 {
-	"extends": "@killbasa/ts-config"
+	"extends": "@killbasa/ts-config",
+	"compilerOptions": {
+		"moduleResolution": "Node16"
+	}
 }

@@ -65,6 +65,9 @@ importers:
       '@fastify/websocket':
         specifier: ^10.0.1
         version: 10.0.1
+      '@hive/common':
+        specifier: workspace:^
+        version: link:../../packages/common
       argon2:
         specifier: ^0.40.1
         version: 0.40.1
@@ -132,6 +135,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@hive/common':
+        specifier: workspace:^
+        version: link:../../packages/common
       pretty-bytes:
         specifier: ^6.1.1
         version: 6.1.1
@@ -199,6 +205,21 @@ importers:
       vite:
         specifier: ^5.2.7
         version: 5.2.8(@types/node@20.12.5)
+
+  packages/common:
+    devDependencies:
+      eslint:
+        specifier: ^8.57.0
+        version: 8.57.0
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
+      tsup:
+        specifier: ^8.0.2
+        version: 8.0.2(@swc/core@1.4.12)(typescript@5.4.4)
+      typescript:
+        specifier: ^5.4.4
+        version: 5.4.4
 
 packages:
 

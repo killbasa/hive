@@ -1,8 +1,8 @@
-import { initRepeatTasks as initRepeatHandlers } from './handlers/repeat';
-import { initDownloaderWorker } from './workers/downloader';
-import { initScannerWorker } from './workers/scanner';
-import { initInternalWorker } from './workers/internal';
-import { server } from '../../server';
+import { initRepeatTasks as initRepeatHandlers } from './handlers/repeat.js';
+import { initDownloaderWorker } from './workers/downloader.js';
+import { initScannerWorker } from './workers/scanner.js';
+import { initInternalWorker } from './workers/internal.js';
+import { server } from '../../server.js';
 
 export async function initWorkers(): Promise<void> {
 	await Promise.all([

@@ -2,11 +2,7 @@
 	import { fly } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
 	import Toast from './Toast.svelte';
-	import { toast, type SvelteToastOptions } from '$lib/stores/toasts';
-
-	export let options: SvelteToastOptions = {};
-
-	$: toast.init('default', options);
+	import { toast } from '$lib/stores/toasts';
 </script>
 
 <ul class="right-8 bottom-4 fixed list-none pointer-events-none z-[9999]">

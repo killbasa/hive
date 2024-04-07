@@ -1,14 +1,14 @@
-import { db } from '../../../db/client';
-import { videos } from '../../../db/schema';
-import { StatusEvent } from '../../../lib/constants';
-import { VIDEO_DL_PATH, indexComments, indexVideo, moveVideoAssets } from '../../../lib/fs/videos';
-import { downloadVideo } from '../../../lib/ytdlp/videos';
-import { server } from '../../../server';
+import { db } from '../../../db/client.js';
+import { videos } from '../../../db/schema.js';
+import { VIDEO_DL_PATH, indexComments, indexVideo, moveVideoAssets } from '../../../lib/fs/videos.js';
+import { downloadVideo } from '../../../lib/ytdlp/videos.js';
+import { server } from '../../../server.js';
 import { eq } from 'drizzle-orm';
+import { StatusEvent } from '@hive/common';
 import { resolve } from 'node:path';
 import { readFile, rm, writeFile } from 'node:fs/promises';
-import type { CommentMetadata } from '../../../lib/fs/types';
-import type { DownloaderVideoTask } from '../workers/downloader';
+import type { CommentMetadata } from '../../../lib/fs/types.js';
+import type { DownloaderVideoTask } from '../types.js';
 
 export const downloadControllers = new Map<string, AbortController>();
 
@@ -55,9 +55,15 @@ export async function handleDownloadVideoTask({ channelId, videoId, live }: Down
 
 	downloadControllers.delete(videoId);
 
-	server.websocketServer.emit('status', {
+	server.notifications.emit('status', {
 		type: StatusEvent.DownloadComplete
 	});
 
 	server.log.info(`downloaded video: ${videoId}`);
+}
+
+export async function handleDownloadCommentsTask(): Promise<void> {
+	server.log.info('downloading video comments: NO_ID');
+
+	server.log.info('downloaded video comments: NO_ID');
 }

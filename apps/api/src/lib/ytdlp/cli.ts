@@ -1,7 +1,7 @@
-import { DATA_DIR } from '../constants';
-import { server } from '../../server';
+import { DATA_DIR } from '../constants.js';
+import { server } from '../../server.js';
 import { exec, spawn } from 'node:child_process';
-import type { Awaitable } from '../types';
+import type { Awaitable } from '@hive/common';
 
 export type YtdlpProgress = {
 	status: 'downloading' | 'error' | 'finished';
@@ -62,15 +62,15 @@ export async function ytdlp(
 	const subprocess = spawn('./yt-dlp', args.data, {
 		shell: false,
 		detached: false,
-		cwd: 'data'
+		cwd: 'data',
+		signal
 	});
 
-	const handle = (): void => {
+	const logAbort = (): void => {
 		server.log.info('aborting yt-dlp...');
-		subprocess.kill();
 	};
 
-	signal?.addEventListener('abort', handle);
+	signal?.addEventListener('abort', logAbort);
 
 	subprocess.stdout.on('data', async (data) => {
 		const parsed = parseDownloadProgress(data);
@@ -97,7 +97,7 @@ export async function ytdlp(
 		});
 
 		subprocess.on('close', (code) => {
-			signal?.removeEventListener('abort', handle);
+			signal?.removeEventListener('abort', logAbort);
 
 			if (code === 0 || code === 1 || signal?.aborted) {
 				resolve(true);

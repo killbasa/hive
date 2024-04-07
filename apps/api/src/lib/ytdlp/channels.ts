@@ -1,8 +1,8 @@
-import { YtdlpChannelArgs } from './ChannelArgs';
-import { ytdlp } from './cli';
-import { YTDLP_CHANNEL_PATH } from './constants';
-import { moveChannel } from '../fs/channels';
-import { server } from '../../server';
+import { YtdlpChannelArgs } from './ChannelArgs.js';
+import { ytdlp } from './cli.js';
+import { YTDLP_CHANNEL_PATH } from './constants.js';
+import { moveChannel } from '../fs/channels.js';
+import { server } from '../../server.js';
 
 export async function downloadChannel(id: string, options?: { controller?: AbortController }): Promise<void> {
 	const args = new YtdlpChannelArgs() //

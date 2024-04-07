@@ -1,7 +1,7 @@
 import { apiFetch } from '$lib/fetch';
-import type { Channel } from '$lib/types/api';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
+import type { Channel } from '@hive/common';
 
 export const load: LayoutLoad = async ({ fetch, params }) => {
 	const channel = await apiFetch<Channel>(`/channels/${params.channelId}`, {

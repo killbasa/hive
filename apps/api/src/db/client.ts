@@ -1,5 +1,5 @@
-import * as schema from './schema';
-import { server } from '../server';
+import * as schema from './schema.js';
+import { server } from '../server.js';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import Database from 'better-sqlite3';

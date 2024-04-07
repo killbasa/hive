@@ -20,6 +20,9 @@
 		oldPassword === '' ||
 		newPassword === oldPassword;
 
+	let checkSubscriptions = '';
+	let downloadQueue = '';
+
 	async function handleSubmit() {
 		await apiFetch('/auth/logout', {
 			fetch,
@@ -44,10 +47,25 @@
 		if (response.raw.ok) {
 			await goto('/login');
 		} else {
-			const data: { message: string } = await response //
-				.json()
-				.catch(() => ({ message: 'Something went wrong' }));
-			toast.error(data.message);
+			const err = await response.error();
+			toast.error(err.message);
+		}
+	}
+
+	async function handleScheduleUpdate() {
+		const response = await apiFetch<{ message: string }>('/settings', {
+			fetch,
+			method: 'PATCH',
+			headers: { 'content-type': MIMETypes.json },
+			body: JSON.stringify({
+				cronSubscription: checkSubscriptions,
+				cronDownload: downloadQueue
+			})
+		});
+
+		if (!response.raw.ok) {
+			const err = await response.error();
+			toast.error(err.message);
 		}
 	}
 </script>
@@ -107,11 +125,23 @@
 		</CardSection>
 	</Card>
 	<Card title="Schedules">
-		<TextInput id="check-subscriptions" title="Check subscriptions" placeholder="0 0 * * *" />
-		<TextInput id="download-queue" title="Download queue" placeholder="0 1 * * *" />
-		<div class="flex justify-end">
-			<button class="btn btn-success" type="button" disabled>Save</button>
-		</div>
+		<form on:submit|preventDefault={handleScheduleUpdate} class="flex flex-col gap-2">
+			<TextInput
+				id="check-subscriptions"
+				title="Check subscriptions"
+				placeholder="0 0 * * *"
+				bind:value={checkSubscriptions}
+			/>
+			<TextInput
+				id="download-queue"
+				title="Download queue"
+				placeholder="0 1 * * *"
+				bind:value={downloadQueue}
+			/>
+			<div class="flex justify-end">
+				<button class="btn btn-success" type="submit">Save</button>
+			</div>
+		</form>
 	</Card>
 	<Card title="Downloads">
 		<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />

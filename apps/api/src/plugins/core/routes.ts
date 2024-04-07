@@ -1,7 +1,7 @@
-import { checkToken } from '../auth/tokens';
-import { db } from '../../db/client';
-import { channels, comments, streamComments, videos } from '../../db/schema';
-import { getYtdlpVersion } from '../../lib/ytdlp/constants';
+import { checkToken } from '../auth/tokens.js';
+import { db } from '../../db/client.js';
+import { channels, comments, streamComments, videos } from '../../db/schema.js';
+import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
 import { count } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 

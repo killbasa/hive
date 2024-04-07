@@ -1,4 +1,4 @@
-import { DATA_DIR } from '../constants';
+import { DATA_DIR } from '../constants.js';
 import { execSync } from 'node:child_process';
 
 export const YTDLP_CHANNEL_PATH = 'downloads/%(channel_id)s/assets';

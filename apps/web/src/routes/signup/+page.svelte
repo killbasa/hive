@@ -29,10 +29,8 @@
 			toast.success('Account created');
 			await goto('/login');
 		} else {
-			const data: { message: string } = await response //
-				.json()
-				.catch(() => ({ message: 'Something went wrong' }));
-			toast.error(data.message);
+			const err = await response.error();
+			toast.error(err.message);
 		}
 	}
 </script>

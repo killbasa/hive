@@ -1,4 +1,4 @@
-import type { YtdlpArgs } from './cli';
+import type { YtdlpArgs } from './cli.js';
 
 export class YtdlpVideoArgs implements YtdlpArgs {
 	public readonly data: string[] = [];
@@ -74,6 +74,11 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 
 	public live(): this {
 		this.data.push('--live-from-start');
+		return this;
+	}
+
+	public ignoreNoFormatError(): this {
+		this.data.push('--ignore-no-formats-error');
 		return this;
 	}
 

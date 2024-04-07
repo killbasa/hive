@@ -1,4 +1,4 @@
-import { ytFetch } from './fetch';
+import { ytFetch } from './fetch.js';
 
 export type YouTubeVideoList = {
 	items: YouTubeVideo[];

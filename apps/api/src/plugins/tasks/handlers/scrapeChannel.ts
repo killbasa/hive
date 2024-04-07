@@ -1,12 +1,11 @@
-import { db } from '../../../db/client';
-import { videos } from '../../../db/schema';
-import { Time } from '../../../lib/constants';
-import { sleep } from '../../../lib/utils';
-import { server } from '../../../server';
-import { fetchChannelXML, parseChannelXML } from '../xml';
+import { db } from '../../../db/client.js';
+import { videos } from '../../../db/schema.js';
+import { server } from '../../../server.js';
+import { fetchChannelXML, parseChannelXML } from '../xml.js';
+import { Time, sleep } from '@hive/common';
 
 export async function handleScrapeTask(): Promise<void> {
-	server.log.info('syncing videos...');
+	server.log.info('scraping channel...');
 
 	const result = await db.query.channels.findMany({
 		orderBy: (channels, { asc }) => [asc(channels.updatedAt)],
@@ -38,5 +37,5 @@ export async function handleScrapeTask(): Promise<void> {
 		await sleep(Time.Second);
 	}
 
-	server.log.info(`synced ${result.length} videos`);
+	server.log.info(`scraped ${result.length} videos`);
 }

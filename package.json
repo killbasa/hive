@@ -1,5 +1,5 @@
 {
-	"name": "hive-monorepo",
+	"name": "@hive/monorepo",
 	"version": "0.0.1",
 	"author": "killbasa <contact@shaneb.xyz>",
 	"license": "AGPL-3.0-or-later",
@@ -16,7 +16,7 @@
 		"check": "pnpm -r run check",
 		"lint": "pnpm -r run lint",
 		"format": "pnpm -r run format",
-		"dry-run": "pnpm check && pnpm lint && pnpm format && pnpm build",
+		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:backup": "docker buildx build -t killbasa/hive-backup -f apps/backup/Dockerfile .",

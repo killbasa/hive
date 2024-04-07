@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import type { Video } from '$lib/types/api';
+	import type { Video } from '@hive/common';
 
 	export let status: Video['status'];
 </script>

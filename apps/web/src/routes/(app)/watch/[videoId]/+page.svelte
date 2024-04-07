@@ -11,7 +11,7 @@
 	const baseUrl = `${config.apiUrl}/assets/${data.channelId}/videos/${data.id}`;
 
 	let video: HTMLVideoElement;
-	let hasPlayed = false;
+	let ready = false;
 
 	function onVolumeChange() {
 		localStorage.setItem(volumeKey, video.volume.toString());
@@ -24,10 +24,14 @@
 		const local = localStorage.getItem(volumeKey) ?? '1';
 		const parsedVol = parseFloat(local);
 		video.volume = isNaN(parsedVol) ? 1 : parsedVol;
+
+		window.setTimeout(() => {
+			ready = true;
+		}, 500);
 	}
 
 	async function onTimeUpdate() {
-		if (!hasPlayed) return;
+		if (!ready) return;
 
 		const time = video.currentTime;
 		if (video.paused) return await debounceUpdate(time);
@@ -58,7 +62,6 @@
 		on:volumechange={onVolumeChange}
 		on:loadstart={loadPlayer}
 		on:timeupdate={onTimeUpdate}
-		on:play={() => (hasPlayed = true)}
 		controls
 		playsinline
 		id="video-item"

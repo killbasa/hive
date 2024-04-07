@@ -14,6 +14,7 @@ export type VideoMetadata = {
 	upload_date: string;
 	duration_string: string;
 	was_live: boolean;
+	live_status: 'is_upcoming' | 'not_live';
 	filesize_approx: number;
 	width: number;
 	height: number;

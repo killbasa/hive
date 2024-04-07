@@ -1,5 +1,6 @@
-import { config } from '../../lib/config';
-import { Time, isDev } from '../../lib/constants';
+import { config } from '../../lib/config.js';
+import { isDev } from '../../lib/constants.js';
+import { Time } from '@hive/common';
 import type { CookieSerializeOptions } from '@fastify/cookie';
 
 const cookieDomain = new URL(config.AUTH_ORIGIN).hostname;

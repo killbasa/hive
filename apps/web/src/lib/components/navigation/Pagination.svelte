@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { updatePage } from '$lib/navigation';
-	import { stringToNum } from '$lib/utils';
+	import { stringToNum } from '@hive/common';
 
 	export let count: number;
 	export let total: number;
@@ -22,7 +22,7 @@
 		let result = pageNumber + entry;
 
 		return {
-			label: result < 1 ? '0' : `${result}`,
+			label: result < 1 ? '' : `${result}`,
 			value: entry,
 			current: result === pageNumber,
 			disabled: result < 1 || count * pageNumber === total || result === pageNumber
@@ -50,7 +50,9 @@
 		{#each pages as entry}
 			<li>
 				<button
-					class={entry.current ? 'bg-primary text-white' : 'bg-gray-800 text-gray-400'}
+					class="min-w-12 flex justify-center {entry.current
+						? 'bg-primary text-white'
+						: 'bg-gray-800 text-gray-400'}"
 					class:btn-disabled={entry.disabled}
 					class:opacity-90={entry.disabled}
 					disabled={entry.current || entry.disabled}

@@ -1,9 +1,9 @@
-import { UserPatchSchema } from './schemas';
-import { checkToken } from '../auth/tokens';
-import { cookies } from '../auth/cookies';
-import { db } from '../../db/client';
-import { users } from '../../db/schema';
-import { config } from '../../lib/config';
+import { UserPatchSchema } from './schemas.js';
+import { checkToken } from '../auth/tokens.js';
+import { cookies } from '../auth/cookies.js';
+import { db } from '../../db/client.js';
+import { users } from '../../db/schema.js';
+import { config } from '../../lib/config.js';
 import { hash, verify } from 'argon2';
 import { eq } from 'drizzle-orm';
 import { timingSafeEqual } from 'node:crypto';

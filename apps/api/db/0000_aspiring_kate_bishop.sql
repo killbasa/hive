@@ -29,8 +29,8 @@ CREATE TABLE `playlists` (
 --> statement-breakpoint
 CREATE TABLE `settings` (
 	`id` integer PRIMARY KEY NOT NULL,
-	`cron_subscription` text,
-	`cron_download` text,
+	`cron_subscription` text DEFAULT '0 0 * * *' NOT NULL,
+	`cron_download` text DEFAULT '0 1 * * *' NOT NULL,
 	`download_limit` integer
 );
 --> statement-breakpoint
@@ -59,7 +59,8 @@ CREATE TABLE `videos` (
 	`title` text NOT NULL,
 	`description` text NOT NULL,
 	`duration` integer,
-	`watch_progress` integer DEFAULT 0,
+	`watch_progress` integer DEFAULT 0 NOT NULL,
+	`watch_completed` integer DEFAULT false NOT NULL,
 	`file_size` integer,
 	`upload_date` text,
 	`type` text NOT NULL,

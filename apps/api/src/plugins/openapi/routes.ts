@@ -1,4 +1,4 @@
-import { ScalarContentSecurityPolicies, ScalarHTML } from './constants';
+import { ScalarContentSecurityPolicies, ScalarHTML } from './constants.js';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const referenceRoutes: FastifyPluginCallback = (server, _, done) => {

@@ -1,17 +1,13 @@
-import { RedisConnectionOptions } from '../../../lib/config';
-import { server } from '../../../server';
-import { handleDownloadVideoTask } from '../handlers/downloader';
+import { RedisConnectionOptions } from '../../../lib/config.js';
+import { server } from '../../../server.js';
+import { handleDownloadVideoTask } from '../handlers/downloader.js';
 import { Worker } from 'bullmq';
 
 let downloader: Worker;
 
-export type DownloaderTasks = DownloaderVideoTask;
-
-export type DownloaderVideoTask = { type: 'video'; videoId: string; channelId: string; live: boolean };
-
 export async function initDownloaderWorker(): Promise<void> {
 	downloader = new Worker(
-		'downloader',
+		server.tasks.downloader.name,
 		async (task) => {
 			try {
 				switch (task.data.type) {

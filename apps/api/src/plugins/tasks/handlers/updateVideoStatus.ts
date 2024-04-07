@@ -1,7 +1,7 @@
-import { db } from '../../../db/client';
-import { videos } from '../../../db/schema';
-import { fetchVideos } from '../../../lib/youtube/videos';
-import { server } from '../../../server';
+import { db } from '../../../db/client.js';
+import { videos } from '../../../db/schema.js';
+import { fetchVideos } from '../../../lib/youtube/videos.js';
+import { server } from '../../../server.js';
 import { eq } from 'drizzle-orm';
 
 export async function handleVideoStatus(page = 0): Promise<void> {
@@ -40,7 +40,7 @@ export async function handleVideoStatus(page = 0): Promise<void> {
 					status = 'past';
 
 					if (dbVideo.status === 'live') {
-						server.websocketServer.emit('livestream', {
+						server.notifications.emit('livestream', {
 							status: 'end',
 							videoId: video.id,
 							title: dbVideo.title
@@ -61,7 +61,7 @@ export async function handleVideoStatus(page = 0): Promise<void> {
 							{ priority: 1 }
 						);
 
-						server.websocketServer.emit('livestream', {
+						server.notifications.emit('livestream', {
 							status: 'start',
 							videoId: video.id,
 							title: dbVideo.title
@@ -118,7 +118,7 @@ export async function checkNewVideos(page = 0): Promise<void> {
 						status = 'past';
 
 						if (dbVideo.status === 'live') {
-							server.websocketServer.emit('livestream', {
+							server.notifications.emit('livestream', {
 								status: 'end',
 								videoId: video.id,
 								title: dbVideo.title
@@ -139,7 +139,7 @@ export async function checkNewVideos(page = 0): Promise<void> {
 								{ priority: 1 }
 							);
 
-							server.websocketServer.emit('livestream', {
+							server.notifications.emit('livestream', {
 								status: 'start',
 								videoId: video.id,
 								title: dbVideo.title

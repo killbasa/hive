@@ -1,8 +1,8 @@
-import { ChannelPostSchema, ChannelQuerySchema } from './schemas';
-import { checkToken } from '../auth/tokens';
-import { db } from '../../db/client';
-import { channels } from '../../db/schema';
-import { doesChannelExist } from '../../lib/youtube/channels';
+import { ChannelPostSchema, ChannelQuerySchema } from './schemas.js';
+import { checkToken } from '../auth/tokens.js';
+import { db } from '../../db/client.js';
+import { channels } from '../../db/schema.js';
+import { doesChannelExist } from '../../lib/youtube/channels.js';
 import { count } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 

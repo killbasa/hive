@@ -1,18 +1,17 @@
 <script lang="ts">
 	import VideoStatusBadge from '$components/videos/VideoStatusBadge.svelte';
-	import { HiveWS } from '$lib/ws';
+	import { HiveWebSocket } from '$lib/ws';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Card from '$components/Card.svelte';
 	import { apiFetch } from '$lib/fetch';
 	import { invalidate } from '$app/navigation';
-	import { StatusEvent } from '$lib/utils';
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import { MIMETypes } from '$lib/constants';
 	import SearchInput from '$components/SearchInput.svelte';
 	import { config } from '$lib/config';
-	import type { DownloadProgress, DownloadStatus } from '$lib/types/ws';
 	import { toast } from '$lib/stores/toasts';
+	import { StatusEvent, type DownloadProgress, type DownloadStatus } from '@hive/common';
 
 	type DownloadInfo = {
 		id: string;
@@ -32,7 +31,7 @@
 
 	export let data: PageData;
 
-	let ws: HiveWS;
+	let ws: HiveWebSocket;
 	let allChecked = false;
 	$: downloads = data.videos;
 
@@ -101,7 +100,7 @@
 	}
 
 	onMount(() => {
-		ws = new HiveWS('/downloads/status');
+		ws = new HiveWebSocket('/downloads/status');
 
 		ws.onOpen(() => {
 			console.log('[hive] connected');
@@ -138,6 +137,7 @@
 				return;
 			}
 
+			// Check channel total
 			if (update.type === StatusEvent.ScanComplete) {
 				scanInfo = null;
 				toast.success('Scan complete');
@@ -193,7 +193,7 @@
 					class="progress progress-success"
 					value={scanInfo.channelPos}
 					max={scanInfo.channelTotal}
-				></progress>
+				/>
 			</div>
 			<div>
 				<span>{scanInfo.videoPos} / {scanInfo.videoTotal}</span>
@@ -201,7 +201,7 @@
 					class="progress progress-success"
 					value={scanInfo.videoPos}
 					max={scanInfo.videoTotal}
-				></progress>
+				/>
 			</div>
 		{:else}
 			None

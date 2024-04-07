@@ -42,7 +42,8 @@ export const videos = sqliteTable(
 		title: text('title').notNull().notNull(),
 		description: text('description').notNull(),
 		duration: integer('duration'),
-		watchProgress: integer('watch_progress').default(0),
+		watchProgress: integer('watch_progress').notNull().default(0),
+		watchCompleted: integer('watch_completed', { mode: 'boolean' }).notNull().default(false),
 		fileSize: integer('file_size'),
 		uploadDate: text('upload_date'),
 		type: text('type', { enum: ['video', 'short', 'stream'] }).notNull(),
@@ -168,8 +169,8 @@ export const settings = sqliteTable(
 	'settings',
 	{
 		id: integer('id').primaryKey(),
-		cronSubscription: text('cron_subscription'),
-		cronDownload: text('cron_download'),
+		cronSubscription: text('cron_subscription').notNull().default('0 0 * * *'),
+		cronDownload: text('cron_download').notNull().default('0 1 * * *'),
 		downloadLimit: integer('download_limit')
 	},
 	(table) => {

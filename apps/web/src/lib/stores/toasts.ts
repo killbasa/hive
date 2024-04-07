@@ -1,14 +1,5 @@
-import type { SvelteComponent } from 'svelte';
 import { writable } from 'svelte/store';
 import type { FlyParams } from 'svelte/transition';
-
-export type SvelteToastOnPopCallback = (id?: number) => void;
-
-export type SvelteToastCustomComponent = {
-	src: SvelteComponent;
-	props?: Record<string, unknown>;
-	sendIdTo?: string;
-};
 
 export type SvelteToastOptions = {
 	id?: number;
@@ -35,13 +26,7 @@ const defaults: SvelteToastOptions = {
 function createToast() {
 	const { subscribe, update } = writable<SvelteToastOptions[]>([]);
 
-	const options: Record<string, SvelteToastOptions> = {};
 	let count = 0;
-
-	function init(target = 'default', opts: SvelteToastOptions = {}) {
-		options[target] = opts;
-		return options;
-	}
 
 	function push(message: string, opts: SvelteToastOptions = {}): number {
 		const param: SvelteToastOptions = {
@@ -49,10 +34,12 @@ function createToast() {
 			message
 		};
 
+		count += 1;
+
 		const entry: SvelteToastOptions = {
 			...defaults,
 			...param,
-			id: ++count
+			id: count
 		};
 
 		update((n) => [entry, ...n]);
@@ -85,7 +72,7 @@ function createToast() {
 		});
 	}
 
-	return { subscribe, pop, init, notify, success, error };
+	return { subscribe, pop, notify, success, error };
 }
 
 export const toast = createToast();

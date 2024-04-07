@@ -1,5 +1,5 @@
 {
-	"name": "hive",
+	"name": "@hive/api",
 	"version": "0.0.1",
 	"author": "killbasa <contact@shaneb.xyz>",
 	"license": "AGPL-3.0-or-later",
@@ -29,6 +29,7 @@
 		"@fastify/static": "^7.0.3",
 		"@fastify/swagger": "^8.14.0",
 		"@fastify/websocket": "^10.0.1",
+		"@hive/common": "workspace:^",
 		"argon2": "^0.40.1",
 		"better-sqlite3": "^9.4.5",
 		"bullmq": "^5.5.3",
@@ -54,6 +55,6 @@
 		"vitest": "^1.4.0"
 	},
 	"volta": {
-		"node": "21.1.0"
+		"node": "21.7.1"
 	}
 }

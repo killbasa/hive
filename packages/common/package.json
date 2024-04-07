@@ -1,0 +1,30 @@
+{
+	"name": "@hive/common",
+	"version": "0.0.1",
+	"author": "killbasa <contact@shaneb.xyz>",
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"scripts": {
+		"build": "pnpm check && tsup",
+		"check": "tsc",
+		"lint": "eslint --fix --ext .ts src",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"eslint": "^8.57.0",
+		"prettier": "^3.2.5",
+		"tsup": "^8.0.2",
+		"typescript": "^5.4.4"
+	},
+	"volta": {
+		"node": "21.7.1"
+	}
+}

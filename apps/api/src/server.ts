@@ -1,12 +1,12 @@
-import { routes } from './routes';
-import { app } from './app';
-import { initDb } from './db/client';
-import { config } from './lib/config';
-import { DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants';
-import { getYtdlpVersion } from './lib/ytdlp/constants';
-import { validateDirs } from './lib/utils';
-import { setupGracefulShutdown } from './lib/process';
-import { initHandlers, initWorkers } from './plugins/tasks/loader';
+import { routes } from './routes.js';
+import { app } from './app.js';
+import { initDb } from './db/client.js';
+import { config } from './lib/config.js';
+import { DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
+import { getYtdlpVersion } from './lib/ytdlp/constants.js';
+import { validateDirs } from './lib/utils.js';
+import { setupGracefulShutdown } from './lib/process.js';
+import { initHandlers, initWorkers } from './plugins/tasks/loader.js';
 
 await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
 export const server = await app();
@@ -15,6 +15,8 @@ const start = async (): Promise<void> => {
 	try {
 		await initDb();
 		await initWorkers();
+
+		await server.settings.init();
 
 		await server.register(routes);
 		await server.listen({ host: '0.0.0.0', port: config.PORT });

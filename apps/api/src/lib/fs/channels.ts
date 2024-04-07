@@ -1,12 +1,12 @@
-import { mv, mvDir } from './utils';
-import { formatTags } from '../youtube/channels';
-import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
-import { db } from '../../db/client';
-import { channels } from '../../db/schema';
+import { mv, mvDir } from './utils.js';
+import { formatTags } from '../youtube/channels.js';
+import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
+import { db } from '../../db/client.js';
+import { channels } from '../../db/schema.js';
 import { open, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { ChannelMetadata } from './types';
+import type { ChannelMetadata } from './types.js';
 
 export const CHANNEL_DL_PATH = (channelId: string): string => `${DOWNLOADS_DIR}/${channelId}`;
 

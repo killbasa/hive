@@ -1,5 +1,7 @@
-import { isDev } from './lib/constants';
-import { RedisConnectionOptions, config } from './lib/config';
+import { isDev } from './lib/constants.js';
+import { RedisConnectionOptions, config } from './lib/config.js';
+import { HiveSettings } from './plugins/settings/service.js';
+import { HiveNotifier } from './plugins/notifications/emitter.js';
 import FastifySwagger from '@fastify/swagger';
 import FastifyCookie from '@fastify/cookie';
 import FastifyJwt from '@fastify/jwt';
@@ -77,10 +79,13 @@ export function decorate(instance: FastifyInstance): FastifyInstance {
 	};
 
 	instance.decorate('tasks', {
-		scanner: new Queue('scanner', options),
+		internal: new Queue('internal', options),
 		downloader: new Queue('downloader', options),
-		internal: new Queue('internal', options)
+		scanner: new Queue('scanner', options)
 	});
+
+	instance.decorate('settings', new HiveSettings());
+	instance.decorate('notifications', new HiveNotifier());
 
 	return instance;
 }

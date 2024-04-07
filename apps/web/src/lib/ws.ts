@@ -1,7 +1,7 @@
+import type { Awaitable } from '@hive/common';
 import { config } from './config';
-import type { Awaitable } from './types/generic';
 
-export class HiveWS extends WebSocket {
+export class HiveWebSocket extends WebSocket {
 	public constructor(path: string) {
 		const api = new URL(config.apiUrl);
 		api.protocol = 'ws';

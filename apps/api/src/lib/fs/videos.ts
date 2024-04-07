@@ -1,13 +1,13 @@
-import { mv } from './utils';
-import { stringToNum } from '../utils';
-import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants';
-import { server } from '../../server';
-import { db } from '../../db/client';
-import { comments, videos } from '../../db/schema';
+import { mv } from './utils.js';
+import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
+import { server } from '../../server.js';
+import { db } from '../../db/client.js';
+import { comments, videos } from '../../db/schema.js';
+import { stringToNum } from '@hive/common';
 import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { CommentMetadata, VideoMetadata } from './types';
+import type { CommentMetadata, VideoMetadata } from './types.js';
 
 export const VIDEO_DL_PATH = (channelId: string, videoId: string): string => `${DOWNLOADS_DIR}/${channelId}/videos/${videoId}`;
 

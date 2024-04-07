@@ -1,9 +1,9 @@
-import { LoginSchema, SignupSchema } from './schemas';
-import { checkToken } from '../tokens';
-import { cookies } from '../cookies';
-import { db } from '../../../db/client';
-import { users } from '../../../db/schema';
-import { config } from '../../../lib/config';
+import { LoginSchema, SignupSchema } from './schemas.js';
+import { checkToken } from '../tokens.js';
+import { cookies } from '../cookies.js';
+import { db } from '../../../db/client.js';
+import { users } from '../../../db/schema.js';
+import { config } from '../../../lib/config.js';
 import { hash, verify } from 'argon2';
 import { count, eq } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';

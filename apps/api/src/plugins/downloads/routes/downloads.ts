@@ -1,9 +1,10 @@
-import { DownloadStartSchema } from '../schemas';
-import { db } from '../../../db/client';
-import { StatusEvent } from '../../../lib/constants';
-import { checkToken } from '../../auth/tokens';
-import { downloadControllers } from '../../tasks/handlers/downloader';
-import { scansInProgress } from '../../tasks/handlers/scanner';
+import { DownloadStartSchema } from '../schemas.js';
+import { db } from '../../../db/client.js';
+import { checkToken } from '../../auth/tokens.js';
+import { downloadControllers } from '../../tasks/handlers/downloader.js';
+import { scansInProgress } from '../../tasks/handlers/scanner.js';
+import { StatusEvent } from '@hive/common';
+import type { DownloadStatus } from '@hive/common';
 import type { FastifyPluginCallback } from 'fastify';
 import type { SQLWrapper } from 'drizzle-orm';
 
@@ -130,7 +131,7 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 				controller.abort();
 			}
 
-			server.websocketServer.emit('status', {
+			server.notifications.emit('status', {
 				type: StatusEvent.DownloadCancelled
 			});
 
@@ -167,14 +168,14 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 		'/status', //
 		{ websocket: true, schema: { tags: ['Websockets'] } },
 		(socket) => {
-			const handleMessage = (message: string): void => {
+			const handleMessage = (message: DownloadStatus): void => {
 				socket.send(JSON.stringify(message));
 			};
 
-			server.websocketServer.on('status', handleMessage);
+			server.notifications.on('status', handleMessage);
 
 			socket.on('close', () => {
-				server.websocketServer.off('status', handleMessage);
+				server.notifications.off('status', handleMessage);
 			});
 		}
 	);
