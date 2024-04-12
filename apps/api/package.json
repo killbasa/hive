@@ -31,28 +31,28 @@
 		"@fastify/websocket": "^10.0.1",
 		"@hive/common": "workspace:^",
 		"argon2": "^0.40.1",
-		"better-sqlite3": "^9.4.5",
-		"bullmq": "^5.5.3",
+		"better-sqlite3": "^9.5.0",
+		"bullmq": "^5.7.1",
 		"cron-parser": "^4.9.0",
-		"drizzle-orm": "^0.30.6",
+		"drizzle-orm": "^0.30.8",
 		"fast-xml-parser": "^4.3.6",
 		"fastify": "^4.26.2",
 		"redis": "^4.6.13",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {
-		"@swc/core": "^1.4.12",
+		"@swc/core": "^1.4.13",
 		"@types/better-sqlite3": "^7.6.9",
 		"@types/ws": "^8.5.10",
-		"@vitest/coverage-istanbul": "^1.4.0",
+		"@vitest/coverage-istanbul": "^1.5.0",
 		"drizzle-kit": "^0.20.14",
 		"eslint": "^8.57.0",
 		"pino-pretty": "^11.0.0",
 		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
 		"tsx": "^4.7.2",
-		"typescript": "^5.4.4",
-		"vitest": "^1.4.0"
+		"typescript": "^5.4.5",
+		"vitest": "^1.5.0"
 	},
 	"volta": {
 		"node": "21.7.1"
