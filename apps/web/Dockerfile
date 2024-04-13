@@ -1,22 +1,37 @@
-FROM node:20.11.1-alpine3.19 as base
+## Base ##
+FROM node:21.7.3-alpine3.19 as base
 
-ARG API_URL
-ENV VITE_API_URL=${API_URL}
+RUN apk update --no-cache
 
-WORKDIR /app
+## Builder ##
+FROM base as builder
 
-COPY .yarn .yarn/
-COPY .yarnrc.yml yarn.lock package.json ./
+WORKDIR /temp
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/web ./apps/web/
+COPY packages ./packages/
 
-RUN yarn install && \
-	yarn workspace hive-web build
+RUN corepack enable && \
+	pnpm install && \
+	pnpm --filter @hive/web run build && \
+	pnpm --filter @hive/web deploy --prod output
 
-FROM nginx:1.25.4-alpine3.18
+## App ##
+FROM base as app
 
-COPY --from=base /app/apps/web/dist /usr/share/nginx/html
-COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
+LABEL org.opencontainers.image.source=https://github.com/killbasa/hive
+LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
 
-EXPOSE 80
+ENV NODE_ENV=production
 
-CMD ["nginx", "-g", "daemon off;"]
+RUN adduser --system --uid 1001 hive && \
+	addgroup --system --gid 1001 hive
+
+WORKDIR /hive
+
+USER hive:hive
+
+COPY --from=builder --chown=hive:hive /temp/output/ ./
+
+CMD ["node", "--enable-source-maps", "dist/index.js"]

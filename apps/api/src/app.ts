@@ -1,4 +1,4 @@
-import { isDev } from './lib/constants.js';
+import { DATA_DIR, isDev } from './lib/constants.js';
 import { RedisConnectionOptions, config } from './lib/config.js';
 import { HiveSettings } from './plugins/settings/service.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
@@ -58,7 +58,7 @@ export async function app(): Promise<FastifyInstance> {
 	await server.register(FastifyCompress);
 	await server.register(FastifyStatic, {
 		prefix: '/assets',
-		root: resolve('data/media')
+		root: resolve(DATA_DIR, 'media')
 	});
 
 	await server.register(FastifyHelmet, {
@@ -93,7 +93,7 @@ export function decorate(instance: FastifyInstance): FastifyInstance {
 function getLogger(): FastifyServerOptions['logger'] {
 	if (!isDev) {
 		return {
-			level: 'warn'
+			level: 'info'
 		};
 	}
 

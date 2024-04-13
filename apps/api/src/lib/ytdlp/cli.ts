@@ -1,4 +1,4 @@
-import { DATA_DIR } from '../constants.js';
+import { CLI_PATH, DATA_DIR } from '../constants.js';
 import { server } from '../../server.js';
 import { exec, spawn } from 'node:child_process';
 import type { Awaitable } from '@hive/common';
@@ -59,10 +59,10 @@ export async function ytdlp(
 	server.log.debug(`starting process (${new Date().toISOString()})`);
 	server.log.debug(`yt-dlp ${args.data.join(' ')}`);
 
-	const subprocess = spawn('./yt-dlp', args.data, {
+	const subprocess = spawn(CLI_PATH, args.data, {
 		shell: false,
 		detached: false,
-		cwd: 'data',
+		cwd: DATA_DIR,
 		signal
 	});
 
@@ -121,7 +121,7 @@ export async function ytdlpExec(urls: string[] | string, args: YtdlpArgs): Promi
 	server.log.debug(`yt-dlp ${args.data.join(' ')}`);
 
 	return await new Promise((resolve, reject) => {
-		exec(`"${DATA_DIR}/yt-dlp" ${args.data.join(' ')}`, (err, stdout) => {
+		exec(`${CLI_PATH} ${args.data.join(' ')}`, { cwd: DATA_DIR }, (err, stdout) => {
 			if (err) {
 				reject(err);
 			}

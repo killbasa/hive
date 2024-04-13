@@ -14,5 +14,8 @@ export default defineConfig({
 	sourcemap: true,
 	target: 'esnext',
 	treeshake: true,
-	tsconfig: './tsconfig.json'
+	tsconfig: './tsconfig.json',
+	env: {
+		NODE_ENV: process.env.NODE_ENV ?? 'production'
+	}
 });

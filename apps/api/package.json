@@ -5,8 +5,13 @@
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
+	"files": [
+		"db",
+		"dist"
+	],
 	"scripts": {
-		"build": "pnpm check && tsup",
+		"build": "pnpm check && NODE_ENV=development tsup",
+		"build:prod": "tsup",
 		"check": "tsc",
 		"start": "node --enable-source-maps dist/server.js",
 		"dev": "tsup --watch --onSuccess \"pnpm start\"",
@@ -55,6 +60,6 @@
 		"vitest": "^1.5.0"
 	},
 	"volta": {
-		"node": "21.7.1"
+		"node": "21.7.3"
 	}
 }

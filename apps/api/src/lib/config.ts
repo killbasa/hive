@@ -1,7 +1,11 @@
 import { z } from 'zod';
+import { existsSync } from 'fs';
+import { resolve } from 'node:path';
 import type { ConnectionOptions } from 'bullmq';
 
-process.loadEnvFile();
+if (existsSync(resolve('.env'))) {
+	process.loadEnvFile();
+}
 
 const ConfigSchema = z.object({
 	PORT: z.coerce.number().default(3001),

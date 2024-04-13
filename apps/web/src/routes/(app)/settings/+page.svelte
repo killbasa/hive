@@ -20,8 +20,8 @@
 		oldPassword === '' ||
 		newPassword === oldPassword;
 
-	let checkSubscriptions = '';
-	let downloadQueue = '';
+	let checkSubscriptions = data.settings.cronSubscription;
+	let downloadQueue = data.settings.cronDownload;
 
 	async function handleSubmit() {
 		await apiFetch('/auth/logout', {
@@ -129,15 +129,9 @@
 			<TextInput
 				id="check-subscriptions"
 				title="Check subscriptions"
-				placeholder="0 0 * * *"
 				bind:value={checkSubscriptions}
 			/>
-			<TextInput
-				id="download-queue"
-				title="Download queue"
-				placeholder="0 1 * * *"
-				bind:value={downloadQueue}
-			/>
+			<TextInput id="download-queue" title="Download queue" bind:value={downloadQueue} />
 			<div class="flex justify-end">
 				<button class="btn btn-success" type="submit">Save</button>
 			</div>

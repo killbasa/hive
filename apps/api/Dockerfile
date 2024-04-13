@@ -1,23 +1,30 @@
 ## Base ##
-FROM node:20.11.1-alpine3.19 as base
+FROM node:21.7.3-alpine3.19 as base
 
-RUN apk update --no-cache
+RUN apk update --no-cache && \
+	apk add --no-cache python3=3.11.8-r0 ffmpeg=6.1.1-r0
+
+## Depdencies ##
+FROM alpine:3.19 as dependencies
+
+RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.03.10/yt-dlp \
+		-O /tmp/yt-dlp && \
+	chmod +x /tmp/yt-dlp
 
 ## Builder ##
 FROM base as builder
 
-ENV NODE_ENV=production
-
 WORKDIR /temp
 
-COPY .yarn .yarn/
-COPY scripts ./scripts/
-COPY .yarnrc.yml yarn.lock package.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/api ./apps/api/
+COPY packages ./packages/
 
-RUN yarn install && \
-	yarn workspace hive build && \
-	yarn workspaces focus hive --production
+RUN corepack enable && \
+	pnpm install && \
+	pnpm --filter @hive/api run build:prod && \
+	mkdir output && \
+	pnpm --filter @hive/api deploy --prod output
 
 ## App ##
 FROM base as app
@@ -25,23 +32,23 @@ FROM base as app
 LABEL org.opencontainers.image.source=https://github.com/killbasa/hive
 LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
 
-WORKDIR /app
+ENV NODE_ENV=production
+ENV PATH=/hive/bin:$PATH
 
-RUN addgroup --system --gid 1001 hive && \
-	adduser --system --uid 1001 hive
+RUN adduser --system --uid 1001 hive && \
+	addgroup --system --gid 1001 hive && \
+	mkdir -p /var/lib/hive && \
+	mkdir -p /hive/bin && \
+	chown -R hive /var/lib/hive && \
+	chgrp -R hive /var/lib/hive
 
-USER hive
+WORKDIR /hive
 
-COPY --from=builder --chown=hive:hive /temp/node_modules node_modules/
-COPY --from=builder --chown=hive:hive /temp/apps/api/db db/
-COPY --from=builder --chown=hive:hive /temp/apps/api/dist dist/
-COPY --from=builder --chown=hive:hive /temp/apps/api/package.json ./
+USER hive:hive
 
-RUN apk add --no-cache ffmpeg && \
-	mkdir -p /data/ && \
-	wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.03.10/yt-dlp && \
-	mv yt-dlp /data/ && \
-	chmod +x /data/yt-dlp && \
-	chown -R hive:hive /data/
+COPY --from=dependencies --chown=hive:hive /tmp/yt-dlp bin/
+COPY --from=builder --chown=hive:hive /temp/output/ ./
+
+VOLUME /var/lib/hive
 
 CMD ["node", "--enable-source-maps", "dist/server.js"]

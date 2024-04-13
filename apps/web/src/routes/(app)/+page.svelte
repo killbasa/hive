@@ -16,4 +16,6 @@
 			<VideoCard {video} showIcon />
 		{/each}
 	</div>
+	<h2>Recent videos</h2>
+	<div class="grid grid-cols-2 gap-4"></div>
 </section>

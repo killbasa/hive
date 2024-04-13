@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   hive:
     image: killbasa/hive
@@ -10,13 +8,12 @@ services:
     env_file:
       - apps/api/.env
     environment:
-      NODE_ENV: production
       PORT: 3001
       REDIS_HOST: hive-redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
     volumes:
-      - ./apps/api:/data
+      - ./data:/var/lib/hive
     ports:
       - 127.0.0.1:3001:3001
 
@@ -26,9 +23,9 @@ services:
     build:
       dockerfile: apps/web/Dockerfile
       context: .
-      args:
-        VITE_API_URL: http://localhost:3001
+    environment:
+      VITE_API_URL: http://localhost:3001
     ports:
-      - 127.0.0.1:3000:80
+      - 127.0.0.1:3000:3000
     depends_on:
       - hive
