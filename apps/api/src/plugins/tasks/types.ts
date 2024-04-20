@@ -1,3 +1,10 @@
+import type { Awaitable } from '@hive/common';
+
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+export type TaskHandler<T = void> = T extends void //
+	? () => Awaitable<void>
+	: (task: T) => Awaitable<void>;
+
 export type ScannerTasks = ScannerDownloadChannelTask | ScannerScanChannelTask;
 
 export type ScannerDownloadChannelTask = { type: 'channel'; channelId: string };

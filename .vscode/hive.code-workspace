@@ -9,21 +9,18 @@
 			"path": "../apps/api"
 		},
 		{
-			"name": "backup",
-			"path": "../apps/backup"
-		},
-		{
-			"name": "chat",
-			"path": "../apps/chat"
-		},
-		{
 			"name": "web",
 			"path": "../apps/web"
+		},
+		{
+			"name": "packages",
+			"path": "../packages"
 		}
 	],
 	"settings": {
 		"files.exclude": {
 			"apps": true,
+			"packages": true,
 			"node_modules": true
 		},
 		"typescript.tsdk": "./node_modules/typescript/lib",

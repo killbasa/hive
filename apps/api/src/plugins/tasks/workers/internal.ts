@@ -17,7 +17,7 @@ export async function initInternalWorker(): Promise<void> {
 						return;
 					}
 					case 'SyncVideoStatus': {
-						await handleVideoStatus();
+						await handleVideoStatus({ page: 0 });
 						return;
 					}
 				}

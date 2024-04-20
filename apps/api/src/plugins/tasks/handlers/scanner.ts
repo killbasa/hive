@@ -8,16 +8,16 @@ import { downloadChannel } from '../../../lib/ytdlp/channels.js';
 import { downloadVideoAssets, getVideoIds } from '../../../lib/ytdlp/videos.js';
 import { server } from '../../../server.js';
 import { StatusEvent } from '@hive/common';
-import type { ScannerDownloadChannelTask, ScannerScanChannelTask } from '../types.js';
+import type { ScannerDownloadChannelTask, ScannerScanChannelTask, TaskHandler } from '../types.js';
 
 export const scansInProgress: Record<'download' | 'scan', boolean> = {
 	download: false,
 	scan: false
 };
 
-export async function handleDownloadChannelTask({ channelId }: ScannerDownloadChannelTask): Promise<void> {
+export const handleDownloadChannelTask: TaskHandler<ScannerDownloadChannelTask> = async ({ channelId }) => {
 	server.log.debug(`indexing channel: ${channelId}`);
-	if (isChannelDownloaded(channelId, { dir: 'media' })) {
+	if (isChannelDownloaded(channelId)) {
 		server.log.warn(`channel already downloaded: ${channelId}`);
 		return;
 	}
@@ -40,9 +40,9 @@ export async function handleDownloadChannelTask({ channelId }: ScannerDownloadCh
 
 	scansInProgress.download = false;
 	server.log.info(`indexed channel: ${channelId}`);
-}
+};
 
-export async function handleChannelScanTask({ channelId, position, total }: ScannerScanChannelTask): Promise<void> {
+export const handleChannelScanTask: TaskHandler<ScannerScanChannelTask> = async ({ channelId, position, total }) => {
 	server.log.info(`scanning channel videos: ${channelId}`);
 	scansInProgress.scan = true;
 
@@ -80,7 +80,7 @@ export async function handleChannelScanTask({ channelId, position, total }: Scan
 		});
 	}
 
-	await checkNewVideos();
+	await checkNewVideos({ page: 0 });
 
 	server.notifications.emit('status', {
 		type: StatusEvent.ScanComplete
@@ -88,4 +88,4 @@ export async function handleChannelScanTask({ channelId, position, total }: Scan
 
 	scansInProgress.scan = false;
 	server.log.info(`scanned channel videos: ${channelId}`);
-}
+};

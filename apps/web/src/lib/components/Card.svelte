@@ -12,4 +12,5 @@
 			<slot />
 		</div>
 	</div>
+	<slot name="footer" />
 </div>

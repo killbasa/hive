@@ -8,7 +8,7 @@ if (existsSync(resolve('.env'))) {
 }
 
 const ConfigSchema = z.object({
-	PORT: z.coerce.number().default(3001),
+	PORT: z.coerce.number().default(3002),
 	AUTH_SECRET: z.string(),
 	AUTH_ORIGIN: z.string(),
 	AUTH_COOKIE_NAME: z.string().default('hive-auth'),

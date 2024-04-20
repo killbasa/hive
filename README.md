@@ -16,7 +16,6 @@ services:
     image: ghcr.io/killbasa/hive:nightly
     restart: unless-stopped
     environment:
-      PORT: 3001
       AUTH_SECRET: <secret> # openssl rand -base64 32
       AUTH_ORIGIN: http://localhost:3000
       REDIS_HOST: redis
@@ -63,7 +62,7 @@ networks:
 1. Download yt-dlp binary
 
 ```sh
-wget https://github.com/yt-dlp/yt-dlp/releases/download/2024.03.10/yt-dlp
+wget https://github.com/yt-dlp/yt-dlp/releases/download/2024.04.09/yt-dlp
 chmod +x yt-dlp
 mv ./yt-dlp ./apps/api/data
 ```

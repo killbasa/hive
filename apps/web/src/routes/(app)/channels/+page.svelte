@@ -4,10 +4,10 @@
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import TextInput from '$components/TextInput.svelte';
 	import { apiFetch } from '$lib/fetch';
-	import { config } from '$lib/config';
 	import { MIMETypes } from '$lib/constants';
 	import type { PageData } from './$types';
 	import type { Channel } from '@hive/common';
+	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
 
 	export let data: PageData;
 
@@ -56,14 +56,7 @@
 					<tr>
 						<td>
 							<div class="flex items-center gap-3">
-								<div class="avatar">
-									<div class="mask mask-circle h-12 w-12">
-										<img
-											src="{config.apiUrl}/assets/{channel.id}/assets/thumbnail.avatar_uncropped.jpg"
-											alt="Channel avatar"
-										/>
-									</div>
-								</div>
+								<ChannelAvatar channelId={channel.id} />
 								<div>
 									<a href="/channels/{channel.id}">
 										<div class="font-bold">{channel.name}</div>

@@ -8,7 +8,7 @@ import { hash, verify } from 'argon2';
 import { count, eq } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
-export const authRoutes: FastifyPluginCallback = async (server) => {
+export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
 	await server.register((instance, _, done) => {
 		instance.post(
 			'/login', //

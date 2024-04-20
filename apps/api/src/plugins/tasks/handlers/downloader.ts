@@ -8,11 +8,11 @@ import { StatusEvent } from '@hive/common';
 import { resolve } from 'node:path';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import type { CommentMetadata } from '../../../lib/fs/types.js';
-import type { DownloaderVideoTask } from '../types.js';
+import type { DownloaderVideoTask, TaskHandler } from '../types.js';
 
 export const downloadControllers = new Map<string, AbortController>();
 
-export async function handleDownloadVideoTask({ channelId, videoId, live }: DownloaderVideoTask): Promise<void> {
+export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async ({ channelId, videoId, live }) => {
 	server.log.info(`downloading video: ${videoId} (live: ${live})`);
 
 	const controller = new AbortController();
@@ -60,10 +60,10 @@ export async function handleDownloadVideoTask({ channelId, videoId, live }: Down
 	});
 
 	server.log.info(`downloaded video: ${videoId}`);
-}
+};
 
-export async function handleDownloadCommentsTask(): Promise<void> {
+export const handleDownloadCommentsTask: TaskHandler = async () => {
 	server.log.info('downloading video comments: NO_ID');
 
 	server.log.info('downloaded video comments: NO_ID');
-}
+};

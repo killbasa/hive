@@ -12,6 +12,7 @@
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
 	import { StatusEvent, type DownloadProgress, type DownloadStatus } from '@hive/common';
+	import { humanFileSize } from '$lib/utils';
 
 	type DownloadInfo = {
 		id: string;
@@ -62,7 +63,7 @@
 			fetch,
 			method: 'POST',
 			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ videoIds: Array.from(selectedVideos) })
+			body: JSON.stringify({ videoIds: selectedVideos })
 		});
 	}
 
@@ -161,6 +162,21 @@
 			ws.close();
 		};
 	});
+
+	function formatDuration(value: string) {
+		const num = parseInt(value, 10);
+		const hours = Math.floor(num / 3600);
+		const minutes = `${Math.floor((num % 3600) / 60)}`.padStart(2, '0');
+		const seconds = `${Math.floor(num % 60)}`.padStart(2, '0');
+
+		return `${hours === 0 ? '' : `${hours}:`}${minutes}:${seconds}`;
+	}
+
+	function formatFileSize(value: unknown) {
+		if (typeof value !== 'string') return 'N/A';
+		const num = BigInt(value);
+		return humanFileSize(num);
+	}
 
 	$: disabled = selectedVideos.length === 0;
 </script>
@@ -261,6 +277,7 @@
 					<th>Status</th>
 					<th>Thumbnail</th>
 					<th>Title</th>
+					<th>Duration</th>
 					<th>Size</th>
 				</tr>
 			</thead>
@@ -301,6 +318,8 @@
 								{video.title}
 							</a>
 						</td>
+						<td>{formatDuration(video.duration)}</td>
+						<td>{formatFileSize(video.fileSize)}</td>
 					</tr>
 				{/each}
 			</tbody>

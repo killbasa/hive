@@ -3,8 +3,9 @@ import { videos } from '../../../db/schema.js';
 import { server } from '../../../server.js';
 import { fetchChannelXML, parseChannelXML } from '../xml.js';
 import { Time, sleep } from '@hive/common';
+import type { TaskHandler } from '../types.js';
 
-export async function handleScrapeTask(): Promise<void> {
+export const handleScrapeTask: TaskHandler = async () => {
 	server.log.info('scraping channel...');
 
 	const result = await db.query.channels.findMany({
@@ -38,4 +39,4 @@ export async function handleScrapeTask(): Promise<void> {
 	}
 
 	server.log.info(`scraped ${result.length} videos`);
-}
+};

@@ -1,6 +1,10 @@
 <script lang="ts">
 	import Navbar from '$components/navigation/Navbar.svelte';
 	import Footer from '$components/navigation/Footer.svelte';
+	import { initVideoContext } from '$lib/stores/video';
+	import VideoPlayer from '$components/videos/VideoPlayer.svelte';
+
+	initVideoContext();
 </script>
 
 <Navbar />
@@ -10,3 +14,5 @@
 	</div>
 </div>
 <Footer />
+
+<VideoPlayer />

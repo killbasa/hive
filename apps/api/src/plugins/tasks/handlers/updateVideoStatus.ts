@@ -3,8 +3,9 @@ import { videos } from '../../../db/schema.js';
 import { fetchVideos } from '../../../lib/youtube/videos.js';
 import { server } from '../../../server.js';
 import { eq } from 'drizzle-orm';
+import type { TaskHandler } from '../types.js';
 
-export async function handleVideoStatus(page = 0): Promise<void> {
+export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page }): Promise<void> => {
 	server.log.info(`checking videos... (page: ${page})`);
 
 	const result = await db.query.videos.findMany({
@@ -22,6 +23,12 @@ export async function handleVideoStatus(page = 0): Promise<void> {
 
 	const videoIds = result.map((row) => row.id);
 	const ytVideos = await fetchVideos(videoIds);
+
+	if (!Array.isArray(ytVideos)) {
+		server.log.error('ytVideos is not an array');
+		server.log.error(JSON.stringify(ytVideos));
+		return;
+	}
 
 	await Promise.all(
 		// eslint-disable-next-line @typescript-eslint/promise-function-async
@@ -81,14 +88,14 @@ export async function handleVideoStatus(page = 0): Promise<void> {
 
 	if (result.length === 50) {
 		setTimeout(async () => {
-			await handleVideoStatus(page + 1);
+			await handleVideoStatus({ page: page + 1 });
 		}, 1000);
 	} else {
 		server.log.info(`checked ${page * 50 + result.length} videos. Done!`);
 	}
-}
+};
 
-export async function checkNewVideos(page = 0): Promise<void> {
+export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): Promise<void> => {
 	await new Promise<void>(async (resolve) => {
 		server.log.info(`checking new videos... (page: ${page})`);
 
@@ -100,6 +107,13 @@ export async function checkNewVideos(page = 0): Promise<void> {
 
 		const videoIds = result.map((row) => row.id);
 		const ytVideos = await fetchVideos(videoIds);
+
+		if (!Array.isArray(ytVideos)) {
+			server.log.error('ytVideos is not an array');
+			server.log.error(JSON.stringify(ytVideos));
+			resolve();
+			return;
+		}
 
 		await Promise.all(
 			// eslint-disable-next-line @typescript-eslint/promise-function-async
@@ -159,7 +173,7 @@ export async function checkNewVideos(page = 0): Promise<void> {
 
 		if (result.length === 50) {
 			setTimeout(async () => {
-				await checkNewVideos(page + 1);
+				await checkNewVideos({ page: page + 1 });
 				resolve();
 			}, 1000);
 		} else {
@@ -167,4 +181,4 @@ export async function checkNewVideos(page = 0): Promise<void> {
 			resolve();
 		}
 	});
-}
+};

@@ -3,7 +3,7 @@ import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
 import { server } from '../../server.js';
 import { db } from '../../db/client.js';
 import { comments, videos } from '../../db/schema.js';
-import { stringToNum } from '@hive/common';
+import { parseDurationString } from '../ytdlp/utils.js';
 import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -24,7 +24,7 @@ export async function indexVideo(channelId: string, videoId: string): Promise<vo
 			channelId,
 			title: metadata.title,
 			description: metadata.description,
-			duration: stringToNum(metadata.duration_string, 0),
+			duration: parseDurationString(metadata.duration_string, 0),
 			fileSize: metadata.filesize_approx,
 			uploadDate: metadata.upload_date,
 			type: metadata.was_live ? 'stream' : 'video',

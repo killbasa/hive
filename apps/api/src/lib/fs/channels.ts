@@ -43,14 +43,8 @@ export async function readChannelMetadata(channelId: string): Promise<ChannelMet
 	return JSON.parse(data);
 }
 
-export function isChannelDownloaded(channelId: string, options: { dir: 'download' | 'media' }): boolean {
-	let path: string;
-
-	if (options.dir === 'download') {
-		path = `${CHANNEL_DL_PATH(channelId)}/assets/thumbnail.info.json`;
-	} else {
-		path = `${CHANNEL_PATH(channelId)}/assets/metadata.json`;
-	}
+export function isChannelDownloaded(channelId: string): boolean {
+	const path = `${CHANNEL_PATH(channelId)}/assets/metadata.json`;
 
 	return existsSync(resolve(path));
 }

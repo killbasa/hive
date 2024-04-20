@@ -1,4 +1,4 @@
-import { DATA_DIR, isDev } from './lib/constants.js';
+import { isDev } from './lib/constants.js';
 import { RedisConnectionOptions, config } from './lib/config.js';
 import { HiveSettings } from './plugins/settings/service.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
@@ -8,12 +8,9 @@ import FastifyJwt from '@fastify/jwt';
 import FastifyHelmet from '@fastify/helmet';
 import FastifyCors from '@fastify/cors';
 import FastifyRateLimit from '@fastify/rate-limit';
-import FastifyCompress from '@fastify/compress';
-import FastifyStatic from '@fastify/static';
 import FastifyWebsocket from '@fastify/websocket';
 import Fastify from 'fastify';
 import { Queue } from 'bullmq';
-import { resolve } from 'node:path';
 import type { QueueOptions } from 'bullmq';
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
@@ -52,13 +49,6 @@ export async function app(): Promise<FastifyInstance> {
 	await server.register(FastifyRateLimit, {
 		max: 1000,
 		timeWindow: 60_000
-	});
-
-	// Register compression before static
-	await server.register(FastifyCompress);
-	await server.register(FastifyStatic, {
-		prefix: '/assets',
-		root: resolve(DATA_DIR, 'media')
 	});
 
 	await server.register(FastifyHelmet, {

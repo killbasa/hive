@@ -21,7 +21,7 @@ export const referenceRoutes: FastifyPluginCallback = (server, _, done) => {
 			await reply
 				.headers({
 					'Content-Type': 'text/html; charset=utf-8',
-					'Content-Security-Policy': ScalarContentSecurityPolicies.join('; ')
+					'Content-Security-Policy': ScalarContentSecurityPolicies
 				})
 				.send(ScalarHTML);
 		}

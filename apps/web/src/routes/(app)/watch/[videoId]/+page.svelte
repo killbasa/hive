@@ -1,55 +1,17 @@
 <script lang="ts">
-	import { apiFetch } from '$lib/fetch';
-	import { config } from '$lib/config';
-	import { MIMETypes } from '$lib/constants';
 	import type { PageData } from './$types';
-	import { debounce, throttle } from '$lib/utils';
+	import { formatLinks } from '$lib/utils';
+	import { onMount } from 'svelte';
+	import { setVideoContext } from '$lib/stores/video';
 
 	export let data: PageData;
+	setVideoContext(data);
 
-	const volumeKey = 'videoVolume';
-	const baseUrl = `${config.apiUrl}/assets/${data.channelId}/videos/${data.id}`;
+	let description: HTMLParagraphElement;
 
-	let video: HTMLVideoElement;
-	let ready = false;
-
-	function onVolumeChange() {
-		localStorage.setItem(volumeKey, video.volume.toString());
-	}
-
-	function loadPlayer(): void {
-		const parsedTime = parseFloat(data.watchProgress);
-		video.currentTime = isNaN(parsedTime) ? 0 : parsedTime;
-
-		const local = localStorage.getItem(volumeKey) ?? '1';
-		const parsedVol = parseFloat(local);
-		video.volume = isNaN(parsedVol) ? 1 : parsedVol;
-
-		window.setTimeout(() => {
-			ready = true;
-		}, 500);
-	}
-
-	async function onTimeUpdate() {
-		if (!ready) return;
-
-		const time = video.currentTime;
-		if (video.paused) return await debounceUpdate(time);
-
-		await throttleUpdate(time);
-	}
-
-	const debounceUpdate = debounce(postUpdate, 500);
-	const throttleUpdate = throttle(postUpdate, 2000);
-
-	async function postUpdate(time: number) {
-		await apiFetch(`/videos/${data.id}/progress`, {
-			fetch,
-			method: 'POST',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ progress: time })
-		});
-	}
+	onMount(() => {
+		description.innerHTML = formatLinks(data.description);
+	});
 </script>
 
 <svelte:head>
@@ -57,23 +19,10 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<video
-		poster="{baseUrl}/thumbnail.png"
-		on:volumechange={onVolumeChange}
-		on:loadstart={loadPlayer}
-		on:timeupdate={onTimeUpdate}
-		controls
-		playsinline
-		id="video-item"
-		width="100%"
-		bind:this={video}
-	>
-		<source src="{baseUrl}/video.mp4" type="video/mp4" />
-		<track kind="captions" />
-	</video>
+	<div id="video-element"></div>
 	<div>
 		<h2>{data.title}</h2>
-		<p class="whitespace-pre-wrap">{data.description}</p>
+		<p class="whitespace-pre-wrap" bind:this={description}></p>
 		<a href="https://www.youtube.com/watch?v={data.id}" target="_blank" class="btn">
 			Watch on YouTube
 		</a>

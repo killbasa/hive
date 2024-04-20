@@ -7,7 +7,7 @@ RUN apk update --no-cache && \
 ## Depdencies ##
 FROM alpine:3.19 as dependencies
 
-RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.03.10/yt-dlp \
+RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.04.09/yt-dlp \
 		-O /tmp/yt-dlp && \
 	chmod +x /tmp/yt-dlp
 
@@ -35,20 +35,33 @@ LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
 ENV NODE_ENV=production
 ENV PATH=/hive/bin:$PATH
 
-RUN adduser --system --uid 1001 hive && \
+RUN apk add --no-cache nginx=1.24.0-r15 supervisor=4.2.5-r4 && \
+	adduser --system --uid 1001 hive && \
 	addgroup --system --gid 1001 hive && \
-	mkdir -p /var/lib/hive && \
-	mkdir -p /hive/bin && \
-	chown -R hive /var/lib/hive && \
-	chgrp -R hive /var/lib/hive
+	mkdir -p /var/lib/hive && chown -R hive:hive /var/lib/hive && \
+	mkdir -p /hive/bin && chown -R hive:hive /hive/bin
+
+# setup nginx - https://hg.nginx.org/nginx/
+RUN chown -R hive:hive /var/lib/nginx && \
+	chown -R hive:hive /var/log/nginx && \
+	touch /run/nginx/nginx.pid && chown -R hive:hive /run/nginx/nginx.pid
+
+# setup supervisord - https://github.com/Supervisor/supervisor
+RUN mkdir -p /var/log/supervisor && chown -R hive:hive /var/log/supervisor && \
+	mkdir -p /var/run/supervisor && chown -R hive:hive /var/run/supervisor && \
+	touch /hive/supervisord.pid && chown -R hive:hive /hive/supervisord.pid
 
 WORKDIR /hive
 
-USER hive:hive
-
 COPY --from=dependencies --chown=hive:hive /tmp/yt-dlp bin/
+COPY --from=builder --chown=hive:hive /temp/apps/api/supervisord.conf /etc/supervisord.conf
+COPY --from=builder --chown=hive:hive /temp/apps/api/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder --chown=hive:hive /temp/output/ ./
+
+USER hive:hive
 
 VOLUME /var/lib/hive
 
-CMD ["node", "--enable-source-maps", "dist/server.js"]
+EXPOSE 3001
+
+CMD ["/usr/bin/supervisord"]

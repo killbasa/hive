@@ -8,20 +8,29 @@
 	import CardSection from '$components/CardSection.svelte';
 	import { MIMETypes } from '$lib/constants';
 	import { toast } from '$lib/stores/toasts';
+	import { writable } from 'svelte/store';
 
 	export let data: PageData;
 
-	let newUsername = '';
-	let newPassword = '';
-	let oldPassword = '';
-	$: disabled =
-		newUsername === '' ||
-		newPassword === '' ||
-		oldPassword === '' ||
-		newPassword === oldPassword;
+	const auth = writable({
+		username: '',
+		password: '',
+		oldPassword: ''
+	});
 
-	let checkSubscriptions = data.settings.cronSubscription;
-	let downloadQueue = data.settings.cronDownload;
+	$: accountUpdateDisabled =
+		$auth.password === '' || //
+		$auth.oldPassword === '' ||
+		$auth.password === $auth.oldPassword;
+
+	const schedule = writable({
+		checkSubscriptions: data.settings.cronSubscription,
+		downloadQueue: data.settings.cronDownload
+	});
+
+	$: scheduleUpdateDisabled =
+		$schedule.checkSubscriptions === data.settings.cronSubscription && //
+		$schedule.downloadQueue === data.settings.cronDownload;
 
 	async function handleSubmit() {
 		await apiFetch('/auth/logout', {
@@ -38,9 +47,9 @@
 			method: 'PATCH',
 			headers: { 'content-type': MIMETypes.json },
 			body: JSON.stringify({
-				newUsername,
-				newPassword,
-				oldPassword
+				newUsername: $auth.username,
+				newPassword: $auth.password,
+				oldPassword: $auth.oldPassword
 			})
 		});
 
@@ -58,8 +67,8 @@
 			method: 'PATCH',
 			headers: { 'content-type': MIMETypes.json },
 			body: JSON.stringify({
-				cronSubscription: checkSubscriptions,
-				cronDownload: downloadQueue
+				cronSubscription: $schedule.checkSubscriptions,
+				cronDownload: $schedule.downloadQueue
 			})
 		});
 
@@ -102,38 +111,63 @@
 					name="username"
 					placeholder="New username"
 					class="input input-bordered focus:input-primary"
-					bind:value={newUsername}
+					bind:value={$auth.username}
 				/>
 				<input
 					type="password"
 					name="password"
 					placeholder="New password"
 					class="input input-bordered focus:input-primary"
-					bind:value={newPassword}
+					bind:value={$auth.password}
+					required
 				/>
 				<input
 					type="password"
 					name="password"
 					placeholder="Old password"
 					class="input input-bordered focus:input-primary"
-					bind:value={oldPassword}
+					bind:value={$auth.oldPassword}
+					required
 				/>
 				<div class="flex justify-end">
-					<button class="btn btn-success" type="submit" {disabled}>Save</button>
+					<button class="btn btn-success" type="submit" disabled={accountUpdateDisabled}
+						>Save</button
+					>
 				</div>
 			</form>
 		</CardSection>
 	</Card>
 	<Card title="Schedules">
+		<div role="alert" class="alert alert-warning rounded-lg">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="stroke-current shrink-0 h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+				/></svg
+			>
+			<span>Warning: verifying the cron pattern is on you, so make sure it's sane.</span>
+		</div>
 		<form on:submit|preventDefault={handleScheduleUpdate} class="flex flex-col gap-2">
 			<TextInput
 				id="check-subscriptions"
 				title="Check subscriptions"
-				bind:value={checkSubscriptions}
+				bind:value={$schedule.checkSubscriptions}
 			/>
-			<TextInput id="download-queue" title="Download queue" bind:value={downloadQueue} />
+			<TextInput
+				id="download-queue"
+				title="Download queue"
+				bind:value={$schedule.downloadQueue}
+			/>
 			<div class="flex justify-end">
-				<button class="btn btn-success" type="submit">Save</button>
+				<button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}
+					>Save</button
+				>
 			</div>
 		</form>
 	</Card>

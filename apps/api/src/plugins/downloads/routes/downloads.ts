@@ -59,7 +59,7 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 							or(eq(video.status, 'none'), eq(video.status, 'past'))
 						];
 
-						if (data.videoIds && data.videoIds.length > 0) {
+						if (data.videoIds.length > 0) {
 							whereArgs.push(inArray(video.id, data.videoIds));
 						}
 

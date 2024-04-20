@@ -19,8 +19,8 @@
 			/>
 			{#if watchProgress > 0}
 				<progress
-					class="progress-primary h-1"
-					value={Math.floor(watchProgress / 60)}
+					class="progress-primary h-2"
+					value={Math.floor(watchProgress)}
 					max={video.duration}
 				/>
 			{/if}

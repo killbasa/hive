@@ -19,7 +19,7 @@
 	<div>
 		<SearchInput placeholder="Filter videos" defaultFilter={search} />
 	</div>
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-4 lg:grid-cols-3 py-2">
 		{#each data.videos as video (video.id)}
 			<VideoCard {video} />
 		{/each}

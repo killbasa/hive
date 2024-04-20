@@ -19,6 +19,7 @@
 		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
+		"docker:proxy": "docker buildx build -t killbasa/hive-proxy -f apps/proxy/Dockerfile .",
 		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile ."
 	},
 	"devDependencies": {
@@ -44,7 +45,9 @@
 	"engines": {
 		"node": ">=20.x"
 	},
+	"packageManager": "pnpm@9.0.2",
 	"volta": {
-		"node": "21.7.3"
+		"node": "21.7.3",
+		"pnpm": "9.0.2"
 	}
 }

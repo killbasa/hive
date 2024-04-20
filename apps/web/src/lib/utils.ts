@@ -28,3 +28,30 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number
 		}, delay);
 	} as T;
 }
+
+const UNITS = ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte', 'petabyte'];
+const BYTES_PER_KB = 1000;
+
+export function humanFileSize(sizeBytes: number | bigint): string {
+	let size = Math.abs(Number(sizeBytes));
+
+	let u = 0;
+	while (size >= BYTES_PER_KB && u < UNITS.length - 1) {
+		size /= BYTES_PER_KB;
+		++u;
+	}
+
+	return new Intl.NumberFormat([], {
+		style: 'unit',
+		unit: UNITS[u],
+		unitDisplay: 'short',
+		maximumFractionDigits: 1
+	}).format(size);
+}
+
+export function formatLinks(description: string): string {
+	return description.replace(
+		/(?:https|http):\/\/\S+/g,
+		'<a href="$&" target="_blank" class="link link-primary">$&</a>'
+	);
+}

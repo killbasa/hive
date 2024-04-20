@@ -21,9 +21,11 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 			if (query.search) whereArgs.push(like(videos.title, `%${query.search}%`));
 			if (query.inProgress) whereArgs.push(gt(videos.watchProgress, 0));
 
+			const where = and(...whereArgs);
+
 			const [result, countRes] = await Promise.all([
 				db.query.videos.findMany({
-					where: and(...whereArgs),
+					where,
 					orderBy: (video, { desc }) => desc(video.updatedAt),
 					limit: query.inProgress ? 4 : 25,
 					offset: (query.page - 1) * 24
@@ -31,7 +33,7 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 				db //
 					.select({ total: count() })
 					.from(videos)
-					.where(and(...whereArgs))
+					.where(where)
 			]);
 
 			return await reply.send({ videos: result, total: countRes[0].total });
