@@ -2,7 +2,11 @@
 FROM node:21.7.3-alpine3.19 as base
 
 RUN apk update --no-cache && \
-	apk add --no-cache python3=3.11.8-r0 ffmpeg=6.1.1-r0
+	apk add --no-cache \
+		python3=3.11.9-r0 \
+		ffmpeg=6.1.1-r0 \
+		nginx=1.24.0-r15 \
+		supervisor=4.2.5-r4
 
 ## Depdencies ##
 FROM alpine:3.19 as dependencies
@@ -35,8 +39,7 @@ LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
 ENV NODE_ENV=production
 ENV PATH=/hive/bin:$PATH
 
-RUN apk add --no-cache nginx=1.24.0-r15 supervisor=4.2.5-r4 && \
-	adduser --system --uid 1001 hive && \
+RUN adduser --system --uid 1001 hive && \
 	addgroup --system --gid 1001 hive && \
 	mkdir -p /var/lib/hive && chown -R hive:hive /var/lib/hive && \
 	mkdir -p /hive/bin && chown -R hive:hive /hive/bin
