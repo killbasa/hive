@@ -50,9 +50,9 @@
 	"engines": {
 		"node": ">=20.x"
 	},
-	"packageManager": "pnpm@9.0.2",
+	"packageManager": "pnpm@9.0.4",
 	"volta": {
 		"node": "21.7.3",
-		"pnpm": "9.0.2"
+		"pnpm": "9.0.4"
 	}
 }

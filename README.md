@@ -2,9 +2,9 @@
 
 YouTube channel archiver
 
-## Note
+## ⚠️ Warning ⚠️
 
-This is under active development and should not be used. Only nightly builds will be available.
+This is under active development and should not be used. Only nightly builds will be available for now.
 
 ## Installation
 
@@ -57,6 +57,22 @@ networks:
   hive:
 ```
 
+## Using your own yt-dlp binary
+
+This would be considered advanced usage since Hive already comes with a version of yt-dlp installed, however you could provide your own if you wish.
+
+You can do so by adding the following mount on the `hive` image:
+
+```yaml
+volumes:
+	...
+	- ./path/to/binary:/hive/bin/yt-dlp:ro
+```
+
+### Supported yt-dlp versions
+
+The only version of yt-dlp that is guarateed to work is the version that is bundled in the Docker image. Once this project stabilizes a table specifying the yt-dlp versions support by each Hive release.
+
 ## Contibuting
 
 1. Download yt-dlp binary
@@ -77,7 +93,7 @@ cp apps/web/.env.example apps/web/.env
 3. Start services
 
 ```sh
-docker compose up -d
+docker compose -f apps/api/compose.yml up -d
 ```
 
 4. Build applications
