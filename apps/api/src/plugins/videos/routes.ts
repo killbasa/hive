@@ -16,7 +16,9 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 			const query = VideoQuerySchema.parse(request.query);
 			const whereArgs: (SQLWrapper | undefined)[] = [];
 
-			if (query.status) whereArgs.push(eq(videos.downloadStatus, query.status));
+			if (query.type) whereArgs.push(inArray(videos.type, query.type));
+			if (query.status) whereArgs.push(inArray(videos.status, query.status));
+			if (query.downloadStatus) whereArgs.push(inArray(videos.downloadStatus, query.downloadStatus));
 			if (query.channelId) whereArgs.push(eq(videos.channelId, query.channelId));
 			if (query.search) whereArgs.push(like(videos.title, `%${query.search}%`));
 			if (query.inProgress) whereArgs.push(gt(videos.watchProgress, 0));
@@ -27,7 +29,7 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 				db.query.videos.findMany({
 					where,
 					orderBy: (video, { desc }) => desc(video.updatedAt),
-					limit: query.inProgress ? 4 : 25,
+					limit: query.inProgress ? 4 : 24,
 					offset: (query.page - 1) * 24
 				}),
 				db //

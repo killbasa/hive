@@ -3,7 +3,10 @@ import type { Video } from '@hive/common';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params }) => {
-	const response = await apiFetch<Video<true>>(`/videos/${params.videoId}`, { fetch });
+	const response = await apiFetch<Video<true>>(`/videos/${params.videoId}`, {
+		fetch,
+		method: 'GET'
+	});
 
 	return await response.json();
 };

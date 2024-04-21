@@ -12,7 +12,7 @@
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
 	import { StatusEvent, type DownloadProgress, type DownloadStatus } from '@hive/common';
-	import { humanFileSize } from '$lib/utils';
+	import { formatDuration, formatFileSize } from '$lib/utils';
 
 	type DownloadInfo = {
 		id: string;
@@ -163,21 +163,6 @@
 		};
 	});
 
-	function formatDuration(value: string) {
-		const num = parseInt(value, 10);
-		const hours = Math.floor(num / 3600);
-		const minutes = `${Math.floor((num % 3600) / 60)}`.padStart(2, '0');
-		const seconds = `${Math.floor(num % 60)}`.padStart(2, '0');
-
-		return `${hours === 0 ? '' : `${hours}:`}${minutes}:${seconds}`;
-	}
-
-	function formatFileSize(value: unknown) {
-		if (typeof value !== 'string') return 'N/A';
-		const num = BigInt(value);
-		return humanFileSize(num);
-	}
-
 	$: disabled = selectedVideos.length === 0;
 </script>
 
@@ -186,70 +171,76 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<Card title="Scanning">
-		{#if scanInfo}
-			<div class="avatar">
-				<div class="mask mask-circle h-12 w-12">
-					<img
-						src="{config.apiUrl}/assets/{scanInfo.channelId}/assets/thumbnail.avatar_uncropped.jpg"
-						alt="Channel avatar"
-					/>
+	<div class="grid grid-cols-2 gap-4">
+		<Card title="Downloading">
+			{#if downloadInfo}
+				<div class="flex items-center gap-3">
+					<div class="w-96">
+						<img
+							src="{config.apiUrl}/assets/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
+							alt="Video thumbnail"
+						/>
+					</div>
 				</div>
-			</div>
-			<a
-				class="font-bold"
-				target="_blank"
-				href="https://www.youtube.com/channel/{scanInfo.channelId}"
-			>
-				{scanInfo.channelId}
-			</a>
-			<div>
-				<span>{scanInfo.channelPos} / {scanInfo.channelTotal}</span>
+				<a
+					class="font-bold"
+					target="_blank"
+					href="https://www.youtube.com/watch?v={downloadInfo.id}"
+				>
+					{downloadInfo.title}
+				</a>
+				<div>
+					<span>{downloadInfo.percentage}%</span>
+					<span>({downloadInfo.progress.eta} @ {downloadInfo.progress.speed})</span>
+				</div>
 				<progress
 					class="progress progress-success"
-					value={scanInfo.channelPos}
-					max={scanInfo.channelTotal}
+					value={downloadInfo.percentage}
+					max="100"
 				/>
-			</div>
-			<div>
-				<span>{scanInfo.videoPos} / {scanInfo.videoTotal}</span>
-				<progress
-					class="progress progress-success"
-					value={scanInfo.videoPos}
-					max={scanInfo.videoTotal}
-				/>
-			</div>
-		{:else}
-			None
-		{/if}
-	</Card>
-	<Card title="Downloading">
-		{#if downloadInfo}
-			<div class="flex items-center gap-3">
-				<div class="w-96">
-					<img
-						src="{config.apiUrl}/assets/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
-						alt="Video thumbnail"
+				<button class="btn btn-error w-min" type="button" on:click={stop}>Stop</button>
+			{:else}
+				None
+			{/if}
+		</Card>
+		<Card title="Scanning">
+			{#if scanInfo}
+				<div class="avatar">
+					<div class="mask mask-circle h-12 w-12">
+						<img
+							src="{config.apiUrl}/assets/{scanInfo.channelId}/assets/thumbnail.avatar_uncropped.jpg"
+							alt="Channel avatar"
+						/>
+					</div>
+				</div>
+				<a
+					class="font-bold"
+					target="_blank"
+					href="https://www.youtube.com/channel/{scanInfo.channelId}"
+				>
+					{scanInfo.channelId}
+				</a>
+				<div>
+					<span>{scanInfo.channelPos} / {scanInfo.channelTotal}</span>
+					<progress
+						class="progress progress-success"
+						value={scanInfo.channelPos}
+						max={scanInfo.channelTotal}
 					/>
 				</div>
-			</div>
-			<a
-				class="font-bold"
-				target="_blank"
-				href="https://www.youtube.com/watch?v={downloadInfo.id}"
-			>
-				{downloadInfo.title}
-			</a>
-			<div>
-				<span>{downloadInfo.percentage}%</span>
-				<span>({downloadInfo.progress.eta} @ {downloadInfo.progress.speed})</span>
-			</div>
-			<progress class="progress progress-success" value={downloadInfo.percentage} max="100" />
-			<button class="btn btn-error w-min" type="button" on:click={stop}>Stop</button>
-		{:else}
-			None
-		{/if}
-	</Card>
+				<div>
+					<span>{scanInfo.videoPos} / {scanInfo.videoTotal}</span>
+					<progress
+						class="progress progress-success"
+						value={scanInfo.videoPos}
+						max={scanInfo.videoTotal}
+					/>
+				</div>
+			{:else}
+				None
+			{/if}
+		</Card>
+	</div>
 	<Card title="Downloads ({downloads.length}/{data.total})">
 		<div class="justify-between flex">
 			<div class="flex gap-2">
@@ -296,7 +287,7 @@
 							</label>
 						</th>
 						<td>
-							<VideoStatusBadge status={video.status} />
+							<VideoStatusBadge type={video.type} />
 						</td>
 						<td>
 							<div class="flex items-center gap-3">
@@ -324,8 +315,8 @@
 				{/each}
 			</tbody>
 		</table>
-		<div class="card-actions justify-center">
+		<svelte:fragment slot="footer">
 			<Pagination count={data.videos.length} total={data.total} />
-		</div>
+		</svelte:fragment>
 	</Card>
 </section>

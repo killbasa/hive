@@ -8,7 +8,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		comments: number;
 		scanQueue: number;
 		downloadQueue: number;
-	}>('/stats', { fetch });
+	}>('/stats', { fetch, method: 'GET' });
 
 	return await response.json();
 };

@@ -1,0 +1,14 @@
+.github/
+.husky/
+.vscode/
+**/bin/
+**/data/
+**/node_modules/
+tests/
+.editorconfig
+.gitattributes
+.gitignore
+compose.yml
+compose.*.yml
+LICENSE
+README.md

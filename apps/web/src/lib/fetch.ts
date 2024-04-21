@@ -1,11 +1,14 @@
 import { config } from './config';
 
+type RequestOptions = Omit<RequestInit, 'credentials'> & {
+	fetch: typeof window.fetch;
+	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+	searchParams?: Record<string, string | number | boolean | undefined | null | string[]>;
+};
+
 export async function apiFetch<T>(
 	path: string,
-	options: RequestInit & {
-		fetch: typeof window.fetch;
-		searhParams?: Record<string, string | number | boolean | undefined | null>;
-	}
+	options: RequestOptions
 ): Promise<{
 	raw: Response;
 	json: () => Promise<T>;
@@ -13,17 +16,17 @@ export async function apiFetch<T>(
 }> {
 	const url = new URL(path, config.apiUrl);
 
-	if (options.searhParams) {
-		for (const [key, value] of Object.entries(options.searhParams)) {
+	if (options.searchParams) {
+		for (const [key, value] of Object.entries(options.searchParams)) {
 			if (value === null || value === undefined) continue;
 			url.searchParams.append(key, value.toString());
 		}
 	}
 
-	const response = await options.fetch(url.href, {
-		...options,
-		credentials: 'include'
-	});
+	const request: RequestInit = options;
+	request.credentials = 'include';
+
+	const response = await options.fetch(url.href, request);
 
 	return {
 		raw: response,

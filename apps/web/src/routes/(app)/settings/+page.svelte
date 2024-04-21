@@ -13,7 +13,6 @@
 	export let data: PageData;
 
 	const auth = writable({
-		username: '',
 		password: '',
 		oldPassword: ''
 	});
@@ -47,7 +46,6 @@
 			method: 'PATCH',
 			headers: { 'content-type': MIMETypes.json },
 			body: JSON.stringify({
-				newUsername: $auth.username,
 				newPassword: $auth.password,
 				oldPassword: $auth.oldPassword
 			})
@@ -98,7 +96,7 @@
 		</span>
 	</Card>
 	<Card title="Account">
-		<span class="text-lg">User: {data.user.username}</span>
+		<span class="text-lg">User: {data.user.name}</span>
 
 		<CardSection title="Session">
 			<button on:click={handleSubmit} class=" btn btn-error w-min">Logout</button>
@@ -106,13 +104,6 @@
 
 		<CardSection title="Update account info">
 			<form on:submit|preventDefault={handleAccountUpdate} class="flex flex-col gap-2">
-				<input
-					type="text"
-					name="username"
-					placeholder="New username"
-					class="input input-bordered focus:input-primary"
-					bind:value={$auth.username}
-				/>
 				<input
 					type="password"
 					name="password"

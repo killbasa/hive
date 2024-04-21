@@ -4,9 +4,9 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	const [versionRes, userRes, settingsRes] = await Promise.all([
-		apiFetch<VersionData>('/version', { fetch }),
-		apiFetch<{ username: string }>('/users', { fetch }),
-		apiFetch<HiveSettings>('/settings', { fetch })
+		apiFetch<VersionData>('/version', { fetch, method: 'GET' }),
+		apiFetch<{ name: string }>('/users', { fetch, method: 'GET' }),
+		apiFetch<HiveSettings>('/settings', { fetch, method: 'GET' })
 	]);
 
 	const [version, user, settings] = await Promise.all([

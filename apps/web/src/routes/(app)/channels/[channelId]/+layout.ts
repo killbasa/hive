@@ -5,7 +5,8 @@ import type { Channel } from '@hive/common';
 
 export const load: LayoutLoad = async ({ fetch, params }) => {
 	const channel = await apiFetch<Channel>(`/channels/${params.channelId}`, {
-		fetch
+		fetch,
+		method: 'GET'
 	});
 
 	if (channel.raw.status === 404) {

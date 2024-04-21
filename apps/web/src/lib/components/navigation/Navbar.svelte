@@ -23,9 +23,6 @@
 		</ul>
 
 		<ul class="flex flex-row">
-			<a href="/stats" class="text-lg px-4 {style}">
-				<li>Stats</li>
-			</a>
 			<a href="/settings" class="text-lg px-4 {style}">
 				<li>Settings</li>
 			</a>

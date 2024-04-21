@@ -15,7 +15,7 @@
 			return;
 		}
 
-		const response = await apiFetch<{ message: string }>('/auth/signup', {
+		const response = await apiFetch<{ message: string }>('/auth/credentials/signup', {
 			fetch,
 			method: 'POST',
 			headers: { 'content-type': MIMETypes.json },

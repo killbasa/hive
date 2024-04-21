@@ -188,13 +188,13 @@ export const users = sqliteTable(
 	'users',
 	{
 		id: integer('id').primaryKey(),
-		username: text('username').unique().notNull(),
+		name: text('name').unique().notNull(),
 		password: text('password').notNull()
 	},
 	(table) => {
 		return {
 			idx: index('user_idx').on(table.id),
-			usernameIdx: index('user_username_idx').on(table.username)
+			nameIdx: index('user_name_idx').on(table.name)
 		};
 	}
 );

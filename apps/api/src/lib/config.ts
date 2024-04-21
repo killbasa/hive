@@ -11,7 +11,7 @@ const ConfigSchema = z.object({
 	PORT: z.coerce.number().default(3002),
 	AUTH_SECRET: z.string(),
 	AUTH_ORIGIN: z.string(),
-	AUTH_COOKIE_NAME: z.string().default('hive-auth'),
+	AUTH_COOKIE_NAME: z.string().default('hive'),
 	REDIS_HOST: z.string().default('localhost'),
 	REDIS_PORT: z.coerce.number().default(6379),
 	REDIS_PASSWORD: z.string().default('password'),

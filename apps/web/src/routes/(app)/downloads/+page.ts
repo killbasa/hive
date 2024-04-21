@@ -12,8 +12,10 @@ export const load: PageLoad = async ({ fetch, depends, url }) => {
 	const [pendingVideos] = await Promise.all([
 		apiFetch<{ videos: Video[]; total: number }>('/videos', {
 			fetch,
-			searhParams: {
-				status: 'pending',
+			method: 'GET',
+			searchParams: {
+				status: ['none', 'past'],
+				downloadStatus: ['pending'],
 				search,
 				page
 			}

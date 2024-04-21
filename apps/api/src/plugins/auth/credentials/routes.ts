@@ -1,5 +1,4 @@
 import { LoginSchema, SignupSchema } from './schemas.js';
-import { checkToken } from '../tokens.js';
 import { cookies } from '../cookies.js';
 import { db } from '../../../db/client.js';
 import { users } from '../../../db/schema.js';
@@ -17,7 +16,7 @@ export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
 				const data = LoginSchema.parse(request.body);
 
 				const user = await db.query.users.findFirst({
-					where: eq(users.username, data.username)
+					where: eq(users.name, data.username)
 				});
 				if (user === undefined) {
 					await reply.code(401).send({ message: 'Invalid username or password' });
@@ -31,7 +30,7 @@ export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
 				}
 
 				const token = server.jwt.sign({
-					name: user.username
+					name: user.name
 				});
 
 				const cookie = cookies.create(data.remember);
@@ -57,7 +56,7 @@ export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
 				const data = SignupSchema.parse(request.body);
 
 				const user = await db.query.users.findFirst({
-					where: eq(users.username, data.username)
+					where: eq(users.name, data.username)
 				});
 				if (user !== undefined) {
 					await reply.code(400).send({ message: 'Username already exists' });
@@ -69,31 +68,12 @@ export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
 				await db
 					.insert(users)
 					.values({
-						username: data.username,
+						name: data.username,
 						password: result
 					})
 					.execute();
 
 				await reply.status(201).send();
-			}
-		);
-
-		done();
-	});
-
-	await server.register((instance, _, done) => {
-		instance.addHook('onRequest', checkToken);
-
-		instance.post(
-			'/logout', //
-			{ schema: { tags: ['Auth'] } },
-			async (_, reply): Promise<void> => {
-				const cookie = cookies.delete();
-
-				await reply //
-					.clearCookie(config.AUTH_COOKIE_NAME, cookie)
-					.code(200)
-					.send();
 			}
 		);
 

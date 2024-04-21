@@ -4,7 +4,7 @@ export const authentication: Handle = async ({ event, resolve }) => {
 	const { cookies } = event;
 	const path = new URL(event.request.url).pathname;
 
-	const cookie = cookies.get('hive-auth');
+	const cookie = cookies.get('hive');
 
 	if (cookie === undefined) {
 		if (path === '/login') {
@@ -12,6 +12,10 @@ export const authentication: Handle = async ({ event, resolve }) => {
 		} else {
 			redirect(307, '/login');
 		}
+	}
+
+	if (path === '/logout') {
+		return resolve(event);
 	}
 
 	if (path === '/signup' || path === '/login') {

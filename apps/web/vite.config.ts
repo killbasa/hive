@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	optimizeDeps: {
-		entries: ['pretty-bytes']
+		entries: ['pretty-bytes', 'zod']
 	},
 	server: {
 		port: 3000,

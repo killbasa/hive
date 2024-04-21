@@ -5,8 +5,9 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ fetch }) => {
 	const videos = await apiFetch<{ videos: Video[] }>('/videos', {
 		fetch,
-		searhParams: {
-			status: 'done',
+		method: 'GET',
+		searchParams: {
+			downloadStatus: ['done'],
 			inProgress: true
 		}
 	});

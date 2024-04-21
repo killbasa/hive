@@ -19,7 +19,7 @@
 
 	let pages: { label: string; value: number; disabled: boolean; current: boolean }[];
 	$: pages = [-2, -1, 0, 1, 2].map((entry) => {
-		let result = pageNumber + entry;
+		const result = pageNumber + entry;
 
 		return {
 			label: result < 1 ? '' : `${result}`,

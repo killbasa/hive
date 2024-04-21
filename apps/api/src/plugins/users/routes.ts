@@ -6,7 +6,6 @@ import { users } from '../../db/schema.js';
 import { config } from '../../lib/config.js';
 import { hash, verify } from 'argon2';
 import { eq } from 'drizzle-orm';
-import { timingSafeEqual } from 'node:crypto';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const userRoutes: FastifyPluginCallback = async (server) => {
@@ -18,8 +17,8 @@ export const userRoutes: FastifyPluginCallback = async (server) => {
 			{ schema: { tags: ['Users'] } },
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
-					where: eq(users.username, request.user.name),
-					columns: { username: true }
+					where: eq(users.name, request.user.name),
+					columns: { name: true }
 				});
 
 				if (!user) {
@@ -28,7 +27,7 @@ export const userRoutes: FastifyPluginCallback = async (server) => {
 				}
 
 				await reply.code(200).send({
-					username: user.username,
+					name: user.name,
 					roles: []
 				});
 			}
@@ -39,7 +38,7 @@ export const userRoutes: FastifyPluginCallback = async (server) => {
 			{ schema: { tags: ['Users'] } },
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
-					where: eq(users.username, request.user.name)
+					where: eq(users.name, request.user.name)
 				});
 				if (user === undefined) {
 					await reply.code(401).send({ message: 'Invalid username or password' });
@@ -54,25 +53,14 @@ export const userRoutes: FastifyPluginCallback = async (server) => {
 					return;
 				}
 
-				if (data.oldPassword.length === data.newPassword.length) {
-					const oldPassBuffer = Buffer.from(data.oldPassword);
-					const newPassBuffer = Buffer.from(data.newPassword);
-
-					if (timingSafeEqual(oldPassBuffer, newPassBuffer)) {
-						await reply.code(401).send({ message: 'Invalid username or password' });
-						return;
-					}
-				}
-
 				const newHash = await hash(data.newPassword);
 
 				await db //
 					.update(users)
 					.set({
-						username: data.newUsername,
 						password: newHash
 					})
-					.where(eq(users.username, request.user.name))
+					.where(eq(users.name, request.user.name))
 					.execute();
 
 				const cookie = cookies.delete();

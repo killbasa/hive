@@ -57,8 +57,8 @@ RUN mkdir -p /var/log/supervisor && chown -R hive:hive /var/log/supervisor && \
 WORKDIR /hive
 
 COPY --from=dependencies --chown=hive:hive /tmp/yt-dlp bin/
-COPY --from=builder --chown=hive:hive /temp/apps/api/supervisord.conf /etc/supervisord.conf
-COPY --from=builder --chown=hive:hive /temp/apps/api/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder --chown=hive:hive /temp/apps/api/configs/supervisord.conf /etc/supervisord.conf
+COPY --from=builder --chown=hive:hive /temp/apps/api/configs/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder --chown=hive:hive /temp/output/ ./
 
 USER hive:hive

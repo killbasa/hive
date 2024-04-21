@@ -12,5 +12,9 @@
 			<slot />
 		</div>
 	</div>
-	<slot name="footer" />
+	{#if $$slots.footer}
+		<div class="card-actions justify-center border-t py-4 mx-6">
+			<slot name="footer" />
+		</div>
+	{/if}
 </div>

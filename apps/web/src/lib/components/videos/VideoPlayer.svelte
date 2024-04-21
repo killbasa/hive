@@ -6,25 +6,29 @@
 	import { getVideoContext } from '$lib/stores/video';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
+	import { Time } from '@hive/common';
 	import { onMount } from 'svelte';
 
 	let element: HTMLVideoElement;
 	let divElement: HTMLDivElement;
 	let ready = false;
 	let hide = false;
+
 	$: currentTime = 0;
+	$: isWatchPage = $page.url.pathname.startsWith('/watch');
 
 	const video = getVideoContext();
 
 	video.subscribe((data) => {
 		hide = data === null;
+
+		if (data !== null) {
+			localStorage.setItem('currentVideo', data.id);
+		}
 	});
 
-	const volumeKey = 'videoVolume';
-	$: baseUrl = `${config.apiUrl}/assets/${$video?.channelId}/videos/${$video?.id}`;
-
 	function onVolumeChange() {
-		localStorage.setItem(volumeKey, element.volume.toString());
+		localStorage.setItem('videoVolume', element.volume.toString());
 	}
 
 	function loadPlayer(): void {
@@ -34,7 +38,7 @@
 		currentTime = isNaN(parsedTime) ? 0 : parsedTime;
 		element.currentTime = currentTime;
 
-		const local = localStorage.getItem(volumeKey) ?? '1';
+		const local = localStorage.getItem('videoVolume') ?? '1';
 		const parsedVol = parseFloat(local);
 		element.volume = isNaN(parsedVol) ? 1 : parsedVol;
 
@@ -55,8 +59,8 @@
 		}
 	}
 
-	const debounceUpdate = debounce(postUpdate, 1000);
-	const throttleUpdate = throttle(postUpdate, 2000);
+	const debounceUpdate = debounce(postUpdate, Time.Second);
+	const throttleUpdate = throttle(postUpdate, Time.Second * 2);
 
 	async function postUpdate(time: number) {
 		if (!$video) return;
@@ -78,34 +82,32 @@
 	}
 
 	function mountVideo() {
-		if (!isWatchPage && element && element.paused) {
-			closeVideo();
-		}
-
 		const watchPageElement = document.getElementById('video-element');
-		if (isWatchPage && watchPageElement) {
+
+		if (isWatchPage && watchPageElement && !watchPageElement.hasChildNodes()) {
 			watchPageElement.appendChild(element);
-		} else if (!isWatchPage && element) {
+		} else if (!isWatchPage && element && !divElement.hasChildNodes()) {
 			divElement.appendChild(element);
 		}
 	}
 
-	$: isWatchPage = $page.url.pathname.startsWith('/watch');
+	afterNavigate((data) => {
+		if (data.from === null) return;
 
-	afterNavigate(() => {
 		mountVideo();
 	});
 
-	onMount(() => {
-		mountVideo();
-	});
+	if (import.meta.hot) {
+		onMount(() => {
+			mountVideo();
+		});
+	}
 </script>
 
 <div
 	class="flex flex-col rounded-lg overflow-hidden {$video && isWatchPage
 		? 'w-full'
 		: 'fixed bottom-2 right-2 w-[400px]'}"
-	bind:this={divElement}
 >
 	{#if $video}
 		{#if !isWatchPage}
@@ -122,13 +124,14 @@
 			max={$video.duration}
 		/>
 	{/if}
+	<div bind:this={divElement}></div>
 </div>
 
 {#if $video}
 	{#key $video.id}
 		<video
 			id={Date.now().toString()}
-			poster="{baseUrl}/thumbnail.png"
+			poster="{config.apiUrl}/assets/{$video.channelId}/videos/{$video.id}/thumbnail.png"
 			on:volumechange={onVolumeChange}
 			on:loadstart={loadPlayer}
 			on:timeupdate={onTimeUpdate}
@@ -138,7 +141,10 @@
 			hidden={hide}
 			bind:this={element}
 		>
-			<source src="{baseUrl}/video.mp4" type="video/mp4" />
+			<source
+				src="{config.apiUrl}/assets/{$video.channelId}/videos/{$video.id}/video.mp4"
+				type="video/mp4"
+			/>
 			<track kind="captions" />
 		</video>
 	{/key}

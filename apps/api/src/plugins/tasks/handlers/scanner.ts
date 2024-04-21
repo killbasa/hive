@@ -44,7 +44,6 @@ export const handleDownloadChannelTask: TaskHandler<ScannerDownloadChannelTask> 
 
 export const handleChannelScanTask: TaskHandler<ScannerScanChannelTask> = async ({ channelId, position, total }) => {
 	server.log.info(`scanning channel videos: ${channelId}`);
-	scansInProgress.scan = true;
 
 	const videoIds = await getVideoIds(channelId);
 
@@ -58,6 +57,8 @@ export const handleChannelScanTask: TaskHandler<ScannerScanChannelTask> = async 
 		server.log.info(`no new videos found: ${channelId}`);
 		return;
 	}
+
+	scansInProgress.scan = true;
 
 	for (const [index, videoId] of newVideoIds.entries()) {
 		const result = await downloadVideoAssets(videoId);

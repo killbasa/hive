@@ -10,7 +10,8 @@ export const load: PageLoad = async ({ fetch, depends, url }) => {
 
 	const response = await apiFetch<{ channels: Channel[]; total: number }>('/channels', {
 		fetch,
-		searhParams: { page }
+		method: 'GET',
+		searchParams: { page }
 	});
 
 	const data = await response.json();

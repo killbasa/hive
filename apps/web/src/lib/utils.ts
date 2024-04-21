@@ -55,3 +55,18 @@ export function formatLinks(description: string): string {
 		'<a href="$&" target="_blank" class="link link-primary">$&</a>'
 	);
 }
+
+export function formatDuration(value: string) {
+	const num = parseInt(value, 10);
+	const hours = Math.floor(num / 3600);
+	const minutes = `${Math.floor((num % 3600) / 60)}`.padStart(2, '0');
+	const seconds = `${Math.floor(num % 60)}`.padStart(2, '0');
+
+	return `${hours === 0 ? '' : `${hours}:`}${minutes}:${seconds}`;
+}
+
+export function formatFileSize(value: unknown): string {
+	if (typeof value !== 'string') return 'N/A';
+	const num = BigInt(value);
+	return humanFileSize(num);
+}

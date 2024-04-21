@@ -8,6 +8,7 @@
 	import type { PageData } from './$types';
 	import type { Channel } from '@hive/common';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
+	import { toast } from '$lib/stores/toasts';
 
 	export let data: PageData;
 
@@ -23,6 +24,7 @@
 		});
 
 		channelId = '';
+		toast.success('Channel added');
 	}
 
 	function toggleModal() {
@@ -78,9 +80,9 @@
 				{/each}
 			</tbody>
 		</table>
-		<div class="card-actions justify-center">
+		<svelte:fragment slot="footer">
 			<Pagination count={data.channels.length} total={data.totalChannels} />
-		</div>
+		</svelte:fragment>
 	</Card>
 	<dialog id="AddModal" class="modal" bind:this={modal}>
 		<div class="modal-box">

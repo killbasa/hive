@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { updatePage } from '$lib/navigation';
 	import { debounce } from '$lib/utils';
 
 	export let placeholder: string;
 	export let delay = 250;
-	export let defaultFilter = '';
 
-	let filterValue = defaultFilter;
 	let input: HTMLInputElement;
+	$: filterValue = $page.url.searchParams.get('search') || '';
 
 	const handleFilter = debounce(async () => {
 		await updatePage(

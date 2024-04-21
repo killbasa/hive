@@ -9,7 +9,7 @@
 	let remember = false;
 
 	async function handleSubmit() {
-		const response = await apiFetch<{ message: string }>('/auth/login', {
+		const response = await apiFetch<{ message: string }>('/auth/credentials/login', {
 			fetch,
 			method: 'POST',
 			headers: { 'content-type': MIMETypes.json },

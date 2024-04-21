@@ -11,8 +11,8 @@ export const load: PageLoad = async ({ fetch, url, params }) => {
 		fetch,
 		method: 'GET',
 		searchParams: {
-			type: ['video'],
-			downloadStatus: ['done'],
+			status: ['none', 'past'],
+			downloadStatus: ['pending'],
 			channelId: params.channelId,
 			search,
 			page

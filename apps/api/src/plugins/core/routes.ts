@@ -5,7 +5,7 @@ import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
 import { count } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
-export const rootRoutes: FastifyPluginCallback = async (server) => {
+export const coreRoutes: FastifyPluginCallback = async (server) => {
 	await server.register((instance, _, done) => {
 		instance.get(
 			'/heartbeat', //

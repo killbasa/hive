@@ -48,7 +48,7 @@ CREATE TABLE `stream_comments` (
 --> statement-breakpoint
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY NOT NULL,
-	`username` text NOT NULL,
+	`name` text NOT NULL,
 	`password` text NOT NULL
 );
 --> statement-breakpoint
@@ -79,9 +79,9 @@ CREATE INDEX `playlist_channel_idx` ON `playlists` (`channel_id`);--> statement-
 CREATE INDEX `setting_idx` ON `settings` (`id`);--> statement-breakpoint
 CREATE INDEX `streamcomment_idx` ON `stream_comments` (`id`);--> statement-breakpoint
 CREATE INDEX `streamcomment_video_idx` ON `stream_comments` (`video_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);--> statement-breakpoint
+CREATE UNIQUE INDEX `users_name_unique` ON `users` (`name`);--> statement-breakpoint
 CREATE INDEX `user_idx` ON `users` (`id`);--> statement-breakpoint
-CREATE INDEX `user_username_idx` ON `users` (`username`);--> statement-breakpoint
+CREATE INDEX `user_name_idx` ON `users` (`name`);--> statement-breakpoint
 CREATE INDEX `video_idx` ON `videos` (`id`);--> statement-breakpoint
 CREATE INDEX `video_channel_idx` ON `videos` (`channel_id`);--> statement-breakpoint
 CREATE INDEX `video_playlist_idx` ON `videos` (`playlist_id`);
