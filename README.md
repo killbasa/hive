@@ -65,7 +65,7 @@ You can do so by adding the following mount on the `hive` image:
 
 ```yaml
 volumes:
-  - ./path/to/binary:/hive/bin/yt-dlp:ro
+  - /path/to/binary:/hive/bin/yt-dlp:ro
 ```
 
 ### Supported yt-dlp versions
