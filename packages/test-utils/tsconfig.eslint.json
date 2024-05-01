@@ -6,10 +6,7 @@
 	},
 	"include": [
 		"src", //
-		"scripts",
 		".eslintrc.cjs",
-		"drizzle.config.ts",
-		"tsup.config.ts",
-		"vitest.config.ts"
+		"tsup.config.ts"
 	]
 }

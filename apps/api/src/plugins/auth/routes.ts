@@ -1,6 +1,6 @@
 import { cookies } from './cookies.js';
 import { credentialAuthRoutes } from './credentials/routes.js';
-import { checkToken } from './tokens.js';
+import { tokenHandler } from './tokens.js';
 import { config } from '../../lib/config.js';
 import type { FastifyPluginCallback } from 'fastify';
 
@@ -8,7 +8,7 @@ export const authRoutes: FastifyPluginCallback = async (server) => {
 	await server.register(credentialAuthRoutes, { prefix: 'credentials' });
 
 	await server.register((instance, _, done) => {
-		instance.addHook('onRequest', checkToken);
+		instance.addHook('onRequest', tokenHandler);
 
 		instance.get(
 			'/verify', //

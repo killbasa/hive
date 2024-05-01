@@ -12,7 +12,7 @@
 <Card>
 	<p class="whitespace-pre-wrap">{data.channel.description}</p>
 	<div class="flex gap-1 flex-wrap">
-		{#each data.channel.tags.split(',') as tag}
+		{#each data.channel.tags as tag}
 			<span class="badge badge-neutral whitespace-nowrap pb-0.5">{tag}</span>
 		{/each}
 	</div>

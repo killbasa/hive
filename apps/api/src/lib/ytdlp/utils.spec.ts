@@ -1,4 +1,4 @@
-import { parseDurationString } from '../src/lib/ytdlp/utils.js';
+import { parseDurationString } from './utils.js';
 import { describe, expect, test } from 'vitest';
 
 describe('parseDurationString', () => {

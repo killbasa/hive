@@ -5,7 +5,6 @@
 	import type { PageData } from './$types';
 	import Card from '$components/Card.svelte';
 	import { apiFetch } from '$lib/fetch';
-	import { invalidate } from '$app/navigation';
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import { MIMETypes } from '$lib/constants';
 	import SearchInput from '$components/SearchInput.svelte';
@@ -13,6 +12,7 @@
 	import { toast } from '$lib/stores/toasts';
 	import { StatusEvent, type DownloadProgress, type DownloadStatus } from '@hive/common';
 	import { formatDuration, formatFileSize } from '$lib/utils';
+	import { invalidate } from '$app/navigation';
 
 	type DownloadInfo = {
 		id: string;
@@ -139,6 +139,7 @@
 			}
 
 			// Check channel total
+			// Don't refresh if there's more channels?
 			if (update.type === StatusEvent.ScanComplete) {
 				scanInfo = null;
 				toast.success('Scan complete');

@@ -1,6 +1,6 @@
 import { DownloadStartSchema } from '../schemas.js';
 import { db } from '../../../db/client.js';
-import { checkToken } from '../../auth/tokens.js';
+import { tokenHandler } from '../../auth/tokens.js';
 import { downloadControllers } from '../../tasks/handlers/downloader.js';
 import { scansInProgress } from '../../tasks/handlers/scanner.js';
 import { StatusEvent } from '@hive/common';
@@ -9,7 +9,7 @@ import type { FastifyPluginCallback } from 'fastify';
 import type { SQLWrapper } from 'drizzle-orm';
 
 export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
-	server.addHook('onRequest', checkToken);
+	server.addHook('onRequest', tokenHandler);
 
 	server.get(
 		'/queue', //

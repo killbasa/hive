@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:21.7.3-alpine3.19 as base
+FROM node:22.0.0-alpine3.19 as base
 
 RUN apk update --no-cache && \
 	apk add --no-cache \
@@ -19,6 +19,10 @@ RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.04.09/yt-dlp
 FROM base as builder
 
 WORKDIR /temp
+
+# If there's no sqlite pre-built binary, we need to build it
+RUN apk add --no-cache \
+	build-base=0.5-r3
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/api ./apps/api/

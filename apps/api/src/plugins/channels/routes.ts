@@ -1,13 +1,13 @@
 import { ChannelPostSchema, ChannelQuerySchema } from './schemas.js';
-import { checkToken } from '../auth/tokens.js';
+import { tokenHandler } from '../auth/tokens.js';
 import { db } from '../../db/client.js';
 import { channels } from '../../db/schema.js';
-import { doesChannelExist } from '../../lib/youtube/channels.js';
+import { doesChannelExist, parseTags } from '../../lib/youtube/channels.js';
 import { count } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
-	server.addHook('onRequest', checkToken);
+	server.addHook('onRequest', tokenHandler);
 
 	server.get<{ Querystring: { page?: string } }>(
 		'/', //
@@ -23,7 +23,15 @@ export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 				db.select({ total: count() }).from(channels)
 			]);
 
-			await reply.send({ channels: result, total: countRes[0].total });
+			await reply.send({
+				channels: result.map((channel) => {
+					return {
+						...channel,
+						tags: parseTags(channel.tags)
+					};
+				}),
+				total: countRes[0].total
+			});
 		}
 	);
 
@@ -73,7 +81,10 @@ export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 				return await reply.status(404).send();
 			}
 
-			await reply.send(result);
+			await reply.send({
+				...result,
+				tags: parseTags(result.tags)
+			});
 		}
 	);
 

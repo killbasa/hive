@@ -1,4 +1,4 @@
-import { checkToken } from '../auth/tokens.js';
+import { tokenHandler } from '../auth/tokens.js';
 import { db } from '../../db/client.js';
 import { channels, comments, streamComments, videos } from '../../db/schema.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
@@ -18,7 +18,7 @@ export const coreRoutes: FastifyPluginCallback = async (server) => {
 	});
 
 	await server.register((instance, _, done) => {
-		instance.addHook('onRequest', checkToken);
+		instance.addHook('onRequest', tokenHandler);
 
 		server.get(
 			'/stats', //

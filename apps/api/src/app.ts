@@ -27,7 +27,7 @@ export async function app(): Promise<FastifyInstance> {
 		openapi: {
 			info: {
 				title: 'Hive',
-				version: '0.0.1'
+				version: process.env.npm_package_version!
 			}
 		}
 	});

@@ -1,8 +1,8 @@
-import { checkToken } from '../auth/tokens.js';
+import { tokenHandler } from '../auth/tokens.js';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const notificationRoutes: FastifyPluginCallback = (server, _, done) => {
-	server.addHook('onRequest', checkToken);
+	server.addHook('onRequest', tokenHandler);
 
 	server.get(
 		'/', //

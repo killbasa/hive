@@ -10,7 +10,7 @@ import { readFile, rm, writeFile } from 'node:fs/promises';
 import type { CommentMetadata } from '../../../lib/fs/types.js';
 import type { DownloaderVideoTask, TaskHandler } from '../types.js';
 
-export const downloadControllers = new Map<string, AbortController>();
+export const downloadControllers: Map<string, AbortController> = new Map();
 
 export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async ({ channelId, videoId, live }) => {
 	server.log.info(`downloading video: ${videoId} (live: ${live})`);

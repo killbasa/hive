@@ -1,5 +1,5 @@
 import { UserPatchSchema } from './schemas.js';
-import { checkToken } from '../auth/tokens.js';
+import { tokenHandler } from '../auth/tokens.js';
 import { cookies } from '../auth/cookies.js';
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema.js';
@@ -10,7 +10,7 @@ import type { FastifyPluginCallback } from 'fastify';
 
 export const userRoutes: FastifyPluginCallback = async (server) => {
 	await server.register((instance, _, done) => {
-		instance.addHook('onRequest', checkToken);
+		instance.addHook('onRequest', tokenHandler);
 
 		instance.get(
 			'/', //

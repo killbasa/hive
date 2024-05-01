@@ -4,7 +4,6 @@
 **/bin/
 **/data/
 **/node_modules/
-tests/
 .editorconfig
 .gitattributes
 .gitignore

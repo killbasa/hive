@@ -1,13 +1,13 @@
 import { VideoIgnoreSchema, VideoPatchSchema, VideoProgressSchema, VideoQuerySchema } from './schemas.js';
 import { db } from '../../db/client.js';
 import { videos } from '../../db/schema.js';
-import { checkToken } from '../auth/tokens.js';
+import { tokenHandler } from '../auth/tokens.js';
 import { and, count, eq, gt, inArray, like } from 'drizzle-orm';
 import type { SQLWrapper } from 'drizzle-orm';
 import type { FastifyPluginCallback } from 'fastify';
 
 export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
-	server.addHook('onRequest', checkToken);
+	server.addHook('onRequest', tokenHandler);
 
 	server.get<{ Querystring: { page?: string; status?: string; channelId: string } }>(
 		'/', //
