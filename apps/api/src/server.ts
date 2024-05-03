@@ -2,7 +2,7 @@ import { routes } from './routes.js';
 import { app } from './app.js';
 import { initDb } from './db/client.js';
 import { config } from './lib/config.js';
-import { DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
+import { API_HOST, DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
 import { getYtdlpVersion } from './lib/ytdlp/constants.js';
 import { validateDirs } from './lib/utils.js';
 import { setupGracefulShutdown } from './lib/process.js';
@@ -19,7 +19,9 @@ const start = async (): Promise<void> => {
 		await server.settings.init();
 
 		await server.register(routes);
-		await server.listen({ host: '0.0.0.0', port: config.PORT });
+		await server.listen({ host: API_HOST, port: config.PORT });
+
+		server.log.info(`docs available at http://${API_HOST}:${config.PORT}/reference`);
 		server.log.info(`yt-dlp version: ${getYtdlpVersion()}`);
 
 		await initHandlers();

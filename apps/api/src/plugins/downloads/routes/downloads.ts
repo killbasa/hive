@@ -3,6 +3,7 @@ import { db } from '../../../db/client.js';
 import { tokenHandler } from '../../auth/tokens.js';
 import { downloadControllers } from '../../tasks/handlers/downloader.js';
 import { scansInProgress } from '../../tasks/handlers/scanner.js';
+import { scanAllChannels } from '../utils.js';
 import { StatusEvent } from '@hive/common';
 import type { DownloadStatus } from '@hive/common';
 import type { FastifyPluginCallback } from 'fastify';
@@ -147,18 +148,7 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 				return await reply.status(409).send();
 			}
 
-			const channels = await db.query.channels.findMany({
-				columns: { id: true }
-			});
-
-			for (const [index, channel] of channels.entries()) {
-				await server.tasks.scanner.add(`channel/${channel.id}/scan`, {
-					type: 'scan',
-					channelId: channel.id,
-					position: index,
-					total: channels.length
-				});
-			}
+			await scanAllChannels();
 
 			await reply.status(201).send();
 		}

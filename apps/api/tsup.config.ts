@@ -16,6 +16,8 @@ export default defineConfig({
 	treeshake: true,
 	tsconfig: './tsconfig.json',
 	env: {
-		NODE_ENV: process.env.NODE_ENV ?? 'production'
+		NODE_ENV: process.env.NODE_ENV ?? 'production',
+		TESTING: 'false',
+		npm_package_version: process.env.npm_package_version!
 	}
 });

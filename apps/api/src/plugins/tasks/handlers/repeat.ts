@@ -13,17 +13,42 @@ export async function initRepeatTasks(): Promise<void> {
 		{ repeat: { pattern: '0 */30 * * * *' } }
 	);
 
-	const { cronSubscription, cronDownload } = await server.settings.get();
+	await Promise.all([
+		setScanCronTask(), //
+		setDownloadCronTask()
+	]);
+}
 
+export async function setScanCronTask(pattern?: string): Promise<void> {
+	if (pattern === undefined) {
+		const { cronSubscription } = await server.settings.get();
+		pattern = cronSubscription;
+	}
+
+	await server.tasks.internal.remove('ScanChannels');
 	await server.tasks.internal.add(
 		'ScanChannels', //
-		{ page: 0 },
-		{ repeat: { pattern: cronSubscription } }
+		undefined,
+		{
+			jobId: 'ScanChannels',
+			repeat: { pattern }
+		}
 	);
+}
 
+export async function setDownloadCronTask(pattern?: string): Promise<void> {
+	if (pattern === undefined) {
+		const { cronDownload } = await server.settings.get();
+		pattern = cronDownload;
+	}
+
+	await server.tasks.internal.remove('DownloadPending');
 	await server.tasks.internal.add(
 		'DownloadPending', //
-		{ page: 0 },
-		{ repeat: { pattern: cronDownload } }
+		undefined,
+		{
+			jobId: 'DownloadPending',
+			repeat: { pattern }
+		}
 	);
 }

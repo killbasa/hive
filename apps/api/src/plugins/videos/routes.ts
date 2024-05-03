@@ -1,19 +1,25 @@
-import { VideoIgnoreSchema, VideoPatchSchema, VideoProgressSchema, VideoQuerySchema } from './schemas.js';
 import { db } from '../../db/client.js';
 import { videos } from '../../db/schema.js';
 import { tokenHandler } from '../auth/tokens.js';
 import { and, count, eq, gt, inArray, like } from 'drizzle-orm';
+import { Type } from '@fastify/type-provider-typebox';
+import { VideoIgnoreSchema, VideoPatchSchema, VideoProgressSchema, VideoQuerySchema } from '@hive/common';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import type { SQLWrapper } from 'drizzle-orm';
-import type { FastifyPluginCallback } from 'fastify';
 
-export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
+export const videoRoutes: FastifyPluginAsyncTypebox = async (server): Promise<void> => {
 	server.addHook('onRequest', tokenHandler);
 
-	server.get<{ Querystring: { page?: string; status?: string; channelId: string } }>(
+	server.get(
 		'/', //
-		{ schema: { tags: ['Videos'] } },
+		{
+			schema: {
+				tags: ['Videos'],
+				querystring: VideoQuerySchema
+			}
+		},
 		async (request, reply): Promise<void> => {
-			const query = VideoQuerySchema.parse(request.query);
+			const { query } = request;
 			const whereArgs: (SQLWrapper | undefined)[] = [];
 
 			if (query.type) whereArgs.push(inArray(videos.type, query.type));
@@ -38,31 +44,42 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 					.where(where)
 			]);
 
-			return await reply.send({ videos: result, total: countRes[0].total });
+			return await reply.status(200).send({ videos: result, total: countRes[0].total });
 		}
 	);
 
 	server.post(
-		'/ignore', //
-		{ schema: { tags: ['Videos'] } },
+		'/ignore',
+		{
+			schema: {
+				tags: ['Videos'],
+				body: VideoIgnoreSchema,
+				response: { 204: { type: 'null' } }
+			}
+		},
 		async (request, reply): Promise<void> => {
-			const data = VideoIgnoreSchema.parse(request.body);
-
-			await db //
+			await db
 				.update(videos)
 				.set({
 					downloadStatus: 'ignored'
 				})
-				.where(inArray(videos.id, data.videoIds))
+				.where(inArray(videos.id, request.body.videoIds))
 				.returning();
 
 			await reply.status(204).send();
 		}
 	);
 
-	server.get<{ Params: { videoId: string } }>(
-		'/:videoId', //
-		{ schema: { tags: ['Videos'] } },
+	server.get(
+		'/:videoId',
+		{
+			schema: {
+				tags: ['Videos'],
+				params: Type.Object({
+					videoId: Type.String()
+				})
+			}
+		},
 		async (request, reply): Promise<void> => {
 			const { videoId } = request.params;
 
@@ -74,39 +91,63 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 				return await reply.status(404).send();
 			}
 
-			await reply.send(result);
+			await reply.status(200).send(result);
 		}
 	);
 
-	server.patch<{ Params: { videoId: string } }>(
-		'/:videoId', //
-		{ schema: { tags: ['Videos'] } },
+	server.patch(
+		'/:videoId',
+		{
+			schema: {
+				tags: ['Videos'],
+				params: Type.Object({
+					videoId: Type.String()
+				}),
+				body: VideoPatchSchema,
+				response: {
+					200: { type: 'null' }
+				}
+			}
+		},
 		async (request, reply): Promise<void> => {
 			const { videoId } = request.params;
-			const data = VideoPatchSchema.parse(request.body);
 
-			const result = await db //
+			const result = await db
 				.update(videos)
 				.set({
-					downloadStatus: data.downloadStatus
+					downloadStatus: request.body.downloadStatus
 				})
 				.where(eq(videos.id, videoId))
 				.returning();
 
-			await reply.send(result.at(0));
+			await reply.status(200).send(result.at(0));
 		}
 	);
 
-	server.post<{ Params: { videoId: string } }>(
-		'/:videoId/progress', //
-		{ schema: { tags: ['Videos'] } },
-		async (request, reply): Promise<void> => {
-			const data = VideoProgressSchema.parse(request.body);
+	server.addSchema({
+		$id: 'videoProgressSchema',
+		type: 'object',
+		properties: {
+			progress: { type: 'number' }
+		}
+	});
 
-			await db //
+	server.post(
+		'/:videoId/progress',
+		{
+			schema: {
+				tags: ['Videos'],
+				params: Type.Object({
+					videoId: Type.String()
+				}),
+				body: VideoProgressSchema
+			}
+		},
+		async (request, reply): Promise<void> => {
+			await db
 				.update(videos)
 				.set({
-					watchProgress: data.progress
+					watchProgress: request.body.progress
 				})
 				.where(eq(videos.id, request.params.videoId))
 				.execute();
@@ -114,6 +155,4 @@ export const videoRoutes: FastifyPluginCallback = (server, _, done) => {
 			await reply.status(204).send();
 		}
 	);
-
-	done();
 };

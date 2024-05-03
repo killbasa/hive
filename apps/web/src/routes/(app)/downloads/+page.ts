@@ -15,6 +15,7 @@ export const load: PageLoad = async ({ fetch, depends, url }) => {
 			method: 'GET',
 			searchParams: {
 				status: ['none', 'past'],
+				type: ['video', 'short', 'stream'],
 				downloadStatus: ['pending'],
 				search,
 				page

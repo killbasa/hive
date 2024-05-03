@@ -11,13 +11,17 @@ import FastifyRateLimit from '@fastify/rate-limit';
 import FastifyWebsocket from '@fastify/websocket';
 import Fastify from 'fastify';
 import { Queue } from 'bullmq';
+import { TypeBoxValidatorCompiler } from '@fastify/type-provider-typebox';
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { QueueOptions } from 'bullmq';
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
 export async function app(): Promise<FastifyInstance> {
 	const server = Fastify({
 		logger: getLogger()
-	});
+	})
+		.withTypeProvider<TypeBoxTypeProvider>()
+		.setValidatorCompiler(TypeBoxValidatorCompiler);
 
 	/**
 	 * Plugins
@@ -25,6 +29,7 @@ export async function app(): Promise<FastifyInstance> {
 	await server.register(FastifySwagger, {
 		mode: 'dynamic',
 		openapi: {
+			openapi: '3.1.0',
 			info: {
 				title: 'Hive',
 				version: process.env.npm_package_version!

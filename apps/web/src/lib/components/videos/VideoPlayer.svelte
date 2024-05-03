@@ -117,12 +117,12 @@
 				>
 				<button class="btn btn-sm btn-tertiary" on:click={minimizeVideo}>Collapse</button>
 			</div>
+			<progress
+				class="progress-primary h-2"
+				value={Math.floor(currentTime)}
+				max={$video.duration}
+			/>
 		{/if}
-		<progress
-			class="progress-primary h-2"
-			value={Math.floor(currentTime)}
-			max={$video.duration}
-		/>
 	{/if}
 	<div bind:this={divElement}></div>
 </div>

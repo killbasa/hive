@@ -1,5 +1,6 @@
 import { RedisConnectionOptions } from '../../../lib/config.js';
 import { server } from '../../../server.js';
+import { scanAllChannels } from '../../downloads/utils.js';
 import { handleScrapeTask } from '../handlers/scrapeChannel.js';
 import { handleVideoStatus } from '../handlers/updateVideoStatus.js';
 import { Worker } from 'bullmq';
@@ -18,6 +19,10 @@ export async function initInternalWorker(): Promise<void> {
 					}
 					case 'SyncVideoStatus': {
 						await handleVideoStatus({ page: 0 });
+						return;
+					}
+					case 'ScanChannels': {
+						await scanAllChannels();
 						return;
 					}
 				}

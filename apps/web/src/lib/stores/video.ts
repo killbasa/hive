@@ -1,9 +1,9 @@
-import type { Video } from '@hive/common';
+import type { VideoWithComments } from '@hive/common';
 import { getContext, setContext } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
 
 const STORE_KEY = 'video';
-type VideoContext = Video<true> | null;
+type VideoContext = VideoWithComments | null;
 
 export function getVideoContext(): Writable<VideoContext> {
 	return getContext<Writable<VideoContext>>(STORE_KEY);

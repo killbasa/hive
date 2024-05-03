@@ -1,10 +1,10 @@
-import type { videos } from '../db/schema.js';
+import { Type } from '@fastify/type-provider-typebox';
+import type { TLiteral, TUnion } from '@fastify/type-provider-typebox';
 
-export type VideoType = (typeof videos.$inferSelect)['type'];
-export const VideoType: VideoType[] = ['video', 'short', 'stream'] as const;
+export type TLiteralUnion<T extends string[], Acc extends TLiteral[] = []> = T extends [infer L extends string, ...infer R extends string[]]
+	? TLiteralUnion<R, [...Acc, TLiteral<L>]>
+	: TUnion<Acc>;
 
-export type VideoStatus = (typeof videos.$inferSelect)['status'];
-export const VideoStatus: VideoStatus[] = ['none', 'new', 'live', 'upcoming', 'past'] as const;
-
-export type VideoDownloadStatus = (typeof videos.$inferSelect)['downloadStatus'];
-export const VideoDownloadStatus: VideoDownloadStatus[] = ['ignored', 'pending', 'done'] as const;
+export function LiteralUnion<T extends string[]>(values: readonly [...T]): TLiteralUnion<T> {
+	return Type.Union(values.map((value) => Type.Literal(value))) as never;
+}

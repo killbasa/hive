@@ -26,7 +26,7 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 
 	if (!Array.isArray(ytVideos)) {
 		server.log.error('ytVideos is not an array');
-		server.log.error(JSON.stringify(ytVideos));
+		server.log.error(JSON.stringify({ ctx: ytVideos }));
 		return;
 	}
 
@@ -57,17 +57,6 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 					status = 'live';
 
 					if (dbVideo.status === 'upcoming') {
-						await server.tasks.downloader.add(
-							`video/${video.id}`, //
-							{
-								type: 'video',
-								videoId: video.id,
-								channelId: dbVideo.channelId,
-								live: true
-							},
-							{ priority: 1 }
-						);
-
 						server.notifications.emit('livestream', {
 							status: 'start',
 							videoId: video.id,
@@ -110,7 +99,7 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 
 		if (!Array.isArray(ytVideos)) {
 			server.log.error('ytVideos is not an array');
-			server.log.error(JSON.stringify(ytVideos));
+			server.log.error(JSON.stringify({ ctx: ytVideos }));
 			resolve();
 			return;
 		}
@@ -142,17 +131,6 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 						status = 'live';
 
 						if (dbVideo.status === 'upcoming') {
-							await server.tasks.downloader.add(
-								`video/${video.id}`, //
-								{
-									type: 'video',
-									videoId: video.id,
-									channelId: dbVideo.channelId,
-									live: true
-								},
-								{ priority: 1 }
-							);
-
 							server.notifications.emit('livestream', {
 								status: 'start',
 								videoId: video.id,

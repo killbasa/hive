@@ -7,6 +7,10 @@ const cacheDir = resolve('node_modules/.cache/hive');
 async function getCache(path: string, ttl?: number): Promise<string | null> {
 	path = join(cacheDir, path);
 
+	if (!existsSync(path)) {
+		return null;
+	}
+
 	const file = await stat(path);
 	if (file.isDirectory()) {
 		throw new Error('Cache path is a directory');
@@ -37,7 +41,7 @@ async function writeCache(path: string, data: string): Promise<void> {
 	await writeFile(path, data);
 }
 
-export async function cache(path: string, ttl: number, fn: () => Promise<string>): Promise<string> {
+export async function cache(path: string, ttl: number | undefined, fn: () => Promise<string> | string): Promise<string> {
 	const data = await getCache(path, ttl);
 	if (data !== null) return data;
 
