@@ -1,4 +1,4 @@
-import type { VideoWithComments } from '@hive/common';
+import type { VideoWithComments } from '$lib/types/videos';
 import { getContext, setContext } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
 

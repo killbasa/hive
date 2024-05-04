@@ -16,7 +16,8 @@
 		"check": "pnpm -r run check",
 		"lint": "pnpm -r run lint",
 		"format": "pnpm -r run format",
-		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format",
+		"test": "pnpm -r run test",
+		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile ."

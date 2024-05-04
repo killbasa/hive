@@ -4,13 +4,13 @@ import { db } from '../../db/client.js';
 import { channels } from '../../db/schema.js';
 import { doesChannelExist, parseTags } from '../../lib/youtube/channels.js';
 import { count } from 'drizzle-orm';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
+export const channelRoutes: FastifyPluginAsync = async (server) => {
 	server.addHook('onRequest', tokenHandler);
 
 	server.get<{ Querystring: { page?: string } }>(
-		'/', //
+		'', //
 		{ schema: { tags: ['Channels'] } },
 		async (request, reply): Promise<void> => {
 			const query = ChannelQuerySchema.parse(request.query);
@@ -36,7 +36,7 @@ export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 	);
 
 	server.post(
-		'/', //
+		'', //
 		{ schema: { tags: ['Channels'] } },
 		async (request, reply): Promise<void> => {
 			const data = ChannelPostSchema.parse(request.body);
@@ -87,6 +87,4 @@ export const channelRoutes: FastifyPluginCallback = (server, _, done) => {
 			});
 		}
 	);
-
-	done();
 };

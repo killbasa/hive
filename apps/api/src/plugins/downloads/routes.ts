@@ -1,15 +1,15 @@
-import { DownloadStartSchema } from '../schemas.js';
-import { db } from '../../../db/client.js';
-import { tokenHandler } from '../../auth/tokens.js';
-import { downloadControllers } from '../../tasks/handlers/downloader.js';
-import { scansInProgress } from '../../tasks/handlers/scanner.js';
-import { scanAllChannels } from '../utils.js';
+import { DownloadStartSchema } from './schemas.js';
+import { scanAllChannels } from './utils.js';
+import { db } from '../../db/client.js';
+import { tokenHandler } from '../auth/tokens.js';
+import { downloadControllers } from '../tasks/handlers/downloader.js';
+import { scansInProgress } from '../tasks/handlers/scanner.js';
 import { StatusEvent } from '@hive/common';
 import type { DownloadStatus } from '@hive/common';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 import type { SQLWrapper } from 'drizzle-orm';
 
-export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
+export const downloadsRoutes: FastifyPluginAsync = async (server) => {
 	server.addHook('onRequest', tokenHandler);
 
 	server.get(
@@ -169,6 +169,4 @@ export const downloadsRoutes: FastifyPluginCallback = (server, _, done) => {
 			});
 		}
 	);
-
-	done();
 };

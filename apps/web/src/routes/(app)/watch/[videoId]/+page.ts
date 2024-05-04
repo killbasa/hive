@@ -1,12 +1,13 @@
-import { apiFetch } from '$lib/fetch';
-import type { VideoWithComments } from '@hive/common';
+import { client } from '$lib/client';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, params }) => {
-	const response = await apiFetch<VideoWithComments>(`/videos/${params.videoId}`, {
+	const response = await client.GET('/videos/{videoId}', {
 		fetch,
-		method: 'GET'
+		params: {
+			path: { videoId: params.videoId }
+		}
 	});
 
-	return await response.json();
+	return response.data!;
 };

@@ -4,13 +4,19 @@ export async function initRepeatTasks(): Promise<void> {
 	await server.tasks.internal.add(
 		'ScrapeChannel', //
 		{ page: 0 },
-		{ repeat: { pattern: '0 */15 * * * *' } }
+		{
+			jobId: 'ScrapeChannel',
+			repeat: { pattern: '0 */15 * * * *' }
+		}
 	);
 
 	await server.tasks.internal.add(
 		'SyncVideoStatus', //
 		{ page: 0 },
-		{ repeat: { pattern: '0 */30 * * * *' } }
+		{
+			jobId: 'SyncVideoStatus',
+			repeat: { pattern: '0 */30 * * * *' }
+		}
 	);
 
 	await Promise.all([

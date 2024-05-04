@@ -1,20 +1,21 @@
-import { apiFetch } from '$lib/fetch';
-import type { Video } from '@hive/common';
+import { client } from '$lib/client';
+import { getNumberParam } from '$lib/navigation';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch }) => {
-	const videos = await apiFetch<{ videos: Video[] }>('/videos', {
+export const load: PageLoad = async ({ fetch, url }) => {
+	const response = await client.GET('/videos', {
 		fetch,
-		method: 'GET',
-		searchParams: {
-			downloadStatus: ['done'],
-			inProgress: true
+		params: {
+			query: {
+				downloadStatus: ['done'],
+				inProgress: true,
+				page: getNumberParam(url, 'page', 1)
+			}
 		}
 	});
 
-	const data = await videos.json();
-
 	return {
-		videos: data.videos
+		videos: response.data?.videos ?? [],
+		total: response.data?.total ?? 0
 	};
 };

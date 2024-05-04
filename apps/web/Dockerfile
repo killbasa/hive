@@ -8,11 +8,14 @@ FROM base as builder
 
 WORKDIR /temp
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/web ./apps/web/
 COPY packages ./packages/
 
-RUN corepack enable && \
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store corepack enable && \
 	pnpm install && \
 	pnpm --filter @hive/web run build && \
 	pnpm --filter @hive/web deploy --prod output

@@ -19,9 +19,13 @@ export const initDb = async (): Promise<void> => {
 		schema
 	});
 
+	server.log.info('database connected');
+
+	server.log.info('running migrations');
+
 	migrate(db, {
 		migrationsFolder: './db'
 	});
 
-	server.log.info('database connected');
+	server.log.info('migrations complete');
 };

@@ -5,10 +5,10 @@ import { users } from '../../../db/schema.js';
 import { config } from '../../../lib/config.js';
 import { hash, verify } from 'argon2';
 import { count, eq } from 'drizzle-orm';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
-	await server.register((instance, _, done) => {
+export const credentialAuthRoutes: FastifyPluginAsync = async (server) => {
+	await server.register(async (instance) => {
 		instance.post(
 			'/login', //
 			{ schema: { tags: ['Auth'] }, onRequest: undefined },
@@ -76,7 +76,5 @@ export const credentialAuthRoutes: FastifyPluginCallback = async (server) => {
 				await reply.status(201).send();
 			}
 		);
-
-		done();
 	});
 };

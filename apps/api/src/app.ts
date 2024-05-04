@@ -1,31 +1,40 @@
-import { isDev } from './lib/constants.js';
 import { RedisConnectionOptions, config } from './lib/config.js';
 import { HiveSettings } from './plugins/settings/service.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
+import { HiveMetrics } from './lib/otel/MetricsClient.js';
+import { isDev } from './lib/constants.js';
 import FastifySwagger from '@fastify/swagger';
 import FastifyCookie from '@fastify/cookie';
 import FastifyJwt from '@fastify/jwt';
 import FastifyHelmet from '@fastify/helmet';
 import FastifyCors from '@fastify/cors';
-import FastifyRateLimit from '@fastify/rate-limit';
 import FastifyWebsocket from '@fastify/websocket';
 import Fastify from 'fastify';
 import { Queue } from 'bullmq';
 import { TypeBoxValidatorCompiler } from '@fastify/type-provider-typebox';
+import type { FastifyInstance } from 'fastify';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { QueueOptions } from 'bullmq';
-import type { FastifyInstance, FastifyServerOptions } from 'fastify';
+
+export const LogLevel = isDev ? 'debug' : 'info';
 
 export async function app(): Promise<FastifyInstance> {
 	const server = Fastify({
-		logger: getLogger()
+		logger: {
+			level: LogLevel,
+			transport: {
+				target: 'pino-pretty',
+				options: {
+					colorize: isDev,
+					translateTime: 'HH:MM:ss Z',
+					ignore: 'pid,hostname'
+				}
+			}
+		}
 	})
 		.withTypeProvider<TypeBoxTypeProvider>()
 		.setValidatorCompiler(TypeBoxValidatorCompiler);
 
-	/**
-	 * Plugins
-	 */
 	await server.register(FastifySwagger, {
 		mode: 'dynamic',
 		openapi: {
@@ -51,13 +60,10 @@ export async function app(): Promise<FastifyInstance> {
 		credentials: true
 	});
 
-	await server.register(FastifyRateLimit, {
-		max: 1000,
-		timeWindow: 60_000
-	});
-
 	await server.register(FastifyHelmet, {
-		crossOriginResourcePolicy: { policy: 'same-site' }
+		crossOriginResourcePolicy: {
+			policy: 'same-site'
+		}
 	});
 	await server.register(FastifyWebsocket);
 
@@ -65,6 +71,13 @@ export async function app(): Promise<FastifyInstance> {
 }
 
 export function decorate(instance: FastifyInstance): FastifyInstance {
+	instance.decorate('settings', new HiveSettings());
+	instance.decorate('notifications', new HiveNotifier());
+
+	if (config.METRICS_ENABLED) {
+		instance.decorate('metrics', new HiveMetrics());
+	}
+
 	const options: QueueOptions = {
 		connection: RedisConnectionOptions,
 		defaultJobOptions: {
@@ -79,27 +92,5 @@ export function decorate(instance: FastifyInstance): FastifyInstance {
 		scanner: new Queue('scanner', options)
 	});
 
-	instance.decorate('settings', new HiveSettings());
-	instance.decorate('notifications', new HiveNotifier());
-
 	return instance;
-}
-
-function getLogger(): FastifyServerOptions['logger'] {
-	if (!isDev) {
-		return {
-			level: 'info'
-		};
-	}
-
-	return {
-		level: 'debug',
-		transport: {
-			target: 'pino-pretty',
-			options: {
-				translateTime: 'HH:MM:ss Z',
-				ignore: 'pid,hostname'
-			}
-		}
-	};
 }

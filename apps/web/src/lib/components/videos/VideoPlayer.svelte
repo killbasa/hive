@@ -34,8 +34,7 @@
 	function loadPlayer(): void {
 		if (!$video) return;
 
-		const parsedTime = parseFloat($video.watchProgress);
-		currentTime = isNaN(parsedTime) ? 0 : parsedTime;
+		currentTime = $video.watchProgress;
 		element.currentTime = currentTime;
 
 		const local = localStorage.getItem('videoVolume') ?? '1';
@@ -65,11 +64,11 @@
 	async function postUpdate(time: number) {
 		if (!$video) return;
 
-		await apiFetch(`/videos/${$video.id}/progress`, {
+		await apiFetch(`/videos/${$video.id}`, {
 			fetch,
-			method: 'POST',
+			method: 'PATCH',
 			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ progress: time })
+			body: JSON.stringify({ watchProgress: time })
 		});
 	}
 

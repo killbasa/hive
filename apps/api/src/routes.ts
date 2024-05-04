@@ -4,12 +4,12 @@ import { authRoutes } from './plugins/auth/routes.js';
 import { settingsRoutes } from './plugins/settings/routes.js';
 import { channelRoutes } from './plugins/channels/routes.js';
 import { videoRoutes } from './plugins/videos/routes.js';
-import { downloadsRoutes } from './plugins/downloads/routes/downloads.js';
+import { downloadsRoutes } from './plugins/downloads/routes.js';
 import { notificationRoutes } from './plugins/notifications/routes.js';
 import { userRoutes } from './plugins/users/routes.js';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const routes: FastifyPluginCallback = async (server) => {
+export const routes: FastifyPluginAsync = async (server) => {
 	await server.register(coreRoutes);
 	await server.register(referenceRoutes);
 	await server.register(authRoutes, { prefix: 'auth' });
@@ -20,4 +20,6 @@ export const routes: FastifyPluginCallback = async (server) => {
 	await server.register(videoRoutes, { prefix: 'videos' });
 	await server.register(downloadsRoutes, { prefix: 'downloads' });
 	await server.register(notificationRoutes, { prefix: 'notifications' });
+
+	server.log.info('routes loaded');
 };

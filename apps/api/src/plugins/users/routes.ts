@@ -6,14 +6,14 @@ import { users } from '../../db/schema.js';
 import { config } from '../../lib/config.js';
 import { hash, verify } from 'argon2';
 import { eq } from 'drizzle-orm';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const userRoutes: FastifyPluginCallback = async (server) => {
-	await server.register((instance, _, done) => {
+export const userRoutes: FastifyPluginAsync = async (server) => {
+	await server.register(async (instance) => {
 		instance.addHook('onRequest', tokenHandler);
 
 		instance.get(
-			'/', //
+			'', //
 			{ schema: { tags: ['Users'] } },
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
@@ -34,7 +34,7 @@ export const userRoutes: FastifyPluginCallback = async (server) => {
 		);
 
 		instance.patch(
-			'/', //
+			'', //
 			{ schema: { tags: ['Users'] } },
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
@@ -71,7 +71,5 @@ export const userRoutes: FastifyPluginCallback = async (server) => {
 					.send();
 			}
 		);
-
-		done();
 	});
 };

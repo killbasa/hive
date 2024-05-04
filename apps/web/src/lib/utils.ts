@@ -56,11 +56,14 @@ export function formatLinks(description: string): string {
 	);
 }
 
-export function formatDuration(value: string) {
-	const num = parseInt(value, 10);
-	const hours = Math.floor(num / 3600);
-	const minutes = `${Math.floor((num % 3600) / 60)}`.padStart(2, '0');
-	const seconds = `${Math.floor(num % 60)}`.padStart(2, '0');
+export function formatDuration(value: string | number) {
+	if (typeof value === 'string') {
+		value = parseInt(value, 10);
+	}
+
+	const hours = Math.floor(value / 3600);
+	const minutes = `${Math.floor((value % 3600) / 60)}`.padStart(2, '0');
+	const seconds = `${Math.floor(value % 60)}`.padStart(2, '0');
 
 	return `${hours === 0 ? '' : `${hours}:`}${minutes}:${seconds}`;
 }

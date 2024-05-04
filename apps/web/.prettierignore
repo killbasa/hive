@@ -3,6 +3,7 @@
 .svelte-kit/
 dist/
 node_modules/
+src/api.d.ts
 .env
 .env.*
 !.env.example

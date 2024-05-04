@@ -1,6 +1,10 @@
 ## Base ##
 FROM node:22.0.0-alpine3.19 as base
 
+# python: sqlite compilation and supervisord
+# ffmpeg: video post-processing
+# nginx: serve static files and reverse proxy
+# supervisor: run multiple processes in a container
 RUN apk update --no-cache && \
 	apk add --no-cache \
 		python3=3.11.9-r0 \
@@ -20,6 +24,9 @@ FROM base as builder
 
 WORKDIR /temp
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 # If there's no sqlite pre-built binary, we need to build it
 RUN apk add --no-cache \
 	build-base=0.5-r3
@@ -28,7 +35,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/api ./apps/api/
 COPY packages ./packages/
 
-RUN corepack enable && \
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store corepack enable && \
 	pnpm install && \
 	pnpm --filter @hive/api run build:prod && \
 	mkdir output && \

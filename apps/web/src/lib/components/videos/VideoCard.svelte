@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { config } from '$lib/config';
-	import type { Video } from '@hive/common';
+	import type { Video } from '$lib/types/videos';
 
 	export let video: Video;
 	export let showIcon = false;
 
 	const channelUrl = `${config.apiUrl}/assets/${video.channelId}`;
-	const watchProgress = parseFloat(video.watchProgress);
 </script>
 
 <div class="card border overflow-hidden">
@@ -17,10 +16,10 @@
 				alt="Video thumbnail"
 				loading="lazy"
 			/>
-			{#if watchProgress > 0}
+			{#if video.watchProgress > 0}
 				<progress
 					class="progress-primary h-2"
-					value={Math.floor(watchProgress)}
+					value={Math.floor(video.watchProgress)}
 					max={video.duration}
 				/>
 			{/if}

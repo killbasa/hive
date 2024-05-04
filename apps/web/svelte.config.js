@@ -11,7 +11,8 @@ const config = {
 		}),
 		alias: {
 			$components: resolve('./src/lib/components'),
-			$hooks: resolve('./src/hooks')
+			$hooks: resolve('./src/hooks'),
+			$api: resolve('./src/api.d.ts')
 		}
 	}
 };

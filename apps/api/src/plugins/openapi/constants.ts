@@ -1,4 +1,5 @@
-export const ScalarCDNUrl = 'https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.22.3/dist/browser/standalone.min.js';
+const ScalarVersion = '1.22.20';
+export const ScalarCDNUrl = `https://cdn.jsdelivr.net/npm/@scalar/api-reference@${ScalarVersion}/dist/browser/standalone.min.js`;
 
 export const ScalarHTML = scalarHTML(ScalarCDNUrl);
 

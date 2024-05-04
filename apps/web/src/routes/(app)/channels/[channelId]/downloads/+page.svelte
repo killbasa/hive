@@ -58,7 +58,7 @@
 							{video.title}
 						</a>
 					</td>
-					<td>{formatDuration(video.duration)}</td>
+					<td>{formatDuration(video.duration ?? 0)}</td>
 					<td>{formatFileSize(video.fileSize)}</td>
 				</tr>
 			{/each}

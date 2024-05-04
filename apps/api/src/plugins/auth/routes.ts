@@ -2,12 +2,12 @@ import { cookies } from './cookies.js';
 import { credentialAuthRoutes } from './credentials/routes.js';
 import { tokenHandler } from './tokens.js';
 import { config } from '../../lib/config.js';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const authRoutes: FastifyPluginCallback = async (server) => {
+export const authRoutes: FastifyPluginAsync = async (server) => {
 	await server.register(credentialAuthRoutes, { prefix: 'credentials' });
 
-	await server.register((instance, _, done) => {
+	await server.register(async (instance) => {
 		instance.addHook('onRequest', tokenHandler);
 
 		instance.get(
@@ -32,7 +32,5 @@ export const authRoutes: FastifyPluginCallback = async (server) => {
 					.send();
 			}
 		);
-
-		done();
 	});
 };

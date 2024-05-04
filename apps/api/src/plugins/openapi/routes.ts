@@ -1,7 +1,7 @@
 import { ScalarContentSecurityPolicies, ScalarHTML } from './constants.js';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const referenceRoutes: FastifyPluginCallback = (server, _, done) => {
+export const referenceRoutes: FastifyPluginAsync = async (server) => {
 	server.get(
 		'/spec.json', //
 		{ schema: { hide: true } },
@@ -26,6 +26,4 @@ export const referenceRoutes: FastifyPluginCallback = (server, _, done) => {
 				.send(ScalarHTML);
 		}
 	);
-
-	done();
 };

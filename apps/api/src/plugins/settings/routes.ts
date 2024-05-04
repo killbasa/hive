@@ -2,13 +2,13 @@ import { SettingsPatchSchema } from './schemas.js';
 import { parseCron } from './cron.js';
 import { tokenHandler } from '../auth/tokens.js';
 import { setDownloadCronTask, setScanCronTask } from '../tasks/handlers/repeat.js';
-import type { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginAsync } from 'fastify';
 
-export const settingsRoutes: FastifyPluginCallback = (server, _, done) => {
+export const settingsRoutes: FastifyPluginAsync = async (server) => {
 	server.addHook('onRequest', tokenHandler);
 
 	server.get(
-		'/', //
+		'', //
 		{ schema: { tags: ['Settings'] } },
 		async (_, reply): Promise<void> => {
 			const result = await server.settings.get();
@@ -18,7 +18,7 @@ export const settingsRoutes: FastifyPluginCallback = (server, _, done) => {
 	);
 
 	server.patch(
-		'/', //
+		'', //
 		{ schema: { tags: ['Settings'] } },
 		async (request, reply): Promise<void> => {
 			const data = SettingsPatchSchema.parse(request.body);
@@ -44,6 +44,4 @@ export const settingsRoutes: FastifyPluginCallback = (server, _, done) => {
 			await reply.code(200).send();
 		}
 	);
-
-	done();
 };

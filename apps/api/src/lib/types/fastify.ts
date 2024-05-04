@@ -8,11 +8,13 @@ import type { Queue } from 'bullmq';
 import type { HiveSettings } from '../../plugins/settings/service.js';
 import type { DownloaderTasks, ScannerTasks } from '../../plugins/tasks/types.js';
 import type { HiveNotifier } from '../../plugins/notifications/emitter.js';
+import type { HiveMetrics } from '../otel/MetricsClient.js';
 
 declare module 'fastify' {
 	interface FastifyInstance {
 		settings: HiveSettings;
 		notifications: HiveNotifier;
+		metrics?: HiveMetrics;
 		tasks: {
 			internal: Queue;
 			downloader: Queue<DownloaderTasks>;

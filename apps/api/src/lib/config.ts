@@ -10,26 +10,28 @@ if (existsSync(resolve('.env'))) {
 
 const ConfigSchema = z.object({
 	VERSION: z.string(),
-	PORT: z.coerce.number().default(3002),
+	PORT: z.coerce.number(),
 	AUTH_SECRET: z.string(),
 	AUTH_ORIGIN: z.string(),
-	AUTH_COOKIE_NAME: z.string().default('hive'),
+	AUTH_COOKIE_NAME: z.string(),
 	REDIS_HOST: z.string().default('localhost'),
 	REDIS_PORT: z.coerce.number().default(6379),
 	REDIS_PASSWORD: z.string().default('password'),
-	YT_API_KEY: z.string()
+	YT_API_KEY: z.string(),
+	METRICS_ENABLED: z.coerce.boolean().default(false)
 });
 
 const obj = {
 	VERSION: process.env.npm_package_version,
-	PORT: process.env.PORT,
+	PORT: 3002,
 	AUTH_SECRET: process.env.AUTH_SECRET,
 	AUTH_ORIGIN: process.env.AUTH_ORIGIN,
-	AUTH_COOKIE_NAME: process.env.AUTH_COOKIE_NAME,
+	AUTH_COOKIE_NAME: 'hive',
 	REDIS_HOST: process.env.REDIS_HOST,
 	REDIS_PORT: process.env.REDIS_PORT,
 	REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-	YT_API_KEY: process.env.YT_API_KEY
+	YT_API_KEY: process.env.YT_API_KEY,
+	METRICS_ENABLED: process.env.METRICS_ENABLED
 } satisfies Record<keyof z.infer<typeof ConfigSchema>, unknown>;
 
 export const config = ConfigSchema.parse(obj);
