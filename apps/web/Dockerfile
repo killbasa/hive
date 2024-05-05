@@ -17,6 +17,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store corepack enable && \
 	pnpm install && \
+	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/web run build && \
 	pnpm --filter @hive/web deploy --prod output
 

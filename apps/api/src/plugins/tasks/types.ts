@@ -1,4 +1,4 @@
-import type { Awaitable } from '../../lib/types/generic.js';
+import type { Awaitable } from '@hive/common';
 
 export type TaskHandler<T = void> = T extends void //
 	? () => Awaitable<void>
