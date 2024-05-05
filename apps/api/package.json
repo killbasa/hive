@@ -18,7 +18,8 @@
 		"generate": "drizzle-kit generate:sqlite",
 		"flush": "redis-cli --pass password flushall",
 		"reset": "pnpm flush && tsx scripts/reset.ts",
-		"reset:videos": "tsx scripts/reset-videos.ts"
+		"reset:videos": "tsx scripts/reset-videos.ts",
+		"clean": "rm -r dist node_modules"
 	},
 	"dependencies": {
 		"@fastify/cookie": "^9.3.1",

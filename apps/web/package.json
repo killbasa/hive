@@ -12,7 +12,8 @@
 		"preview": "vite preview",
 		"sync": "svelte-kit sync",
 		"lint": "pnpm sync && biome check --apply . && svelte-check --tsconfig ./tsconfig.json",
-		"openapi": "openapi-typescript http://localhost:3001/spec.json -o ./src/api.d.ts"
+		"openapi": "openapi-typescript http://localhost:3001/spec.json -o ./src/api.d.ts",
+		"clean": "rm -r dist node_modules .svelte-kit"
 	},
 	"dependencies": {
 		"@hive/common": "workspace:^",

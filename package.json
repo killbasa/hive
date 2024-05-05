@@ -18,7 +18,8 @@
 		"dry-run": "pnpm build && pnpm lint && pnpm test",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
-		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile ."
+		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile .",
+		"clean": "rm -r node_modules && pnpm -r run clean"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.7.2",

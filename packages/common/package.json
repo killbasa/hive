@@ -14,7 +14,8 @@
 	},
 	"scripts": {
 		"build": "tsc && tsup",
-		"lint": "biome check --apply ."
+		"lint": "biome check --apply .",
+		"clean": "rm -r dist node_modules"
 	},
 	"devDependencies": {
 		"tsup": "^8.0.2",
