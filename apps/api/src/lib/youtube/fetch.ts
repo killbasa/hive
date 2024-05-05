@@ -13,8 +13,13 @@ export async function ytFetch<T>(
 	const url = new URL(`${YT_BASE_URL}/${YT_API_VERSION}${path}`);
 	url.searchParams.set('key', config.YT_API_KEY);
 
-	if (options.resources) url.searchParams.set('part', options.resources.join(','));
-	if (options.ids) url.searchParams.set('id', options.ids.join(','));
+	if (options.resources) {
+		url.searchParams.set('part', options.resources.join(','));
+	}
+
+	if (options.ids) {
+		url.searchParams.set('id', options.ids.join(','));
+	}
 
 	const response = await fetch(url.href, {
 		method: 'GET',

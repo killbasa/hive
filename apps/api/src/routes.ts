@@ -10,16 +10,16 @@ import { userRoutes } from './plugins/users/routes.js';
 import { videoRoutes } from './plugins/videos/routes.js';
 
 export const routes: FastifyPluginAsync = async (server) => {
-	await server.register(coreRoutes);
-	await server.register(referenceRoutes);
-	await server.register(authRoutes, { prefix: 'auth' });
-	await server.register(userRoutes, { prefix: 'users' });
+	await server.registerRoutes(coreRoutes);
+	await server.registerRoutes(referenceRoutes);
+	await server.registerRoutes(authRoutes, { prefix: 'auth' });
+	await server.registerRoutes(userRoutes, { prefix: 'users' });
 
-	await server.register(settingsRoutes, { prefix: 'settings' });
-	await server.register(channelRoutes, { prefix: 'channels' });
-	await server.register(videoRoutes, { prefix: 'videos' });
-	await server.register(downloadsRoutes, { prefix: 'downloads' });
-	await server.register(notificationRoutes, { prefix: 'notifications' });
+	await server.registerRoutes(settingsRoutes, { prefix: 'settings' });
+	await server.registerRoutes(channelRoutes, { prefix: 'channels' });
+	await server.registerRoutes(videoRoutes, { prefix: 'videos' });
+	await server.registerRoutes(downloadsRoutes, { prefix: 'downloads' });
+	await server.registerRoutes(notificationRoutes, { prefix: 'notifications' });
 
 	server.log.info('routes loaded');
 };

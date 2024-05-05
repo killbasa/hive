@@ -1,17 +1,17 @@
 <script lang="ts">
-	import VideoStatusBadge from '$components/videos/VideoStatusBadge.svelte';
-	import { HiveWebSocket } from '$lib/ws';
-	import { onMount } from 'svelte';
-	import type { PageData } from './$types';
+	import { invalidate } from '$app/navigation';
 	import Card from '$components/Card.svelte';
-	import Pagination from '$components/navigation/Pagination.svelte';
 	import SearchInput from '$components/SearchInput.svelte';
+	import Pagination from '$components/navigation/Pagination.svelte';
+	import VideoStatusBadge from '$components/videos/VideoStatusBadge.svelte';
+	import { client } from '$lib/client';
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
-	import { StatusEvent, type DownloadProgress, type DownloadStatus } from '@hive/common';
 	import { formatDuration, formatFileSize } from '$lib/utils';
-	import { invalidate } from '$app/navigation';
-	import { client } from '$lib/client';
+	import { HiveWebSocket } from '$lib/ws';
+	import { type DownloadProgress, type DownloadStatus, StatusEvent } from '@hive/common';
+	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
 	type DownloadInfo = {
 		id: string;

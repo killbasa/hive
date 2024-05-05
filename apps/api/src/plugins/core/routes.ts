@@ -1,13 +1,13 @@
-import { type FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox';
+import { Type } from '@fastify/type-provider-typebox';
 import { config } from '../../lib/config.js';
-import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
+import { MessageResponse } from '../../lib/responses.js';
+import type { HiveRoutes } from '../../lib/types/hive.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
-import { tokenHandler } from '../auth/tokens.js';
 
-export const coreRoutes: FastifyPluginAsyncTypebox = async (server) => {
-	await server.register(async (instance) => {
-		instance.get(
-			'/heartbeat', //
+export const coreRoutes: HiveRoutes = {
+	public: (server, _, done) => {
+		server.get(
+			'/heartbeat',
 			{
 				schema: {
 					description: 'Check if the server is running',
@@ -26,27 +26,27 @@ export const coreRoutes: FastifyPluginAsyncTypebox = async (server) => {
 			},
 		);
 
-		instance.get(
-			'/metrics', //
+		server.get(
+			'/metrics',
 			{
 				schema: {
 					description: 'Get Prometheus metrics for the server',
 					tags: ['Core'],
 					response: {
-						200: EmptyResponse('Prometheus metrics'),
+						200: Type.String({ description: 'Prometheus metrics' }),
 						501: MessageResponse('Metrics not enabled'),
 					},
 				},
 			},
 			async (_, reply): Promise<void> => {
-				if (instance.metrics === undefined) {
+				if (server.metrics === undefined) {
 					await reply.status(501).send({
 						message: 'Metrics not enabled',
 					});
 					return;
 				}
 
-				const metrics = await instance.metrics.collect();
+				const metrics = await server.metrics.collect();
 
 				await reply //
 					.status(200)
@@ -54,14 +54,21 @@ export const coreRoutes: FastifyPluginAsyncTypebox = async (server) => {
 					.send(metrics);
 			},
 		);
-	});
 
-	await server.register(async (instance) => {
-		instance.addHook('onRequest', tokenHandler);
+		server.get(
+			'/favicon.ico', //
+			{ schema: { hide: true } },
+			async (_, reply): Promise<void> => {
+				await reply.code(404).send();
+			},
+		);
 
+		done();
+	},
+	authenticated: (server, _, done) => {
 		const ytdlpVersion = getYtdlpVersion();
-		instance.get(
-			'/version', //
+		server.get(
+			'/version',
 			{
 				schema: {
 					description: 'Get the version numbers for Hive',
@@ -81,5 +88,7 @@ export const coreRoutes: FastifyPluginAsyncTypebox = async (server) => {
 				});
 			},
 		);
-	});
+
+		done();
+	},
 };

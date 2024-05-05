@@ -21,14 +21,19 @@ export async function mvDir(oldPath: string, newPath: string): Promise<void> {
 }
 
 export async function du(rootPath: string): Promise<bigint> {
-	if (!existsSync(rootPath)) return 0n;
+	if (!existsSync(rootPath)) {
+		return 0n;
+	}
 
 	let size = 0n;
 
 	async function checkDir(path: string): Promise<void> {
 		const stats = await lstat(path, { bigint: true });
 		size += stats.size;
-		if (stats.isFile()) return;
+
+		if (stats.isFile()) {
+			return;
+		}
 
 		const dir = await readdir(path);
 

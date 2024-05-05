@@ -27,7 +27,9 @@ export class HiveSettings {
 
 	public async init() {
 		const result = await this.get().catch(() => null);
-		if (result !== null) return;
+		if (result !== null) {
+			return;
+		}
 
 		await db //
 			.insert(settings)

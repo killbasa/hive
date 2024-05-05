@@ -3,7 +3,9 @@ export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number
 	let wait = false;
 
 	return function (this: unknown, ...args: Parameters<T>) {
-		if (wait) return;
+		if (wait) {
+			return;
+		}
 
 		fn.apply(this, args);
 		wait = true;
@@ -69,13 +71,18 @@ export function formatDuration(value: string | number) {
 }
 
 export function formatFileSize(value: unknown): string {
-	if (typeof value !== 'string') return 'N/A';
+	if (typeof value !== 'string') {
+		return 'N/A';
+	}
+
 	const num = BigInt(value);
 	return humanFileSize(num);
 }
 
 export function stringToNum(value: string | null | undefined, fallback = 0): number {
-	if (value === undefined || value === null) return fallback;
+	if (value === undefined || value === null) {
+		return fallback;
+	}
 
 	const coerce = Number.parseInt(value, 10);
 	return Number.isNaN(coerce) ? fallback : coerce;

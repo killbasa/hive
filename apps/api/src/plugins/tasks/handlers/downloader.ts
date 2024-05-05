@@ -62,7 +62,7 @@ export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async (
 	server.log.info(`downloaded video: ${videoId}`);
 };
 
-export const handleDownloadCommentsTask: TaskHandler = async () => {
+export const handleDownloadCommentsTask: TaskHandler = () => {
 	server.log.info('downloading video comments: NO_ID');
 
 	server.log.info('downloaded video comments: NO_ID');

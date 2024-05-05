@@ -1,5 +1,5 @@
 import { Type } from '@fastify/type-provider-typebox';
 
 export const UserSchema = Type.Object({
-	username: Type.String(),
+	name: Type.String(),
 });

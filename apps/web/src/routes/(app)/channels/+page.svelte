@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import Card from '$components/Card.svelte';
-	import Pagination from '$components/navigation/Pagination.svelte';
 	import TextInput from '$components/TextInput.svelte';
-	import type { PageData } from './$types';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
-	import { toast } from '$lib/stores/toasts';
+	import Pagination from '$components/navigation/Pagination.svelte';
 	import { client } from '$lib/client';
+	import { toast } from '$lib/stores/toasts';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 

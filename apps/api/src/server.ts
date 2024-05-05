@@ -13,7 +13,7 @@ export const server = await app();
 
 const start = async () => {
 	try {
-		await initDb();
+		initDb();
 		await initWorkers();
 
 		await server.settings.init();

@@ -1,17 +1,15 @@
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { config } from '../../lib/config.js';
 import { EmptyResponse } from '../../lib/responses.js';
+import type { HiveRoutes } from '../../lib/types/hive.js';
 import { cookies } from './cookies.js';
 import { credentialAuthRoutes } from './credentials/routes.js';
-import { tokenHandler } from './tokens.js';
 
-export const authRoutes: FastifyPluginAsyncTypebox = async (server) => {
-	await server.register(credentialAuthRoutes, { prefix: 'credentials' });
-
-	await server.register(async (instance) => {
-		instance.addHook('onRequest', tokenHandler);
-
-		instance.get(
+export const authRoutes: HiveRoutes = {
+	subroutes: {
+		credentials: credentialAuthRoutes,
+	},
+	authenticated: (server, _, done) => {
+		server.get(
 			'/verify', //
 			{
 				schema: {
@@ -29,7 +27,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (server) => {
 			},
 		);
 
-		instance.post(
+		server.post(
 			'/logout', //
 			{
 				schema: {
@@ -49,5 +47,7 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (server) => {
 					.send();
 			},
 		);
-	});
+
+		done();
+	},
 };

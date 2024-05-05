@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { tweened } from 'svelte/motion';
+	import { type SvelteToastOptions, toast } from '$lib/stores/toasts';
 	import { linear } from 'svelte/easing';
-	import { toast, type SvelteToastOptions } from '$lib/stores/toasts';
+	import { tweened } from 'svelte/motion';
 
 	export let item: SvelteToastOptions;
 

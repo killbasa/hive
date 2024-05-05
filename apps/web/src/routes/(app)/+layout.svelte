@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Navbar from '$components/navigation/Navbar.svelte';
 	import Footer from '$components/navigation/Footer.svelte';
-	import { initVideoContext } from '$lib/stores/video';
+	import Navbar from '$components/navigation/Navbar.svelte';
 	import VideoPlayer from '$components/videos/VideoPlayer.svelte';
+	import { initVideoContext } from '$lib/stores/video';
 
 	initVideoContext();
 </script>

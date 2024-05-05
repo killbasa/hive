@@ -48,7 +48,9 @@ export async function cache(
 	fn: () => Promise<string> | string,
 ): Promise<string> {
 	const data = await getCache(path, ttl);
-	if (data !== null) return data;
+	if (data !== null) {
+		return data;
+	}
 
 	const result = await fn();
 	await writeCache(path, result);

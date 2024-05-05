@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { parseCron } from './cron.js';
 
 describe('cron utils', () => {
-	test('one day', async () => {
+	test('one day', () => {
 		const result = parseCron('0 1 * * *');
 
 		const before = result?.next().getTime() ?? 0;
@@ -12,7 +12,7 @@ describe('cron utils', () => {
 		expect(after - before).toBe(Time.Day);
 	});
 
-	test('invalid', async () => {
+	test('invalid', () => {
 		const result = parseCron('string');
 
 		expect(result).toBe(null);

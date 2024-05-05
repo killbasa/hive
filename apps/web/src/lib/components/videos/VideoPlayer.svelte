@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { config } from '$lib/config';
-	import { debounce, throttle } from '$lib/utils';
-	import { getVideoContext } from '$lib/stores/video';
-	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { client } from '$lib/client';
+	import { config } from '$lib/config';
+	import { getVideoContext } from '$lib/stores/video';
+	import { debounce, throttle } from '$lib/utils';
 	import { Time } from '@hive/common';
 	import { onMount } from 'svelte';
-	import { client } from '$lib/client';
 
 	let element: HTMLVideoElement;
 	let divElement: HTMLDivElement;

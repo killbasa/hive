@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
-	import Pagination from '$components/navigation/Pagination.svelte';
 	import SearchInput from '$components/SearchInput.svelte';
+	import Pagination from '$components/navigation/Pagination.svelte';
 	import VideoCard from '$components/videos/VideoCard.svelte';
 	import type { PageData } from './$types';
 

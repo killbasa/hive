@@ -48,7 +48,10 @@ function createToast() {
 
 	function pop(id: number) {
 		update((n) => {
-			if (!n.length || id === 0) return [];
+			if (!n.length || id === 0) {
+				return [];
+			}
+
 			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			const found = id || Math.max(...n.map((i) => i.id!));
 			return n.filter((i) => i.id !== found);

@@ -19,9 +19,9 @@ export const ScalarContentSecurityPolicies: string = [
 export function scalarHTML(cdnUrl: string): string {
 	return `
 	<!DOCTYPE html>
-	<html>
+	<html lang="en">
 	<head>
-		<title>API Reference</title>
+		<title>Hive API Reference</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<style>

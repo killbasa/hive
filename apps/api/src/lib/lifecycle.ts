@@ -25,9 +25,11 @@ export function startupLog(): void {
 
 export function setupGracefulShutdown(): void {
 	const gracefullyClose = async (signal: string): Promise<void> => {
-		if (closing) return;
-		closing = true;
+		if (closing) {
+			return;
+		}
 
+		closing = true;
 		server.log.warn(`graceful shutdown from signal="${signal}" (30s)`);
 
 		setTimeout(() => {

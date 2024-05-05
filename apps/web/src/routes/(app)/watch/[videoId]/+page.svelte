@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { setVideoContext } from '$lib/stores/video';
 	import Description from '$components/Description.svelte';
+	import { setVideoContext } from '$lib/stores/video';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 	setVideoContext(data);

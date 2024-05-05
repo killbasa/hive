@@ -12,7 +12,7 @@
 		"enabled": true,
 		"formatWithErrors": false,
 		"indentStyle": "tab",
-		"indentWidth": 4,
+		"indentWidth": 2,
 		"lineEnding": "lf",
 		"lineWidth": 120
 	},
@@ -20,14 +20,38 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"style": {
-				"noParameterAssign": "off"
-			},
-			"suspicious": {
-				"noAsyncPromiseExecutor": "off"
+			"a11y": {},
+			"complexity": {
+				"useSimplifiedLogicExpression": "error",
+				"noVoid": "off",
+				"noExcessiveCognitiveComplexity": {
+					"level": "error",
+					"options": {
+						"maxAllowedComplexity": 15
+					}
+				}
 			},
 			"correctness": {
-				"noUnusedImports": "error"
+				"noUnusedImports": "error",
+				"noUnusedVariables": "error",
+				"noUnusedPrivateClassMembers": "error",
+				"noUndeclaredVariables": "error"
+			},
+			"style": {
+				"noParameterAssign": "off",
+				"useConsistentArrayType": {
+					"level": "error",
+					"options": {
+						"syntax": "shorthand"
+					}
+				},
+				"useBlockStatements": "error",
+				"noShoutyConstants": "error",
+				"noNegationElse": "error"
+			},
+			"suspicious": {
+				"noAsyncPromiseExecutor": "off",
+				"useAwait": "error"
 			}
 		}
 	},
@@ -39,19 +63,28 @@
 	},
 	"files": {
 		"ignore": [
-			"**/*.sql",
-			"**/*.svelte",
-			".git/",
+			".git/", //
 			".husky/",
-			".svelte-kit/",
 			"bin/",
 			"coverage/",
 			"data/",
 			"dist/",
 			"node_modules/",
-			"src/api.d.ts",
 			"LICENSE",
 			"pnpm-lock.yaml"
 		]
-	}
+	},
+	"overrides": [
+		{
+			"include": ["**/*.svelte"],
+			"formatter": { "enabled": false },
+			"linter": { "enabled": false }
+		},
+		{
+			"include": [".svelte-kit/", "src/api.d.ts"],
+			"organizeImports": { "enabled": false },
+			"formatter": { "enabled": false },
+			"linter": { "enabled": false }
+		}
+	]
 }

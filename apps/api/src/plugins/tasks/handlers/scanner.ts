@@ -61,11 +61,15 @@ export const handleChannelScanTask: TaskHandler<ScannerScanChannelTask> = async 
 	scansInProgress.scan = true;
 
 	for (const [index, videoId] of newVideoIds.entries()) {
-		const result = await downloadVideoAssets(videoId);
+		const success = await downloadVideoAssets(videoId);
 
-		if (!result || !isVideoDownloaded(channelId, videoId, { dir: 'download' })) {
-			server.log.warn(`failed to download video assets: ${videoId}`);
-			continue;
+		if (!success) {
+			const isDownloaded = isVideoDownloaded(channelId, videoId, { dir: 'download' });
+
+			if (!isDownloaded) {
+				server.log.warn(`failed to download video assets: ${videoId}`);
+				continue;
+			}
 		}
 
 		await moveVideoAssets(channelId, videoId);

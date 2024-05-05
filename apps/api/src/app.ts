@@ -9,10 +9,12 @@ import FastifyWebsocket from '@fastify/websocket';
 import { Queue } from 'bullmq';
 import type { QueueOptions } from 'bullmq';
 import Fastify from 'fastify';
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, RegisterOptions } from 'fastify';
 import { RedisConnectionOptions, config } from './lib/config.js';
 import { isDev } from './lib/constants.js';
 import { HiveMetrics } from './lib/otel/MetricsClient.js';
+import type { HiveRoutes } from './lib/types/hive.js';
+import { tokenHandler } from './plugins/auth/tokens.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
 import { HiveSettings } from './plugins/settings/service.js';
 
@@ -91,12 +93,31 @@ export async function app(): Promise<FastifyInstance> {
 	return decorate(server);
 }
 
-export function decorate(instance: FastifyInstance): FastifyInstance {
-	instance.decorate('settings', new HiveSettings());
-	instance.decorate('notifications', new HiveNotifier());
+export function decorate(server: FastifyInstance): FastifyInstance {
+	server.decorate('registerRoutes', async (routes: HiveRoutes, options?: RegisterOptions) => {
+		if (routes.subroutes) {
+			for (const [prefix, route] of Object.entries(routes.subroutes)) {
+				await server.registerRoutes(route, { prefix });
+			}
+		}
+
+		if (routes.public) {
+			await server.register(routes.public, options);
+		}
+
+		if (routes.authenticated) {
+			await server.register((instance, opts, done) => {
+				instance.addHook('onRequest', tokenHandler);
+				routes.authenticated?.(instance, opts, done);
+			}, options);
+		}
+	});
+
+	server.decorate('settings', new HiveSettings());
+	server.decorate('notifications', new HiveNotifier());
 
 	if (config.METRICS_ENABLED) {
-		instance.decorate('metrics', new HiveMetrics());
+		server.decorate('metrics', new HiveMetrics());
 	}
 
 	const options: QueueOptions = {
@@ -107,11 +128,11 @@ export function decorate(instance: FastifyInstance): FastifyInstance {
 		},
 	};
 
-	instance.decorate('tasks', {
+	server.decorate('tasks', {
 		internal: new Queue('internal', options),
 		downloader: new Queue('downloader', options),
 		scanner: new Queue('scanner', options),
 	});
 
-	return instance;
+	return server;
 }

@@ -22,5 +22,5 @@ export const authentication: Handle = async ({ event, resolve }) => {
 		redirect(307, '/');
 	}
 
-	return resolve(event);
+	return await resolve(event);
 };

@@ -51,7 +51,7 @@ export async function downloadVideo(
 		`https://youtube.com/watch?v=${videoId}`,
 		args,
 		{
-			onComplete: async (data) => {
+			onComplete: (data) => {
 				server.notifications.emit('status', {
 					type: StatusEvent.DownloadUpdate,
 					channelId,
@@ -81,7 +81,9 @@ export async function getVideoIds(channelId: string): Promise<string[]> {
 		.arg('--print', 'id');
 
 	const videoIdsStr = await ytdlpExec(`https://www.youtube.com/channel/${channelId}`, args);
-	if (videoIdsStr === '') return [];
+	if (videoIdsStr === '') {
+		return [];
+	}
 
 	return videoIdsStr.split('\n').filter((id) => id !== '');
 }

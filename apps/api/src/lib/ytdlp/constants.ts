@@ -6,7 +6,9 @@ export const YTDLP_VIDEO_PATH = 'downloads/%(channel_id)s/videos/%(id)s';
 
 let YTDLP_VERSION: string | undefined;
 export function getYtdlpVersion(): string {
-	if (YTDLP_VERSION) return YTDLP_VERSION;
+	if (YTDLP_VERSION) {
+		return YTDLP_VERSION;
+	}
 
 	const task = execSync(`${CLI_PATH} --version`, { cwd: DATA_DIR });
 	YTDLP_VERSION = task.toString().trim();

@@ -20,7 +20,9 @@ export async function updatePage(
 
 export function getNumberParam(url: URL, key: string, fallback = 1): number {
 	const value = url.searchParams.get(key);
-	if (value === null) return fallback;
+	if (value === null) {
+		return fallback;
+	}
 
 	const coerce = Number.parseInt(value, 10);
 	return Number.isNaN(coerce) ? fallback : coerce;
@@ -28,7 +30,9 @@ export function getNumberParam(url: URL, key: string, fallback = 1): number {
 
 export function getStringParam(url: URL, key: string, valid?: string[]): string | undefined {
 	const value = url.searchParams.get(key);
-	if (value === null || !valid) return undefined;
+	if (value === null || !valid) {
+		return undefined;
+	}
 
 	return valid.includes(value) ? value : undefined;
 }

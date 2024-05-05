@@ -16,7 +16,7 @@ describe.skipIf(process.env.CI)('xml utils', () => {
 		});
 	});
 
-	test('Channel ID should be defined', async () => {
+	test('Channel ID should be defined', () => {
 		const result = parseChannelXML(data as XMLString);
 
 		expect(result.feed.entry[0]['yt:channelId']).toBe(channelId);

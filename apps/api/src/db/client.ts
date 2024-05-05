@@ -7,8 +7,10 @@ import * as schema from './schema.js';
 
 export let db: ReturnType<typeof drizzle<typeof schema>>;
 
-export const initDb = async (): Promise<void> => {
-	if (db) return;
+export const initDb = (): void => {
+	if (db) {
+		return;
+	}
 
 	const path = isTesting ? ':memory:' : `${DATA_DIR}/sqlite.db`;
 	const sqlite = new Database(path);
