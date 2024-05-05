@@ -5,8 +5,8 @@ module.exports = {
 			files: '*.{yml,yaml}',
 			options: {
 				singleQuote: false,
-				useTabs: false
-			}
-		}
-	]
+				useTabs: false,
+			},
+		},
+	],
 };

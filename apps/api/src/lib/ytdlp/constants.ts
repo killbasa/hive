@@ -1,5 +1,5 @@
-import { CLI_PATH, DATA_DIR } from '../constants.js';
 import { execSync } from 'node:child_process';
+import { CLI_PATH, DATA_DIR } from '../constants.js';
 
 export const YTDLP_CHANNEL_PATH = 'downloads/%(channel_id)s/assets';
 export const YTDLP_VIDEO_PATH = 'downloads/%(channel_id)s/videos/%(id)s';

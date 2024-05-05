@@ -1,6 +1,5 @@
-import type { Awaitable } from '@hive/common';
+import type { Awaitable } from '../../lib/types/generic.js';
 
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type TaskHandler<T = void> = T extends void //
 	? () => Awaitable<void>
 	: (task: T) => Awaitable<void>;

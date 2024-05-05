@@ -1,13 +1,13 @@
-import { VideoGetQuery, VideoListGetQuery, VideoPatchQuery } from './query.js';
-import { VideoIgnoreBody, VideoPatchBody } from './body.js';
-import { VideoSchema, VideoWithCommentsSchema } from './schemas.js';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { and, count, eq, gt, inArray, like } from 'drizzle-orm';
+import type { SQLWrapper } from 'drizzle-orm';
 import { db } from '../../db/client.js';
 import { videos } from '../../db/schema.js';
+import { EmptyResponse } from '../../lib/responses.js';
 import { tokenHandler } from '../auth/tokens.js';
-import { and, count, eq, gt, inArray, like } from 'drizzle-orm';
-import { Type } from '@fastify/type-provider-typebox';
-import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import type { SQLWrapper } from 'drizzle-orm';
+import { VideoIgnoreBody, VideoPatchBody } from './body.js';
+import { VideoGetQuery, VideoListGetQuery, VideoPatchQuery } from './query.js';
+import { VideoListSchema, VideoSchema, VideoWithCommentsSchema } from './schema.js';
 
 export const videoRoutes: FastifyPluginAsyncTypebox = async (server): Promise<void> => {
 	server.addHook('onRequest', tokenHandler);
@@ -16,15 +16,13 @@ export const videoRoutes: FastifyPluginAsyncTypebox = async (server): Promise<vo
 		'', //
 		{
 			schema: {
+				description: 'Get a list of videos',
 				tags: ['Videos'],
 				querystring: VideoListGetQuery,
 				response: {
-					200: Type.Object({
-						videos: Type.Array(VideoSchema),
-						total: Type.Number()
-					})
-				}
-			}
+					200: VideoListSchema,
+				},
+			},
 		},
 		async (request, reply): Promise<void> => {
 			const { query } = request;
@@ -44,50 +42,58 @@ export const videoRoutes: FastifyPluginAsyncTypebox = async (server): Promise<vo
 					where,
 					orderBy: (video, { desc }) => desc(video.updatedAt),
 					limit: query.inProgress ? 4 : 24,
-					offset: (query.page - 1) * 24
+					offset: (query.page - 1) * 24,
 				}),
 				db //
 					.select({ total: count() })
 					.from(videos)
-					.where(where)
+					.where(where),
 			]);
 
-			return await reply.status(200).send({ videos: result, total: countRes[0].total });
-		}
+			return await reply.status(200).send({
+				videos: result,
+				total: countRes[0].total,
+			});
+		},
 	);
 
 	server.post(
 		'/ignore',
 		{
 			schema: {
+				description: 'Ignore videos',
 				tags: ['Videos'],
 				body: VideoIgnoreBody,
-				response: { 204: { type: 'null' } }
-			}
+				response: {
+					204: EmptyResponse('Videos IDs ignored'),
+				},
+			},
 		},
 		async (request, reply): Promise<void> => {
 			await db
 				.update(videos)
 				.set({
-					downloadStatus: 'ignored'
+					downloadStatus: 'ignored',
 				})
 				.where(inArray(videos.id, request.body.videoIds))
 				.returning();
 
 			await reply.status(204).send();
-		}
+		},
 	);
 
 	server.get(
 		'/:videoId',
 		{
 			schema: {
+				description: 'Get a video',
 				tags: ['Videos'],
 				params: VideoGetQuery,
 				response: {
-					200: VideoWithCommentsSchema
-				}
-			}
+					200: VideoWithCommentsSchema,
+					404: EmptyResponse('Video not found'),
+				},
+			},
 		},
 		async (request, reply): Promise<void> => {
 			const { videoId } = request.params;
@@ -95,27 +101,28 @@ export const videoRoutes: FastifyPluginAsyncTypebox = async (server): Promise<vo
 			const result = await db.query.videos.findFirst({
 				where: ({ id }, { eq }) => eq(id, videoId),
 				with: { comments: true },
-				columns: { updatedAt: false }
+				columns: { updatedAt: false },
 			});
 			if (result === undefined) {
 				return await reply.status(404).send();
 			}
 
 			await reply.status(200).send(result);
-		}
+		},
 	);
 
 	server.patch(
 		'/:videoId',
 		{
 			schema: {
+				description: 'Update a video',
 				tags: ['Videos'],
 				params: VideoPatchQuery,
 				body: VideoPatchBody,
 				response: {
-					200: VideoSchema
-				}
-			}
+					200: VideoSchema,
+				},
+			},
 		},
 		async (request, reply): Promise<void> => {
 			const { videoId } = request.params;
@@ -124,20 +131,12 @@ export const videoRoutes: FastifyPluginAsyncTypebox = async (server): Promise<vo
 				.update(videos)
 				.set({
 					watchProgress: request.body.watchProgress,
-					downloadStatus: request.body.downloadStatus
+					downloadStatus: request.body.downloadStatus,
 				})
 				.where(eq(videos.id, videoId))
 				.returning();
 
 			await reply.status(200).send(result.at(0));
-		}
+		},
 	);
-
-	server.addSchema({
-		$id: 'videoProgressSchema',
-		type: 'object',
-		properties: {
-			progress: { type: 'number' }
-		}
-	});
 };

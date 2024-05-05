@@ -32,10 +32,7 @@ export async function du(rootPath: string): Promise<bigint> {
 
 		const dir = await readdir(path);
 
-		await Promise.all(
-			// eslint-disable-next-line @typescript-eslint/promise-function-async
-			dir.map((directoryItem) => checkDir(join(path, directoryItem)))
-		);
+		await Promise.all(dir.map((directoryItem) => checkDir(join(path, directoryItem))));
 	}
 
 	await checkDir(rootPath);

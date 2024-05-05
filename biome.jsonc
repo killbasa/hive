@@ -1,0 +1,57 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"vcs": {
+		"clientKind": "git",
+		"enabled": true,
+		"useIgnoreFile": true
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineEnding": "lf",
+		"lineWidth": 120
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"noParameterAssign": "off"
+			},
+			"suspicious": {
+				"noAsyncPromiseExecutor": "off"
+			},
+			"correctness": {
+				"noUnusedImports": "error"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"enabled": true,
+			"quoteStyle": "single"
+		}
+	},
+	"files": {
+		"ignore": [
+			"**/*.sql",
+			"**/*.svelte",
+			".git/",
+			".husky/",
+			".svelte-kit/",
+			"bin/",
+			"coverage/",
+			"data/",
+			"dist/",
+			"node_modules/",
+			"src/api.d.ts",
+			"LICENSE",
+			"pnpm-lock.yaml"
+		]
+	}
+}

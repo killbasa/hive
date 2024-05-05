@@ -28,7 +28,7 @@ export async function fetchChannelXML(channelId: string): Promise<XMLString> {
 	const url = new URL(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
 
 	const response = await fetch(url.href, {
-		method: 'GET'
+		method: 'GET',
 	});
 	const xml = await response.text();
 

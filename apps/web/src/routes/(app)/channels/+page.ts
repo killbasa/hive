@@ -1,23 +1,21 @@
-import { apiFetch } from '$lib/fetch';
+import { client } from '$lib/client';
 import { getNumberParam } from '$lib/navigation';
-import type { Channel } from '@hive/common';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, depends, url }) => {
 	depends('state:channels');
 
-	const page = getNumberParam(url, 'page', 1);
-
-	const response = await apiFetch<{ channels: Channel[]; total: number }>('/channels', {
+	const response = await client.GET('/channels', {
 		fetch,
-		method: 'GET',
-		searchParams: { page }
+		params: {
+			query: {
+				page: getNumberParam(url, 'page', 1),
+			},
+		},
 	});
 
-	const data = await response.json();
-
 	return {
-		channels: data.channels,
-		totalChannels: data.total
+		channels: response.data?.channels ?? [],
+		total: response.data?.total ?? 0,
 	};
 };

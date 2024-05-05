@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { updatePage } from '$lib/navigation';
-	import { stringToNum } from '@hive/common';
+	import { stringToNum } from '$lib/utils';
 
 	export let count: number;
 	export let total: number;

@@ -7,7 +7,7 @@
 	export let delay = 250;
 
 	let input: HTMLInputElement;
-	$: filterValue = $page.url.searchParams.get('search') || '';
+	$: filterValue = $page.url.searchParams.get('search') ?? '';
 
 	const handleFilter = debounce(async () => {
 		await updatePage(

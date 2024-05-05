@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { apiFetch } from '$lib/fetch';
 	import { config } from '$lib/config';
-	import { MIMETypes } from '$lib/constants';
 	import { debounce, throttle } from '$lib/utils';
 	import { getVideoContext } from '$lib/stores/video';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { Time } from '@hive/common';
 	import { onMount } from 'svelte';
+	import { client } from '$lib/client';
 
 	let element: HTMLVideoElement;
 	let divElement: HTMLDivElement;
@@ -38,7 +37,7 @@
 		element.currentTime = currentTime;
 
 		const local = localStorage.getItem('videoVolume') ?? '1';
-		const parsedVol = parseFloat(local);
+		const parsedVol = Number.parseFloat(local);
 		element.volume = isNaN(parsedVol) ? 1 : parsedVol;
 
 		window.setTimeout(() => {
@@ -64,11 +63,11 @@
 	async function postUpdate(time: number) {
 		if (!$video) return;
 
-		await apiFetch(`/videos/${$video.id}`, {
-			fetch,
-			method: 'PATCH',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ watchProgress: time })
+		await client.PATCH('/videos/{videoId}', {
+			params: { path: { videoId: $video.id } },
+			body: {
+				watchProgress: time
+			}
 		});
 	}
 
@@ -92,6 +91,10 @@
 
 	afterNavigate((data) => {
 		if (data.from === null) return;
+
+		if (!isWatchPage && element.paused) {
+			closeVideo();
+		}
 
 		mountVideo();
 	});

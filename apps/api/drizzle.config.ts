@@ -5,7 +5,7 @@ export default {
 	out: './db',
 	driver: 'better-sqlite',
 	dbCredentials: {
-		url: './data/sqlite.db'
+		url: './data/sqlite.db',
 	},
-	strict: true
+	strict: true,
 } satisfies Config;

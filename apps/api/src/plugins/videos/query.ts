@@ -1,5 +1,5 @@
-import { VideoDownloadStatusSchema, VideoStatusSchema, VideoTypeSchema } from './schemas.js';
 import { Type } from '@fastify/type-provider-typebox';
+import { VideoDownloadStatusSchema, VideoStatusSchema, VideoTypeSchema } from './schema.js';
 
 export const VideoListGetQuery = Type.Object({
 	page: Type.Number({ minimum: 1, default: 1 }),
@@ -8,13 +8,13 @@ export const VideoListGetQuery = Type.Object({
 	downloadStatus: Type.Optional(Type.Array(VideoDownloadStatusSchema)),
 	channelId: Type.Optional(Type.String()),
 	search: Type.Optional(Type.String()),
-	inProgress: Type.Optional(Type.Boolean({ default: false }))
+	inProgress: Type.Optional(Type.Boolean({ default: false })),
 });
 
 export const VideoGetQuery = Type.Object({
-	videoId: Type.String()
+	videoId: Type.String(),
 });
 
 export const VideoPatchQuery = Type.Object({
-	videoId: Type.String()
+	videoId: Type.String(),
 });

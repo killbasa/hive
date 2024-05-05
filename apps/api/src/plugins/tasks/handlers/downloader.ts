@@ -1,13 +1,13 @@
+import { readFile, rm, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { StatusEvent } from '@hive/common';
+import { eq } from 'drizzle-orm';
 import { db } from '../../../db/client.js';
 import { videos } from '../../../db/schema.js';
+import type { CommentMetadata } from '../../../lib/fs/types.js';
 import { VIDEO_DL_PATH, indexComments, indexVideo, moveVideoAssets } from '../../../lib/fs/videos.js';
 import { downloadVideo } from '../../../lib/ytdlp/videos.js';
 import { server } from '../../../server.js';
-import { eq } from 'drizzle-orm';
-import { StatusEvent } from '@hive/common';
-import { resolve } from 'node:path';
-import { readFile, rm, writeFile } from 'node:fs/promises';
-import type { CommentMetadata } from '../../../lib/fs/types.js';
 import type { DownloaderVideoTask, TaskHandler } from '../types.js';
 
 export const downloadControllers: Map<string, AbortController> = new Map();
@@ -22,7 +22,7 @@ export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async (
 	if (controller.signal.aborted) {
 		await rm(resolve(VIDEO_DL_PATH(channelId, videoId)), {
 			recursive: true,
-			force: true
+			force: true,
 		});
 
 		server.log.info(`download aborted: ${videoId}`);
@@ -38,14 +38,14 @@ export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async (
 	await writeFile(
 		resolve(`${source}/comments.json`), //
 		JSON.stringify({ comments: data.comments }),
-		{ encoding: 'utf-8' }
+		{ encoding: 'utf-8' },
 	);
 
 	await moveVideoAssets(channelId, videoId);
 
 	await Promise.all([
 		indexVideo(channelId, videoId), //
-		indexComments(channelId, videoId)
+		indexComments(channelId, videoId),
 	]);
 
 	await db //
@@ -56,7 +56,7 @@ export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async (
 	downloadControllers.delete(videoId);
 
 	server.notifications.emit('status', {
-		type: StatusEvent.DownloadComplete
+		type: StatusEvent.DownloadComplete,
 	});
 
 	server.log.info(`downloaded video: ${videoId}`);

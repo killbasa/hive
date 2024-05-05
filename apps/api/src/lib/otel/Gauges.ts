@@ -1,14 +1,13 @@
+import type { Meter } from '@opentelemetry/api';
+import { count } from 'drizzle-orm';
 import { db } from '../../db/client.js';
 import { channels, comments, playlists, videos } from '../../db/schema.js';
-import { count } from 'drizzle-orm';
-import type { Meter } from '@opentelemetry/api';
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class HiveGauges {
 	public constructor(meter: Meter) {
 		meter
 			.createObservableGauge('hive_channels_total', {
-				description: 'Gauge for the total amount of channels.'
+				description: 'Gauge for the total amount of channels.',
 			})
 			.addCallback(async (gauge) => {
 				const result = await db.select({ total: count() }).from(channels);
@@ -17,7 +16,7 @@ export class HiveGauges {
 
 		meter
 			.createObservableGauge('hive_playlists_total', {
-				description: 'Gauge for the total amount of playlists.'
+				description: 'Gauge for the total amount of playlists.',
 			})
 			.addCallback(async (gauge) => {
 				const result = await db.select({ total: count() }).from(playlists);
@@ -26,7 +25,7 @@ export class HiveGauges {
 
 		meter
 			.createObservableGauge('hive_videos_total', {
-				description: 'Gauge for the total amount of videos.'
+				description: 'Gauge for the total amount of videos.',
 			})
 			.addCallback(async (gauge) => {
 				const result = await db.select({ total: count() }).from(videos);
@@ -35,7 +34,7 @@ export class HiveGauges {
 
 		meter
 			.createObservableGauge('hive_comments_total', {
-				description: 'Gauge for the total amount of comments.'
+				description: 'Gauge for the total amount of comments.',
 			})
 			.addCallback(async (gauge) => {
 				const result = await db.select({ total: count() }).from(comments);

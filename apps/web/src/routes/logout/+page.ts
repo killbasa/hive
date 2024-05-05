@@ -1,11 +1,10 @@
-import { apiFetch } from '$lib/fetch';
-import type { PageLoad } from './$types';
 import { goto } from '$app/navigation';
+import { client } from '$lib/client';
+import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
-	await apiFetch('/auth/logout', {
+	await client.POST('/auth/logout', {
 		fetch,
-		method: 'POST'
 	});
 
 	await goto('/login');

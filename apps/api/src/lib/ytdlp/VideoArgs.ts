@@ -36,7 +36,7 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 		this.data.push(
 			'--download-archive', //
 			`media/${channelId}/assets/archive.txt`,
-			'--force-write-archive'
+			'--force-write-archive',
 		);
 		return this;
 	}
@@ -49,7 +49,6 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 			case 'thumbnail':
 				this.data.push('--output', `thumbnail:${data}`);
 				break;
-			case 'none':
 			default:
 				this.data.push('--output', data);
 		}
@@ -67,7 +66,7 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 
 		this.data.push(
 			'--progress-template', //
-			`{"status":"${statusStr}","id":"${idStr}","percentage":"${percentStr}","total":"${totalStr}","speed":"${speedStr}","eta":"${etaStr}"}`
+			`{"status":"${statusStr}","id":"${idStr}","percentage":"${percentStr}","total":"${totalStr}","speed":"${speedStr}","eta":"${etaStr}"}`,
 		);
 		return this;
 	}
@@ -87,7 +86,12 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 		return this;
 	}
 
-	public static parseProgress(data: string): { progress_percentage: string; progress_total: string; speed: string; eta: string } {
+	public static parseProgress(data: string): {
+		progress_percentage: string;
+		progress_total: string;
+		speed: string;
+		eta: string;
+	} {
 		return JSON.parse(data);
 	}
 }

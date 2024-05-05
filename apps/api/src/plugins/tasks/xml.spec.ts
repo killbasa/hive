@@ -1,13 +1,13 @@
-import { fetchChannelXML, parseChannelXML } from './xml.js';
-import { beforeAll, describe, expect, test } from 'vitest';
-import { cache } from '@hive/test-utils';
 import { Time } from '@hive/common';
+import { beforeAll, describe, expect, test } from 'vitest';
+import { cache } from '../../tests/fs.test-util.js';
+import { fetchChannelXML, parseChannelXML } from './xml.js';
 import type { XMLString } from './xml.js';
 
 const channelId = 'UCZlDXzGoo7d44bwdNObFacg';
 const cachePath = `${channelId}.xml`;
 
-describe('xml utils', () => {
+describe.skipIf(process.env.CI)('xml utils', () => {
 	let data: string;
 
 	beforeAll(async () => {

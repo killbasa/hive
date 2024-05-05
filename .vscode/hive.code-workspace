@@ -21,22 +21,29 @@
 		"files.exclude": {
 			"apps": true,
 			"packages": true,
-			"node_modules": true
+			"**/coverage": true,
+			"**/node_modules": true
 		},
 		"typescript.tsdk": "./node_modules/typescript/lib",
 		"typescript.referencesCodeLens.enabled": true,
 		"eslint.format.enable": true,
-		"eslint.validate": ["javascript", "typescript", "svelte"],
+		"eslint.validate": ["svelte"],
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
 		"[javascript]": {
-			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+			"editor.defaultFormatter": "biomejs.biome"
 		},
 		"[typescript]": {
-			"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+			"editor.defaultFormatter": "biomejs.biome"
 		},
 		"[svelte]": {
 			"editor.defaultFormatter": "svelte.svelte-vscode"
+		},
+		"[json]": {
+			"editor.defaultFormatter": "biomejs.biome"
+		},
+		"[jsonc]": {
+			"editor.defaultFormatter": "biomejs.biome"
 		},
 		"files.associations": {
 			"*.css": "css"

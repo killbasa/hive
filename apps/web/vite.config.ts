@@ -1,17 +1,16 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { type CommonServerOptions, defineConfig } from 'vite';
+
+const serverOptions: CommonServerOptions = {
+	port: 3000,
+	strictPort: true,
+};
 
 export default defineConfig({
 	plugins: [sveltekit()],
 	optimizeDeps: {
-		entries: ['zod', 'openapi-fetch']
+		entries: ['zod', 'openapi-fetch'],
 	},
-	server: {
-		port: 3000,
-		strictPort: true
-	},
-	preview: {
-		port: 3000,
-		strictPort: true
-	}
+	server: serverOptions,
+	preview: serverOptions,
 });

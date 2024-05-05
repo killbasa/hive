@@ -13,18 +13,18 @@ export const channels = sqliteTable(
 		name: text('name').notNull(),
 		description: text('description').notNull(),
 		tags: text('tags').notNull(),
-		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`)
+		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
 	},
 	(table) => {
 		return {
-			idx: index('channel_idx').on(table.id)
+			idx: index('channel_idx').on(table.id),
 		};
-	}
+	},
 );
 
 export const channelsRelations = relations(channels, ({ many }) => ({
 	videos: many(videos),
-	playlists: many(playlists)
+	playlists: many(playlists),
 }));
 
 /**
@@ -49,28 +49,28 @@ export const videos = sqliteTable(
 		type: text('type', { enum: ['video', 'short', 'stream'] }).notNull(),
 		status: text('status', { enum: ['none', 'new', 'live', 'upcoming', 'past'] }).notNull(),
 		downloadStatus: text('download_status', { enum: ['ignored', 'pending', 'done'] }).notNull(),
-		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`)
+		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
 	},
 	(table) => {
 		return {
 			idx: index('video_idx').on(table.id),
 			channelIdx: index('video_channel_idx').on(table.channelId),
-			playlistIdx: index('video_playlist_idx').on(table.playlistId)
+			playlistIdx: index('video_playlist_idx').on(table.playlistId),
 		};
-	}
+	},
 );
 
 export const videosRelations = relations(videos, ({ one, many }) => ({
 	channel: one(channels, {
 		fields: [videos.channelId],
-		references: [channels.id]
+		references: [channels.id],
 	}),
 	playlist: one(playlists, {
 		fields: [videos.channelId],
-		references: [playlists.id]
+		references: [playlists.id],
 	}),
 	comments: many(comments),
-	streamComments: many(streamComments)
+	streamComments: many(streamComments),
 }));
 
 /**
@@ -85,18 +85,18 @@ export const playlists = sqliteTable(
 			.references(() => channels.id)
 			.notNull(),
 		title: text('title').notNull(),
-		description: text('description').notNull()
+		description: text('description').notNull(),
 	},
 	(table) => {
 		return {
 			idx: index('playlist_idx').on(table.id),
-			channelIdx: index('playlist_channel_idx').on(table.channelId)
+			channelIdx: index('playlist_channel_idx').on(table.channelId),
 		};
-	}
+	},
 );
 
 export const playlistsRelations = relations(channels, ({ many }) => ({
-	videos: many(videos)
+	videos: many(videos),
 }));
 
 /**
@@ -115,21 +115,21 @@ export const comments = sqliteTable(
 		authorId: text('author_id').notNull(),
 		timeText: text('timestamp').notNull(),
 		isUploader: integer('is_uploader', { mode: 'boolean' }).notNull(),
-		isFavorited: integer('is_favorited', { mode: 'boolean' }).notNull()
+		isFavorited: integer('is_favorited', { mode: 'boolean' }).notNull(),
 	},
 	(table) => {
 		return {
 			idx: index('comment_idx').on(table.id),
-			videoIdx: index('comment_video_idx').on(table.videoId)
+			videoIdx: index('comment_video_idx').on(table.videoId),
 		};
-	}
+	},
 );
 
 export const commentsRelations = relations(comments, ({ one }) => ({
 	video: one(videos, {
 		fields: [comments.videoId],
-		references: [videos.id]
-	})
+		references: [videos.id],
+	}),
 }));
 
 export const streamComments = sqliteTable(
@@ -144,21 +144,21 @@ export const streamComments = sqliteTable(
 		timestamp: integer('timestamp', { mode: 'timestamp' }).notNull(),
 		isMod: integer('is_mod', { mode: 'boolean' }).notNull(),
 		isVerified: integer('is_verified', { mode: 'boolean' }).notNull(),
-		isUploader: integer('is_uploader', { mode: 'boolean' }).notNull()
+		isUploader: integer('is_uploader', { mode: 'boolean' }).notNull(),
 	},
 	(table) => {
 		return {
 			idx: index('streamcomment_idx').on(table.id),
-			videoIdx: index('streamcomment_video_idx').on(table.videoId)
+			videoIdx: index('streamcomment_video_idx').on(table.videoId),
 		};
-	}
+	},
 );
 
 export const streamCommentsRelations = relations(streamComments, ({ one }) => ({
 	video: one(videos, {
 		fields: [streamComments.videoId],
-		references: [videos.id]
-	})
+		references: [videos.id],
+	}),
 }));
 
 /**
@@ -171,13 +171,13 @@ export const settings = sqliteTable(
 		id: integer('id').primaryKey(),
 		cronSubscription: text('cron_subscription').notNull().default('0 0 * * *'),
 		cronDownload: text('cron_download').notNull().default('0 1 * * *'),
-		downloadLimit: integer('download_limit')
+		downloadLimit: integer('download_limit'),
 	},
 	(table) => {
 		return {
-			idx: index('setting_idx').on(table.id)
+			idx: index('setting_idx').on(table.id),
 		};
-	}
+	},
 );
 
 /**
@@ -189,12 +189,12 @@ export const users = sqliteTable(
 	{
 		id: integer('id').primaryKey(),
 		name: text('name').unique().notNull(),
-		password: text('password').notNull()
+		password: text('password').notNull(),
 	},
 	(table) => {
 		return {
 			idx: index('user_idx').on(table.id),
-			nameIdx: index('user_name_idx').on(table.name)
+			nameIdx: index('user_name_idx').on(table.name),
 		};
-	}
+	},
 );

@@ -1,7 +1,7 @@
+import type { CookieSerializeOptions } from '@fastify/cookie';
+import { Time } from '@hive/common';
 import { config } from '../../lib/config.js';
 import { isDev } from '../../lib/constants.js';
-import { Time } from '@hive/common';
-import type { CookieSerializeOptions } from '@fastify/cookie';
 
 const cookieDomain = new URL(config.AUTH_ORIGIN).hostname;
 
@@ -18,13 +18,13 @@ export const cookies = {
 			secure: 'auto',
 			httpOnly: true,
 			sameSite: 'strict',
-			expires: new Date(Date.now() + offset)
+			expires: new Date(Date.now() + offset),
 		};
 	},
 	delete(): CookieSerializeOptions {
 		return {
 			domain: isDev ? undefined : cookieDomain,
-			path: '/'
+			path: '/',
 		};
-	}
+	},
 };

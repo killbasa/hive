@@ -9,13 +9,13 @@ export const load: PageLoad = async ({ fetch, url }) => {
 			query: {
 				downloadStatus: ['done'],
 				inProgress: true,
-				page: getNumberParam(url, 'page', 1)
-			}
-		}
+				page: getNumberParam(url, 'page', 1),
+			},
+		},
 	});
 
 	return {
 		videos: response.data?.videos ?? [],
-		total: response.data?.total ?? 0
+		total: response.data?.total ?? 0,
 	};
 };

@@ -1,7 +1,7 @@
+import { Worker } from 'bullmq';
 import { RedisConnectionOptions } from '../../../lib/config.js';
 import { server } from '../../../server.js';
 import { handleChannelScanTask, handleDownloadChannelTask } from '../handlers/scanner.js';
-import { Worker } from 'bullmq';
 
 let scanner: Worker;
 
@@ -26,7 +26,7 @@ export async function initScannerWorker(): Promise<void> {
 
 			throw new Error(`Unknown task: ${task.name}`);
 		},
-		{ connection: RedisConnectionOptions, concurrency: 1 }
+		{ connection: RedisConnectionOptions, concurrency: 1 },
 	);
 
 	await scanner.waitUntilReady();

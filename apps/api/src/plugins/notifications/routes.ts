@@ -1,12 +1,18 @@
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { tokenHandler } from '../auth/tokens.js';
-import type { FastifyPluginAsync } from 'fastify';
 
-export const notificationRoutes: FastifyPluginAsync = async (server) => {
+export const notificationRoutes: FastifyPluginAsyncTypebox = async (server) => {
 	server.addHook('onRequest', tokenHandler);
 
 	server.get(
 		'', //
-		{ websocket: true, schema: { tags: ['Websockets'] } },
+		{
+			websocket: true,
+			schema: {
+				description: 'Websocket for server notifications',
+				tags: ['Websockets'],
+			},
+		},
 		(socket) => {
 			const handleNotif = (data: { status: 'end' | 'start'; videoId: string; title: string }): void => {
 				socket.send(JSON.stringify(data));
@@ -19,6 +25,6 @@ export const notificationRoutes: FastifyPluginAsync = async (server) => {
 			});
 
 			socket.send('Connected');
-		}
+		},
 	);
 };

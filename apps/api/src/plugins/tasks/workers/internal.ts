@@ -1,9 +1,9 @@
+import { Worker } from 'bullmq';
 import { RedisConnectionOptions } from '../../../lib/config.js';
 import { server } from '../../../server.js';
 import { scanAllChannels } from '../../downloads/utils.js';
 import { handleScrapeTask } from '../handlers/scrapeChannel.js';
 import { handleVideoStatus } from '../handlers/updateVideoStatus.js';
-import { Worker } from 'bullmq';
 
 let internal: Worker;
 
@@ -32,7 +32,7 @@ export async function initInternalWorker(): Promise<void> {
 
 			throw new Error(`Unknown task: ${task.name}`);
 		},
-		{ connection: RedisConnectionOptions }
+		{ connection: RedisConnectionOptions },
 	);
 
 	await internal.waitUntilReady();

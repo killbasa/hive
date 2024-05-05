@@ -1,9 +1,10 @@
+import { Time } from '@hive/common';
 import { db } from '../../../db/client.js';
 import { videos } from '../../../db/schema.js';
+import { sleep } from '../../../lib/utils.js';
 import { server } from '../../../server.js';
-import { fetchChannelXML, parseChannelXML } from '../xml.js';
-import { Time, sleep } from '@hive/common';
 import type { TaskHandler } from '../types.js';
+import { fetchChannelXML, parseChannelXML } from '../xml.js';
 
 export const handleScrapeTask: TaskHandler = async () => {
 	server.log.info('scraping channel...');
@@ -11,7 +12,7 @@ export const handleScrapeTask: TaskHandler = async () => {
 	const result = await db.query.channels.findMany({
 		orderBy: (channels, { asc }) => [asc(channels.updatedAt)],
 		columns: { id: true },
-		limit: 50
+		limit: 50,
 	});
 
 	for (const channel of result) {
@@ -26,12 +27,12 @@ export const handleScrapeTask: TaskHandler = async () => {
 						id: entry['yt:videoId'],
 						channelId: entry['yt:channelId'],
 						title: entry.title,
-						description: '',
+						description: '', // TODO actually get the description
 						type: 'video' as const,
 						status: 'new' as const,
-						downloadStatus: 'pending' as const
+						downloadStatus: 'pending' as const,
 					};
-				})
+				}),
 			)
 			.onConflictDoNothing({ target: videos.id });
 

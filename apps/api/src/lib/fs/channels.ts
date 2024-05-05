@@ -1,12 +1,12 @@
-import { mv, mvDir } from './utils.js';
-import { formatTags } from '../youtube/channels.js';
-import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
+import { existsSync } from 'node:fs';
+import { open, readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { db } from '../../db/client.js';
 import { channels } from '../../db/schema.js';
-import { open, readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
+import { formatTags } from '../youtube/channels.js';
 import type { ChannelMetadata } from './types.js';
+import { mv, mvDir } from './utils.js';
 
 export const CHANNEL_DL_PATH = (channelId: string): string => `${DOWNLOADS_DIR}/${channelId}`;
 
@@ -22,7 +22,7 @@ export async function indexChannel(channelId: string): Promise<void> {
 			customUrl: metadata.id,
 			name: metadata.channel,
 			description: metadata.description,
-			tags: formatTags(metadata.tags)
+			tags: formatTags(metadata.tags),
 		})
 		.onConflictDoNothing({ target: channels.id })
 		.execute();

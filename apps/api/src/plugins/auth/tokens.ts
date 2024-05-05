@@ -1,8 +1,8 @@
+import { eq } from 'drizzle-orm';
+import type { FastifyReply, FastifyRequest, onRequestAsyncHookHandler } from 'fastify';
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema.js';
 import { server } from '../../server.js';
-import { eq } from 'drizzle-orm';
-import type { FastifyReply, FastifyRequest, onRequestAsyncHookHandler } from 'fastify';
 
 export async function checkToken(request: FastifyRequest, reply: FastifyReply): Promise<void> {
 	await request.jwtVerify();
@@ -10,8 +10,8 @@ export async function checkToken(request: FastifyRequest, reply: FastifyReply): 
 	const user = await db.query.users.findFirst({
 		where: eq(users.name, request.user.name),
 		columns: {
-			name: true
-		}
+			name: true,
+		},
 	});
 
 	if (user === undefined) {
@@ -19,7 +19,7 @@ export async function checkToken(request: FastifyRequest, reply: FastifyReply): 
 	}
 
 	request.user = {
-		name: user.name
+		name: user.name,
 	};
 }
 

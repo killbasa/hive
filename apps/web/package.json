@@ -5,19 +5,13 @@
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
-	"files": [
-		"dist",
-		"static"
-	],
+	"files": ["dist", "static"],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"sync": "svelte-kit sync",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"lint": "prettier --check . && eslint src --ext .ts,.svelte",
-		"lint:fix": "eslint . --fix",
-		"format": "prettier --write .",
+		"lint": "pnpm sync && biome check --apply . && svelte-check --tsconfig ./tsconfig.json",
 		"openapi": "openapi-typescript http://localhost:3001/spec.json -o ./src/api.d.ts"
 	},
 	"dependencies": {

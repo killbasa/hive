@@ -1,15 +1,16 @@
-import { mv } from './utils.js';
-import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
-import { server } from '../../server.js';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { db } from '../../db/client.js';
 import { comments, videos } from '../../db/schema.js';
+import { server } from '../../server.js';
+import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
 import { parseDurationString } from '../ytdlp/utils.js';
-import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
 import type { CommentMetadata, VideoMetadata } from './types.js';
+import { mv } from './utils.js';
 
-export const VIDEO_DL_PATH = (channelId: string, videoId: string): string => `${DOWNLOADS_DIR}/${channelId}/videos/${videoId}`;
+export const VIDEO_DL_PATH = (channelId: string, videoId: string): string =>
+	`${DOWNLOADS_DIR}/${channelId}/videos/${videoId}`;
 
 export const VIDEO_PATH = (channelId: string, videoId: string): string => `${MEDIA_DIR}/${channelId}/videos/${videoId}`;
 
@@ -29,7 +30,7 @@ export async function indexVideo(channelId: string, videoId: string): Promise<vo
 			uploadDate: metadata.upload_date,
 			type: metadata.was_live ? 'stream' : 'video',
 			status: 'new',
-			downloadStatus: 'pending'
+			downloadStatus: 'pending',
 		})
 		.onConflictDoNothing({ target: videos.id })
 		.execute();
@@ -57,9 +58,9 @@ export async function indexComments(channelId: string, videoId: string): Promise
 					authorId: comment.author_id,
 					timeText: comment._time_text,
 					isUploader: comment.author_is_uploader,
-					isFavorited: comment.is_favorited
+					isFavorited: comment.is_favorited,
 				};
-			})
+			}),
 		)
 		.onConflictDoNothing({ target: comments.id })
 		.execute();
@@ -75,13 +76,12 @@ export async function moveVideoAssets(channelId: string, videoId: string): Promi
 	await mkdir(target, { recursive: true });
 
 	await Promise.all(
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
 		assets.map((asset) => {
 			if (asset === 'metadata.info.json') {
 				return mv(`${source}/metadata.info.json`, `${target}/metadata.json`);
 			}
 			return mv(`${source}/${asset}`, `${target}/${asset}`);
-		})
+		}),
 	);
 
 	await rm(source, { recursive: true, force: true });

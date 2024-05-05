@@ -4,15 +4,14 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Card from '$components/Card.svelte';
-	import { apiFetch } from '$lib/fetch';
 	import Pagination from '$components/navigation/Pagination.svelte';
-	import { MIMETypes } from '$lib/constants';
 	import SearchInput from '$components/SearchInput.svelte';
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
 	import { StatusEvent, type DownloadProgress, type DownloadStatus } from '@hive/common';
 	import { formatDuration, formatFileSize } from '$lib/utils';
 	import { invalidate } from '$app/navigation';
+	import { client } from '$lib/client';
 
 	type DownloadInfo = {
 		id: string;
@@ -59,21 +58,17 @@
 	}
 
 	async function startDownloads() {
-		await apiFetch('/downloads/start', {
-			fetch,
-			method: 'POST',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ videoIds: selectedVideos })
+		await client.POST('/downloads/start', {
+			body: {
+				videoIds: selectedVideos
+			}
 		});
 	}
 
 	async function scan() {
-		const response = await apiFetch('/downloads/scan', {
-			fetch,
-			method: 'POST'
-		});
+		const response = await client.POST('/downloads/scan');
 
-		if (response.raw.ok) {
+		if (response.response.ok) {
 			toast.success('Scan started');
 		} else {
 			toast.error('Something went wrong');
@@ -81,18 +76,14 @@
 	}
 
 	async function stop() {
-		await apiFetch('/downloads/stop', {
-			fetch,
-			method: 'POST'
-		});
+		await client.POST('/downloads/stop');
 	}
 
 	async function ignore() {
-		await apiFetch('/videos/ignore', {
-			fetch,
-			method: 'POST',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ videoIds: Array.from(selectedVideos) })
+		await client.POST('/videos/ignore', {
+			body: {
+				videoIds: Array.from(selectedVideos)
+			}
 		});
 
 		await invalidate('state:downloads');

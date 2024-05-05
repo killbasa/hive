@@ -1,20 +1,20 @@
-import { RedisConnectionOptions, config } from './lib/config.js';
-import { HiveSettings } from './plugins/settings/service.js';
-import { HiveNotifier } from './plugins/notifications/emitter.js';
-import { HiveMetrics } from './lib/otel/MetricsClient.js';
-import { isDev } from './lib/constants.js';
-import FastifySwagger from '@fastify/swagger';
 import FastifyCookie from '@fastify/cookie';
-import FastifyJwt from '@fastify/jwt';
-import FastifyHelmet from '@fastify/helmet';
 import FastifyCors from '@fastify/cors';
-import FastifyWebsocket from '@fastify/websocket';
-import Fastify from 'fastify';
-import { Queue } from 'bullmq';
+import FastifyHelmet from '@fastify/helmet';
+import FastifyJwt from '@fastify/jwt';
+import FastifySwagger from '@fastify/swagger';
 import { TypeBoxValidatorCompiler } from '@fastify/type-provider-typebox';
-import type { FastifyInstance } from 'fastify';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import FastifyWebsocket from '@fastify/websocket';
+import { Queue } from 'bullmq';
 import type { QueueOptions } from 'bullmq';
+import Fastify from 'fastify';
+import type { FastifyInstance } from 'fastify';
+import { RedisConnectionOptions, config } from './lib/config.js';
+import { isDev } from './lib/constants.js';
+import { HiveMetrics } from './lib/otel/MetricsClient.js';
+import { HiveNotifier } from './plugins/notifications/emitter.js';
+import { HiveSettings } from './plugins/settings/service.js';
 
 export const LogLevel = isDev ? 'debug' : 'info';
 
@@ -27,10 +27,10 @@ export async function app(): Promise<FastifyInstance> {
 				options: {
 					colorize: isDev,
 					translateTime: 'HH:MM:ss Z',
-					ignore: 'pid,hostname'
-				}
-			}
-		}
+					ignore: 'pid,hostname',
+				},
+			},
+		},
 	})
 		.withTypeProvider<TypeBoxTypeProvider>()
 		.setValidatorCompiler(TypeBoxValidatorCompiler);
@@ -41,9 +41,30 @@ export async function app(): Promise<FastifyInstance> {
 			openapi: '3.1.0',
 			info: {
 				title: 'Hive',
-				version: process.env.npm_package_version!
-			}
-		}
+				version: config.VERSION,
+				description: 'Hive API',
+			},
+			tags: [
+				{ name: 'Core', description: 'End-points related to the server itself' },
+				{ name: 'Open API', description: 'Open API related endpoints' },
+				{ name: 'Auth', description: 'Authentication related end-points' },
+				{ name: 'Users', description: 'User related end-points' },
+				{ name: 'Settings', description: 'Settings related end-points' },
+				{ name: 'Channels', description: 'Channel related end-points' },
+				{ name: 'Videos', description: 'Video related end-points' },
+				{ name: 'Downloads', description: 'Download related end-points' },
+				{ name: 'Websockets', description: 'Websocket related end-points' },
+			],
+			components: {
+				securitySchemes: {
+					apikey: {
+						type: 'apiKey',
+						in: 'header',
+						name: 'X-Api-Key',
+					},
+				},
+			},
+		},
 	});
 
 	await server.register(FastifyCookie);
@@ -51,19 +72,19 @@ export async function app(): Promise<FastifyInstance> {
 		secret: config.AUTH_SECRET,
 		cookie: {
 			cookieName: config.AUTH_COOKIE_NAME,
-			signed: false
-		}
+			signed: false,
+		},
 	});
 
 	await server.register(FastifyCors, {
 		origin: config.AUTH_ORIGIN,
-		credentials: true
+		credentials: true,
 	});
 
 	await server.register(FastifyHelmet, {
 		crossOriginResourcePolicy: {
-			policy: 'same-site'
-		}
+			policy: 'same-site',
+		},
 	});
 	await server.register(FastifyWebsocket);
 
@@ -82,14 +103,14 @@ export function decorate(instance: FastifyInstance): FastifyInstance {
 		connection: RedisConnectionOptions,
 		defaultJobOptions: {
 			removeOnComplete: true,
-			removeOnFail: true
-		}
+			removeOnFail: true,
+		},
 	};
 
 	instance.decorate('tasks', {
 		internal: new Queue('internal', options),
 		downloader: new Queue('downloader', options),
-		scanner: new Queue('scanner', options)
+		scanner: new Queue('scanner', options),
 	});
 
 	return instance;

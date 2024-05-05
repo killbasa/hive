@@ -1,4 +1,4 @@
-import { checkNewVideos } from './updateVideoStatus.js';
+import { StatusEvent } from '@hive/common';
 import { db } from '../../../db/client.js';
 import { channels } from '../../../db/schema.js';
 import { isChannelDownloaded, readChannelMetadata } from '../../../lib/fs/channels.js';
@@ -7,12 +7,12 @@ import { formatTags } from '../../../lib/youtube/channels.js';
 import { downloadChannel } from '../../../lib/ytdlp/channels.js';
 import { downloadVideoAssets, getVideoIds } from '../../../lib/ytdlp/videos.js';
 import { server } from '../../../server.js';
-import { StatusEvent } from '@hive/common';
 import type { ScannerDownloadChannelTask, ScannerScanChannelTask, TaskHandler } from '../types.js';
+import { checkNewVideos } from './updateVideoStatus.js';
 
 export const scansInProgress: Record<'download' | 'scan', boolean> = {
 	download: false,
-	scan: false
+	scan: false,
 };
 
 export const handleDownloadChannelTask: TaskHandler<ScannerDownloadChannelTask> = async ({ channelId }) => {
@@ -34,7 +34,7 @@ export const handleDownloadChannelTask: TaskHandler<ScannerDownloadChannelTask> 
 			customUrl: metadata.uploader_id,
 			name: metadata.channel,
 			description: metadata.description,
-			tags: formatTags(metadata.tags)
+			tags: formatTags(metadata.tags),
 		})
 		.execute();
 
@@ -48,7 +48,7 @@ export const handleChannelScanTask: TaskHandler<ScannerScanChannelTask> = async 
 	const videoIds = await getVideoIds(channelId);
 
 	const existingVideoIds = await db.query.videos.findMany({
-		columns: { id: true }
+		columns: { id: true },
 	});
 
 	const newVideoIds = videoIds.filter((id) => !existingVideoIds.some((video) => video.id === id));
@@ -77,14 +77,14 @@ export const handleChannelScanTask: TaskHandler<ScannerScanChannelTask> = async 
 			channelPos: position + 1,
 			channelTotal: total,
 			videoPos: index + 1,
-			videoTotal: newVideoIds.length
+			videoTotal: newVideoIds.length,
 		});
 	}
 
 	await checkNewVideos({ page: 0 });
 
 	server.notifications.emit('status', {
-		type: StatusEvent.ScanComplete
+		type: StatusEvent.ScanComplete,
 	});
 
 	scansInProgress.scan = false;

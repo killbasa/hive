@@ -1,7 +1,7 @@
-import { CLI_PATH, DATA_DIR } from '../constants.js';
-import { server } from '../../server.js';
 import { exec, spawn } from 'node:child_process';
-import type { Awaitable } from '@hive/common';
+import { server } from '../../server.js';
+import { CLI_PATH, DATA_DIR } from '../constants.js';
+import type { Awaitable } from '../types/generic.js';
 
 export type YtdlpProgress = {
 	status: 'downloading' | 'error' | 'finished';
@@ -30,7 +30,7 @@ function parseDownloadProgress(data: Buffer | string): { valid: false } | { vali
 		const parsed = JSON.parse(data);
 		return {
 			valid: true,
-			data: parsed
+			data: parsed,
 		};
 	} catch (e) {
 		server.log.error(e);
@@ -46,7 +46,7 @@ export async function ytdlp(
 		onUpdate?: (progress: YtdlpProgress) => Awaitable<void>;
 		onError?: (data: Buffer) => Awaitable<void>;
 	},
-	signal?: AbortSignal
+	signal?: AbortSignal,
 ): Promise<boolean> {
 	if (typeof urls === 'string') {
 		urls = [urls];
@@ -63,7 +63,7 @@ export async function ytdlp(
 		shell: false,
 		detached: false,
 		cwd: DATA_DIR,
-		signal
+		signal,
 	});
 
 	const logAbort = (): void => {

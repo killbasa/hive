@@ -8,7 +8,7 @@ export async function ytFetch<T>(
 	options: {
 		resources?: string[];
 		ids?: string[];
-	}
+	},
 ): Promise<T> {
 	const url = new URL(`${YT_BASE_URL}/${YT_API_VERSION}${path}`);
 	url.searchParams.set('key', config.YT_API_KEY);
@@ -17,7 +17,7 @@ export async function ytFetch<T>(
 	if (options.ids) url.searchParams.set('id', options.ids.join(','));
 
 	const response = await fetch(url.href, {
-		method: 'GET'
+		method: 'GET',
 	});
 
 	return (await response.json()) as T;

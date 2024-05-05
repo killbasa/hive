@@ -1,80 +1,108 @@
-import { LoginSchema, SignupSchema } from './schemas.js';
-import { cookies } from '../cookies.js';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { hash, verify } from 'argon2';
+import { count, eq } from 'drizzle-orm';
 import { db } from '../../../db/client.js';
 import { users } from '../../../db/schema.js';
 import { config } from '../../../lib/config.js';
-import { hash, verify } from 'argon2';
-import { count, eq } from 'drizzle-orm';
-import type { FastifyPluginAsync } from 'fastify';
+import { EmptyResponse, MessageResponse } from '../../../lib/responses.js';
+import { cookies } from '../cookies.js';
+import { LoginBody, SignupBody } from './body.js';
 
-export const credentialAuthRoutes: FastifyPluginAsync = async (server) => {
-	await server.register(async (instance) => {
-		instance.post(
-			'/login', //
-			{ schema: { tags: ['Auth'] }, onRequest: undefined },
-			async (request, reply): Promise<void> => {
-				const data = LoginSchema.parse(request.body);
+export const credentialAuthRoutes: FastifyPluginAsyncTypebox = async (server) => {
+	server.post(
+		'/login', //
+		{
+			schema: {
+				description: 'Login to the application',
+				tags: ['Auth'],
+				body: LoginBody,
+				response: {
+					200: MessageResponse('Logged in successfully'),
+					401: MessageResponse('Invalid username or password'),
+				},
+			},
+		},
+		async (request, reply): Promise<void> => {
+			const { body } = request;
 
-				const user = await db.query.users.findFirst({
-					where: eq(users.name, data.username)
+			const user = await db.query.users.findFirst({
+				where: eq(users.name, body.username),
+			});
+			if (user === undefined) {
+				await reply.code(401).send({
+					message: 'Invalid username or password',
 				});
-				if (user === undefined) {
-					await reply.code(401).send({ message: 'Invalid username or password' });
-					return;
-				}
-
-				const result = await verify(user.password, data.password);
-				if (!result) {
-					await reply.code(401).send({ message: 'Invalid username or password' });
-					return;
-				}
-
-				const token = server.jwt.sign({
-					name: user.name
-				});
-
-				const cookie = cookies.create(data.remember);
-
-				await reply //
-					.setCookie(config.AUTH_COOKIE_NAME, token, cookie)
-					.code(200)
-					.send();
+				return;
 			}
-		);
 
-		instance.post(
-			'/signup', //
-			{ schema: { tags: ['Auth'] }, onRequest: undefined },
-			async (request, reply): Promise<void> => {
-				// Only single tenant mode is supported at the moment
-				const userCount = await db.select({ total: count() }).from(users);
-				if (userCount[0].total >= 1) {
-					await reply.code(400).send({ message: 'User registration is disabled' });
-					return;
-				}
-
-				const data = SignupSchema.parse(request.body);
-
-				const user = await db.query.users.findFirst({
-					where: eq(users.name, data.username)
+			const result = await verify(user.password, body.password);
+			if (!result) {
+				await reply.code(401).send({
+					message: 'Invalid username or password',
 				});
-				if (user !== undefined) {
-					await reply.code(400).send({ message: 'Username already exists' });
-					return;
-				}
-
-				const result = await hash(data.password);
-
-				await db
-					.insert(users)
-					.values({
-						name: data.username,
-						password: result
-					})
-					.execute();
-
-				await reply.status(201).send();
+				return;
 			}
-		);
-	});
+
+			const token = server.jwt.sign({
+				name: user.name,
+			});
+
+			const cookie = cookies.create(body.remember);
+
+			await reply //
+				.setCookie(config.AUTH_COOKIE_NAME, token, cookie)
+				.code(200)
+				.send();
+		},
+	);
+
+	server.post(
+		'/signup', //
+		{
+			schema: {
+				description: 'Signup for the application',
+				tags: ['Auth'],
+				body: SignupBody,
+				response: {
+					201: EmptyResponse('Account created'),
+					403: MessageResponse('User registration is disabled'),
+					409: MessageResponse('User already exists'),
+				},
+			},
+		},
+		async (request, reply): Promise<void> => {
+			const { body } = request;
+
+			// Only single tenant mode is supported at the moment
+			const userCount = await db.select({ total: count() }).from(users);
+			if (userCount[0].total >= 1) {
+				await reply.code(403).send({
+					message: 'User registration is disabled',
+				});
+				return;
+			}
+
+			const user = await db.query.users.findFirst({
+				where: eq(users.name, body.username),
+			});
+			if (user !== undefined) {
+				await reply.code(409).send({
+					message: 'Username already exists',
+				});
+				return;
+			}
+
+			const result = await hash(body.password);
+
+			await db
+				.insert(users)
+				.values({
+					name: body.username,
+					password: result,
+				})
+				.execute();
+
+			await reply.status(201).send();
+		},
+	);
 };

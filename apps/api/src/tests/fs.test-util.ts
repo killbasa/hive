@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { resolve } from 'node:path';
+import { join } from 'node:path';
 
 const cacheDir = resolve('node_modules/.cache/hive');
 
@@ -41,7 +42,11 @@ async function writeCache(path: string, data: string): Promise<void> {
 	await writeFile(path, data);
 }
 
-export async function cache(path: string, ttl: number | undefined, fn: () => Promise<string> | string): Promise<string> {
+export async function cache(
+	path: string,
+	ttl: number | undefined,
+	fn: () => Promise<string> | string,
+): Promise<string> {
 	const data = await getCache(path, ttl);
 	if (data !== null) return data;
 

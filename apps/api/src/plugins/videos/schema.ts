@@ -1,6 +1,6 @@
-import { HiveType } from '../../lib/types/typebox.js';
 import { Type } from '@fastify/type-provider-typebox';
 import type { Static } from '@fastify/type-provider-typebox';
+import { HiveType } from '../../lib/types/typebox.js';
 
 export const VideoTypeSchema = HiveType.LiteralUnion(['video', 'short', 'stream']);
 export type VideoType = Static<typeof VideoTypeSchema>;
@@ -24,7 +24,12 @@ export const VideoSchema = Type.Object({
 	uploadDate: HiveType.Nullable(Type.String()),
 	type: VideoTypeSchema,
 	status: VideoStatusSchema,
-	downloadStatus: VideoDownloadStatusSchema
+	downloadStatus: VideoDownloadStatusSchema,
+});
+
+export const VideoListSchema = Type.Object({
+	videos: Type.Array(VideoSchema),
+	total: Type.Number(),
 });
 
 export const VideoCommentSchema = Type.Object({
@@ -35,12 +40,12 @@ export const VideoCommentSchema = Type.Object({
 	authorId: Type.String(),
 	timeText: Type.String(),
 	isUploader: Type.Boolean(),
-	isFavorited: Type.Boolean()
+	isFavorited: Type.Boolean(),
 });
 
 export const VideoWithCommentsSchema = Type.Composite([
 	VideoSchema,
 	Type.Object({
-		comments: Type.Array(VideoCommentSchema)
-	})
+		comments: Type.Array(VideoCommentSchema),
+	}),
 ]);

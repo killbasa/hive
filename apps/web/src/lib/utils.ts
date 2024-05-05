@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number): T {
 	let wait = false;
 
@@ -14,8 +14,8 @@ export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number
 	} as T;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function debounce<T extends (...args: any[]) => any>(fn: T, delay: number): T {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function debounce<T extends (...args: any[]) => unknown>(fn: T, delay: number): T {
 	let timeoutId: number | undefined = undefined;
 
 	return function (this: unknown, ...args: Parameters<T>) {
@@ -45,20 +45,20 @@ export function humanFileSize(sizeBytes: number | bigint): string {
 		style: 'unit',
 		unit: UNITS[u],
 		unitDisplay: 'short',
-		maximumFractionDigits: 1
+		maximumFractionDigits: 1,
 	}).format(size);
 }
 
 export function formatLinks(description: string): string {
 	return description.replace(
 		/(?:https|http):\/\/\S+/g,
-		'<a href="$&" target="_blank" class="link link-primary">$&</a>'
+		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
 	);
 }
 
 export function formatDuration(value: string | number) {
 	if (typeof value === 'string') {
-		value = parseInt(value, 10);
+		value = Number.parseInt(value, 10);
 	}
 
 	const hours = Math.floor(value / 3600);
@@ -72,4 +72,11 @@ export function formatFileSize(value: unknown): string {
 	if (typeof value !== 'string') return 'N/A';
 	const num = BigInt(value);
 	return humanFileSize(num);
+}
+
+export function stringToNum(value: string | null | undefined, fallback = 0): number {
+	if (value === undefined || value === null) return fallback;
+
+	const coerce = Number.parseInt(value, 10);
+	return Number.isNaN(coerce) ? fallback : coerce;
 }

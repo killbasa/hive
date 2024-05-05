@@ -4,12 +4,12 @@ export default defineConfig({
 	test: {
 		globals: true,
 		env: {
-			TESTING: 'true'
+			TESTING: 'true',
 		},
 		coverage: {
 			provider: 'istanbul',
-			reporter: ['text']
+			reporter: ['text'],
 		},
-		include: ['src/**/*.spec.ts']
-	}
+		include: ['src/**/*.spec.ts'],
+	},
 });

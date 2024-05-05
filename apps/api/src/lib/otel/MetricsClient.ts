@@ -1,9 +1,9 @@
-import { HiveGauges } from './Gauges.js';
-import { config } from '../config.js';
+import type { Meter } from '@opentelemetry/api';
 import { PrometheusExporter, PrometheusSerializer } from '@opentelemetry/exporter-prometheus';
 import { metrics, resources } from '@opentelemetry/sdk-node';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
-import type { Meter } from '@opentelemetry/api';
+import { config } from '../config.js';
+import { HiveGauges } from './Gauges.js';
 
 export class HiveMetrics {
 	public readonly gauges: HiveGauges;
@@ -14,7 +14,7 @@ export class HiveMetrics {
 
 	public constructor() {
 		this.exporter = new PrometheusExporter({
-			preventServerStart: true
+			preventServerStart: true,
 		});
 
 		this.serializer = new PrometheusSerializer();
@@ -22,9 +22,9 @@ export class HiveMetrics {
 		this.provider = new metrics.MeterProvider({
 			resource: new resources.Resource({
 				[SEMRESATTRS_SERVICE_NAME]: 'hive',
-				[SEMRESATTRS_SERVICE_VERSION]: config.VERSION
+				[SEMRESATTRS_SERVICE_VERSION]: config.VERSION,
 			}),
-			readers: [this.exporter]
+			readers: [this.exporter],
 		});
 
 		this.gauges = new HiveGauges(this.getMeter());

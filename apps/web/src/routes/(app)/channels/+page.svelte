@@ -3,12 +3,10 @@
 	import Card from '$components/Card.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import TextInput from '$components/TextInput.svelte';
-	import { apiFetch } from '$lib/fetch';
-	import { MIMETypes } from '$lib/constants';
 	import type { PageData } from './$types';
-	import type { Channel } from '@hive/common';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
 	import { toast } from '$lib/stores/toasts';
+	import { client } from '$lib/client';
 
 	export let data: PageData;
 
@@ -16,11 +14,10 @@
 	let modal: HTMLDialogElement;
 
 	async function addChannel() {
-		await apiFetch<Channel>('/channels', {
-			fetch,
-			method: 'POST',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({ id: channelId })
+		await client.POST('/channels', {
+			body: {
+				id: channelId
+			}
 		});
 
 		channelId = '';
@@ -81,7 +78,7 @@
 			</tbody>
 		</table>
 		<svelte:fragment slot="footer">
-			<Pagination count={data.channels.length} total={data.totalChannels} />
+			<Pagination count={data.channels.length} total={data.total} />
 		</svelte:fragment>
 	</Card>
 	<dialog id="AddModal" class="modal" bind:this={modal}>

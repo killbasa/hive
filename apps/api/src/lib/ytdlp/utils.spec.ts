@@ -1,5 +1,5 @@
-import { parseDurationString } from './utils.js';
 import { describe, expect, test } from 'vitest';
+import { parseDurationString } from './utils.js';
 
 describe('parseDurationString', () => {
 	test('valid', () => {

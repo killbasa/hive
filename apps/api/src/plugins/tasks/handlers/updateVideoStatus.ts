@@ -1,8 +1,8 @@
+import { eq } from 'drizzle-orm';
 import { db } from '../../../db/client.js';
 import { videos } from '../../../db/schema.js';
 import { fetchVideos } from '../../../lib/youtube/videos.js';
 import { server } from '../../../server.js';
-import { eq } from 'drizzle-orm';
 import type { TaskHandler } from '../types.js';
 
 export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page }): Promise<void> => {
@@ -13,12 +13,12 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 			return or(
 				eq(videos.status, 'new'), //
 				eq(videos.status, 'upcoming'),
-				eq(videos.status, 'live')
+				eq(videos.status, 'live'),
 			);
 		},
 		orderBy: (videos, { asc }) => [asc(videos.updatedAt)],
 		columns: { id: true, status: true, channelId: true, title: true },
-		limit: page * 50 + 50
+		limit: page * 50 + 50,
 	});
 
 	const videoIds = result.map((row) => row.id);
@@ -31,7 +31,6 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 	}
 
 	await Promise.all(
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
 		ytVideos.map(async (video) => {
 			const dbVideo = result.find((row) => row.id === video.id);
 			if (!dbVideo) {
@@ -50,7 +49,7 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 						server.notifications.emit('livestream', {
 							status: 'end',
 							videoId: video.id,
-							title: dbVideo.title
+							title: dbVideo.title,
 						});
 					}
 				} else if (actualStartTime) {
@@ -60,7 +59,7 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 						server.notifications.emit('livestream', {
 							status: 'start',
 							videoId: video.id,
-							title: dbVideo.title
+							title: dbVideo.title,
 						});
 					}
 				} else {
@@ -72,7 +71,7 @@ export const handleVideoStatus: TaskHandler<{ page: number }> = async ({ page })
 				.update(videos)
 				.set({ status, updatedAt: new Date() })
 				.where(eq(videos.id, video.id));
-		})
+		}),
 	);
 
 	if (result.length === 50) {
@@ -91,7 +90,7 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 		const result = await db.query.videos.findMany({
 			where: (videos, { eq }) => eq(videos.status, 'new'),
 			columns: { id: true, status: true, channelId: true, title: true },
-			limit: page * 50 + 50
+			limit: page * 50 + 50,
 		});
 
 		const videoIds = result.map((row) => row.id);
@@ -105,7 +104,6 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 		}
 
 		await Promise.all(
-			// eslint-disable-next-line @typescript-eslint/promise-function-async
 			ytVideos.map(async (video) => {
 				const dbVideo = result.find((row) => row.id === video.id);
 				if (!dbVideo) {
@@ -124,7 +122,7 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 							server.notifications.emit('livestream', {
 								status: 'end',
 								videoId: video.id,
-								title: dbVideo.title
+								title: dbVideo.title,
 							});
 						}
 					} else if (actualStartTime) {
@@ -134,7 +132,7 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 							server.notifications.emit('livestream', {
 								status: 'start',
 								videoId: video.id,
-								title: dbVideo.title
+								title: dbVideo.title,
 							});
 						}
 					} else {
@@ -146,7 +144,7 @@ export const checkNewVideos: TaskHandler<{ page: number }> = async ({ page }): P
 					.update(videos)
 					.set({ status, updatedAt: new Date() })
 					.where(eq(videos.id, video.id));
-			})
+			}),
 		);
 
 		if (result.length === 50) {

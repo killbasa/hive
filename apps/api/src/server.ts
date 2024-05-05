@@ -1,22 +1,22 @@
-import { routes } from './routes.js';
 import { LogLevel, app } from './app.js';
 import { initDb } from './db/client.js';
 import { config } from './lib/config.js';
 import { API_HOST, DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
-import { validateDirs } from './lib/utils.js';
 import { setupGracefulShutdown, startupLog } from './lib/lifecycle.js';
+import { validateDirs } from './lib/utils.js';
 import { initHandlers, initWorkers } from './plugins/tasks/loader.js';
+import { routes } from './routes.js';
 
 await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
+
 export const server = await app();
 
-const start = async (): Promise<void> => {
+const start = async () => {
 	try {
 		await initDb();
 		await initWorkers();
 
 		await server.settings.init();
-
 		await server.register(routes);
 
 		server.log.level = 'silent';

@@ -1,8 +1,8 @@
-import { z } from 'zod';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
 import type { ConnectionOptions } from 'bullmq';
+import { z } from 'zod';
 
 if (existsSync(resolve('.env'))) {
 	loadEnvFile();
@@ -18,7 +18,7 @@ const ConfigSchema = z.object({
 	REDIS_PORT: z.coerce.number().default(6379),
 	REDIS_PASSWORD: z.string().default('password'),
 	YT_API_KEY: z.string(),
-	METRICS_ENABLED: z.coerce.boolean().default(false)
+	METRICS_ENABLED: z.coerce.boolean().default(false),
 });
 
 const obj = {
@@ -31,7 +31,7 @@ const obj = {
 	REDIS_PORT: process.env.REDIS_PORT,
 	REDIS_PASSWORD: process.env.REDIS_PASSWORD,
 	YT_API_KEY: process.env.YT_API_KEY,
-	METRICS_ENABLED: process.env.METRICS_ENABLED
+	METRICS_ENABLED: process.env.METRICS_ENABLED,
 } satisfies Record<keyof z.infer<typeof ConfigSchema>, unknown>;
 
 export const config = ConfigSchema.parse(obj);
@@ -39,5 +39,5 @@ export const config = ConfigSchema.parse(obj);
 export const RedisConnectionOptions: ConnectionOptions = {
 	host: config.REDIS_HOST,
 	port: config.REDIS_PORT,
-	password: config.REDIS_PASSWORD
+	password: config.REDIS_PASSWORD,
 };

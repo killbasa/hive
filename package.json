@@ -13,34 +13,27 @@
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
 		"build": "pnpm -r run build",
-		"check": "pnpm -r run check",
 		"lint": "pnpm -r run lint",
-		"format": "pnpm -r run format",
 		"test": "pnpm -r run test",
-		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test",
+		"dry-run": "pnpm build && pnpm lint && pnpm test",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile ."
 	},
 	"devDependencies": {
-		"@killbasa/eslint-config": "^1.0.0",
+		"@biomejs/biome": "^1.7.2",
 		"@killbasa/prettier-config": "^1.0.0",
 		"@killbasa/ts-config": "^1.0.0",
 		"@types/node": "^20.12.8",
-		"eslint": "^8.57.0",
 		"lint-staged": "^15.2.2",
 		"prettier": "^3.2.5",
 		"typescript": "^5.4.5",
 		"vitest": "^1.6.0"
 	},
 	"lint-staged": {
-		"*.{mjs,cjs,js,ts}": [
-			"eslint --fix --ext .js,.ts",
-			"prettier --write --log-level=warn \"**/*.{mjs,cjs,js,ts}\""
-		],
-		"*.{json,yml,yaml,md}": [
-			"prettier --write --log-level=warn \"**/*.{json,yml,yaml,md}\""
-		]
+		"*.{cjs,js,ts}": ["pnpm biome check --apply \"**/*.{cjs,js,ts}\""],
+		"*.{json,jsonc}": ["biome format --write \"**/*.{json,jsonc}\""],
+		"*.{yml,yaml,md,html}": ["prettier --write --log-level=warn \"**/*.{yml,yaml,md,html}\""]
 	},
 	"engines": {
 		"node": ">=20.x"

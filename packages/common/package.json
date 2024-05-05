@@ -13,14 +13,10 @@
 		}
 	},
 	"scripts": {
-		"build": "pnpm check && tsup",
-		"check": "tsc",
-		"lint": "eslint --fix --ext .ts src",
-		"format": "prettier --write ."
+		"build": "tsc && tsup",
+		"lint": "biome check --apply ."
 	},
 	"devDependencies": {
-		"eslint": "^8.57.0",
-		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
 		"typescript": "^5.4.5"
 	},

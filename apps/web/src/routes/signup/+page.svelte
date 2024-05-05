@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { apiFetch } from '$lib/fetch';
-	import { MIMETypes } from '$lib/constants';
+	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
 
 	let username = '';
@@ -15,22 +14,18 @@
 			return;
 		}
 
-		const response = await apiFetch<{ message: string }>('/auth/credentials/signup', {
-			fetch,
-			method: 'POST',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({
+		const response = await client.POST('/auth/credentials/signup', {
+			body: {
 				username,
 				password
-			})
+			}
 		});
 
-		if (response.raw.ok) {
+		if (response.response.ok) {
 			toast.success('Account created');
 			await goto('/login');
 		} else {
-			const err = await response.error();
-			toast.error(err.message);
+			toast.error(response.error?.message ?? 'An error occurred');
 		}
 	}
 </script>

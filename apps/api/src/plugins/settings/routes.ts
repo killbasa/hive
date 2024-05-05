@@ -1,47 +1,66 @@
-import { SettingsPatchSchema } from './schemas.js';
-import { parseCron } from './cron.js';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { EmptyResponse } from '../../lib/responses.js';
 import { tokenHandler } from '../auth/tokens.js';
 import { setDownloadCronTask, setScanCronTask } from '../tasks/handlers/repeat.js';
-import type { FastifyPluginAsync } from 'fastify';
+import { SettingsPatchBody } from './body.js';
+import { parseCron } from './cron.js';
+import { SettingsSchema } from './schema.js';
 
-export const settingsRoutes: FastifyPluginAsync = async (server) => {
+export const settingsRoutes: FastifyPluginAsyncTypebox = async (server) => {
 	server.addHook('onRequest', tokenHandler);
 
 	server.get(
 		'', //
-		{ schema: { tags: ['Settings'] } },
+		{
+			schema: {
+				description: 'Get the settings',
+				tags: ['Settings'],
+				response: {
+					200: SettingsSchema,
+				},
+			},
+		},
 		async (_, reply): Promise<void> => {
 			const result = await server.settings.get();
 
 			await reply.code(200).send(result);
-		}
+		},
 	);
 
 	server.patch(
 		'', //
-		{ schema: { tags: ['Settings'] } },
+		{
+			schema: {
+				description: 'Update the settings',
+				tags: ['Settings'],
+				body: SettingsPatchBody,
+				response: {
+					204: EmptyResponse('Settings updated successfully'),
+				},
+			},
+		},
 		async (request, reply): Promise<void> => {
-			const data = SettingsPatchSchema.parse(request.body);
+			const { body } = request;
 
-			if (data.cronSubscription !== undefined) {
-				const result = parseCron(data.cronSubscription);
+			if (body.cronSubscription !== undefined) {
+				const result = parseCron(body.cronSubscription);
 
 				if (result !== null) {
-					await setScanCronTask(data.cronSubscription);
+					await setScanCronTask(body.cronSubscription);
 				}
 			}
 
-			if (data.cronDownload !== undefined) {
-				const result = parseCron(data.cronDownload);
+			if (body.cronDownload !== undefined) {
+				const result = parseCron(body.cronDownload);
 
 				if (result !== null) {
-					await setDownloadCronTask(data.cronSubscription);
+					await setDownloadCronTask(body.cronSubscription);
 				}
 			}
 
-			await server.settings.set(data);
+			await server.settings.set(body);
 
-			await reply.code(200).send();
-		}
+			await reply.code(204).send();
+		},
 	);
 };

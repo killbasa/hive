@@ -6,8 +6,8 @@ export async function initRepeatTasks(): Promise<void> {
 		{ page: 0 },
 		{
 			jobId: 'ScrapeChannel',
-			repeat: { pattern: '0 */15 * * * *' }
-		}
+			repeat: { pattern: '0 */15 * * * *' },
+		},
 	);
 
 	await server.tasks.internal.add(
@@ -15,13 +15,13 @@ export async function initRepeatTasks(): Promise<void> {
 		{ page: 0 },
 		{
 			jobId: 'SyncVideoStatus',
-			repeat: { pattern: '0 */30 * * * *' }
-		}
+			repeat: { pattern: '0 */30 * * * *' },
+		},
 	);
 
 	await Promise.all([
 		setScanCronTask(), //
-		setDownloadCronTask()
+		setDownloadCronTask(),
 	]);
 }
 
@@ -37,8 +37,8 @@ export async function setScanCronTask(pattern?: string): Promise<void> {
 		undefined,
 		{
 			jobId: 'ScanChannels',
-			repeat: { pattern }
-		}
+			repeat: { pattern },
+		},
 	);
 }
 
@@ -54,7 +54,7 @@ export async function setDownloadCronTask(pattern?: string): Promise<void> {
 		undefined,
 		{
 			jobId: 'DownloadPending',
-			repeat: { pattern }
-		}
+			repeat: { pattern },
+		},
 	);
 }

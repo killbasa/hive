@@ -1,13 +1,13 @@
+import { StatusEvent } from '@hive/common';
+import { server } from '../../server.js';
+import { readVideoMetadata } from '../fs/videos.js';
 import { YtdlpVideoArgs } from './VideoArgs.js';
 import { ytdlp, ytdlpExec } from './cli.js';
 import { YTDLP_VIDEO_PATH } from './constants.js';
-import { readVideoMetadata } from '../fs/videos.js';
-import { server } from '../../server.js';
-import { StatusEvent } from '@hive/common';
 
 export async function downloadVideoAssets(
 	videoId: string, //
-	options?: { live: boolean; controller?: AbortController }
+	options?: { live: boolean; controller?: AbortController },
 ): Promise<boolean> {
 	const args = new YtdlpVideoArgs()
 		.saveJson()
@@ -23,16 +23,16 @@ export async function downloadVideoAssets(
 		{
 			onError: (data) => {
 				server.log.error(data.toString());
-			}
+			},
 		},
-		options?.controller?.signal
+		options?.controller?.signal,
 	);
 }
 
 export async function downloadVideo(
 	channelId: string, //
 	videoId: string,
-	options?: { live: boolean; controller?: AbortController }
+	options?: { live: boolean; controller?: AbortController },
 ): Promise<boolean> {
 	const args = new YtdlpVideoArgs() //
 		.downloadArchive(channelId)
@@ -56,7 +56,7 @@ export async function downloadVideo(
 					type: StatusEvent.DownloadUpdate,
 					channelId,
 					title: metadata.title,
-					data
+					data,
 				});
 			},
 			onUpdate: (data) => {
@@ -64,14 +64,14 @@ export async function downloadVideo(
 					type: StatusEvent.DownloadUpdate,
 					channelId,
 					title: metadata.title,
-					data
+					data,
 				});
 			},
 			onError: (data) => {
 				server.log.error(data.toString());
-			}
+			},
 		},
-		options?.controller?.signal
+		options?.controller?.signal,
 	);
 }
 

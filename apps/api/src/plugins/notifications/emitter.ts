@@ -4,14 +4,14 @@ import type { HiveNotifications } from './types.js';
 export class HiveNotifier extends EventEmitter {
 	public override on<T extends keyof HiveNotifications>(
 		event: T, //
-		listener: (this: EventEmitter, data: HiveNotifications[T], ...args: any[]) => void
+		listener: (this: EventEmitter, data: HiveNotifications[T], ...args: unknown[]) => void,
 	): this {
 		return super.on(event, listener);
 	}
 
 	public override off<T extends keyof HiveNotifications>(
 		event: T, //
-		listener: (this: EventEmitter, data: HiveNotifications[T], ...args: any[]) => void
+		listener: (this: EventEmitter, data: HiveNotifications[T], ...args: unknown[]) => void,
 	): this {
 		return super.off(event, listener);
 	}

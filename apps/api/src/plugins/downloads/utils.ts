@@ -3,7 +3,7 @@ import { server } from '../../server.js';
 
 export async function scanAllChannels(): Promise<void> {
 	const channels = await db.query.channels.findMany({
-		columns: { id: true }
+		columns: { id: true },
 	});
 
 	for (const [index, channel] of channels.entries()) {
@@ -11,7 +11,7 @@ export async function scanAllChannels(): Promise<void> {
 			type: 'scan',
 			channelId: channel.id,
 			position: index,
-			total: channels.length
+			total: channels.length,
 		});
 	}
 }

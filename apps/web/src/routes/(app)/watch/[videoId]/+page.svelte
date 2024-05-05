@@ -1,17 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { formatLinks } from '$lib/utils';
-	import { onMount } from 'svelte';
 	import { setVideoContext } from '$lib/stores/video';
+	import Description from '$components/Description.svelte';
 
 	export let data: PageData;
 	setVideoContext(data);
-
-	let description: HTMLParagraphElement;
-
-	onMount(() => {
-		description.innerHTML = formatLinks(data.description);
-	});
 </script>
 
 <svelte:head>
@@ -22,7 +15,7 @@
 	<div id="video-element"></div>
 	<div>
 		<h2>{data.title}</h2>
-		<p class="whitespace-pre-wrap" bind:this={description}></p>
+		<Description text={data.description} />
 		<a href="https://www.youtube.com/watch?v={data.id}" target="_blank" class="btn">
 			Watch on YouTube
 		</a>

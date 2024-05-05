@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { apiFetch } from '$lib/fetch';
-	import { MIMETypes } from '$lib/constants';
+	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
 
 	let username = '';
@@ -9,22 +8,18 @@
 	let remember = false;
 
 	async function handleSubmit() {
-		const response = await apiFetch<{ message: string }>('/auth/credentials/login', {
-			fetch,
-			method: 'POST',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({
+		const response = await client.POST('/auth/credentials/login', {
+			body: {
 				username,
 				password,
 				remember
-			})
+			}
 		});
 
-		if (response.raw.ok) {
+		if (response.response.ok) {
 			await goto('/');
 		} else {
-			const err = await response.error();
-			toast.error(err.message);
+			toast.error(response.error?.message ?? 'An error occurred');
 		}
 	}
 </script>

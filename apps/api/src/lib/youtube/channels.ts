@@ -1,5 +1,5 @@
-import { ytFetch } from './fetch.js';
 import { db } from '../../db/client.js';
+import { ytFetch } from './fetch.js';
 import type { YouTubeChannel, YouTubeChannelList } from './types.js';
 
 export function parseTags(tags: string): string[] {
@@ -15,7 +15,7 @@ export async function doesChannelExist(channelId: string, source: 'database' | '
 		const url = new URL(`https://www.youtube.com/channel/${channelId}`);
 
 		const response = await fetch(url.href, {
-			method: 'HEAD'
+			method: 'HEAD',
 		});
 
 		return response.status === 200;
@@ -23,7 +23,7 @@ export async function doesChannelExist(channelId: string, source: 'database' | '
 
 	const result = await db.query.channels.findFirst({
 		where: ({ id }, { eq }) => eq(id, channelId),
-		columns: { id: true }
+		columns: { id: true },
 	});
 
 	return result !== undefined;
@@ -33,7 +33,7 @@ export async function doesChannelExist(channelId: string, source: 'database' | '
 export async function fetchChannels(channelIds: string[]): Promise<YouTubeChannel[]> {
 	const response = await ytFetch<YouTubeChannelList>('/channels', {
 		resources: ['snippet', 'brandingSettings'],
-		ids: channelIds
+		ids: channelIds,
 	});
 
 	return response.items;

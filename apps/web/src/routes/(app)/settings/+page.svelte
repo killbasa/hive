@@ -3,12 +3,11 @@
 	import TextInput from '$components/TextInput.svelte';
 	import NumberInput from '$components/NumberInput.svelte';
 	import type { PageData } from './$types';
-	import { apiFetch } from '$lib/fetch';
 	import { goto } from '$app/navigation';
 	import CardSection from '$components/CardSection.svelte';
-	import { MIMETypes } from '$lib/constants';
 	import { toast } from '$lib/stores/toasts';
 	import { writable } from 'svelte/store';
+	import { client } from '$lib/client';
 
 	export let data: PageData;
 
@@ -32,47 +31,36 @@
 		$schedule.downloadQueue === data.settings.cronDownload;
 
 	async function handleSubmit() {
-		await apiFetch('/auth/logout', {
-			fetch,
-			method: 'POST'
-		});
+		await client.POST('/auth/logout');
 
 		await goto('/login');
 	}
 
 	async function handleAccountUpdate() {
-		const response = await apiFetch<{ message: string }>('/users', {
-			fetch,
-			method: 'PATCH',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({
+		const response = await client.PATCH('/users', {
+			body: {
 				newPassword: $auth.password,
 				oldPassword: $auth.oldPassword
-			})
+			}
 		});
 
-		if (response.raw.ok) {
+		if (response.response.ok) {
 			await goto('/login');
 		} else {
-			const err = await response.error();
-			toast.error(err.message);
+			toast.error(response.error?.message ?? 'An error occurred');
 		}
 	}
 
 	async function handleScheduleUpdate() {
-		const response = await apiFetch<{ message: string }>('/settings', {
-			fetch,
-			method: 'PATCH',
-			headers: { 'content-type': MIMETypes.json },
-			body: JSON.stringify({
+		const response = await client.PATCH('/settings', {
+			body: {
 				cronSubscription: $schedule.checkSubscriptions,
 				cronDownload: $schedule.downloadQueue
-			})
+			}
 		});
 
-		if (!response.raw.ok) {
-			const err = await response.error();
-			toast.error(err.message);
+		if (!response.response.ok) {
+			toast.error('An error occurred');
 		}
 	}
 </script>
@@ -96,17 +84,30 @@
 		</span>
 	</Card>
 	<Card title="Account">
-		<span class="text-lg">User: {data.user.name}</span>
+		<span class="text-lg">User: {data.user.username}</span>
 
 		<CardSection title="Session">
 			<button on:click={handleSubmit} class=" btn btn-error w-min">Logout</button>
+		</CardSection>
+
+		<CardSection title="API key">
+			<div class="join">
+				<button class="btn input-bordered join-item">Copy</button>
+				<input
+					type="password"
+					name="api-key"
+					class="input input-bordered join-item focus:input-primary w-full"
+					bind:value={$auth.password}
+					required
+				/>
+			</div>
 		</CardSection>
 
 		<CardSection title="Update account info">
 			<form on:submit|preventDefault={handleAccountUpdate} class="flex flex-col gap-2">
 				<input
 					type="password"
-					name="password"
+					name="new-password"
 					placeholder="New password"
 					class="input input-bordered focus:input-primary"
 					bind:value={$auth.password}
@@ -114,7 +115,7 @@
 				/>
 				<input
 					type="password"
-					name="password"
+					name="old-password"
 					placeholder="Old password"
 					class="input input-bordered focus:input-primary"
 					bind:value={$auth.oldPassword}

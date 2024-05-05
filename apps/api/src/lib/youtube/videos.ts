@@ -27,7 +27,7 @@ export type YouTubeLiveStreamingDetails = {
 export async function fetchVideos(videoIds: string[]): Promise<YouTubeVideo[]> {
 	const response = await ytFetch<YouTubeVideoList>('/videos', {
 		resources: ['snippet', 'liveStreamingDetails'],
-		ids: videoIds
+		ids: videoIds,
 	});
 
 	return response.items;

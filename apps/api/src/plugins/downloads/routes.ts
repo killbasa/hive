@@ -1,74 +1,85 @@
-import { DownloadStartSchema } from './schemas.js';
-import { scanAllChannels } from './utils.js';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { StatusEvent } from '@hive/common';
+import type { DownloadStatus } from '@hive/common';
+import type { SQLWrapper } from 'drizzle-orm';
 import { db } from '../../db/client.js';
+import { EmptyResponse } from '../../lib/responses.js';
 import { tokenHandler } from '../auth/tokens.js';
 import { downloadControllers } from '../tasks/handlers/downloader.js';
 import { scansInProgress } from '../tasks/handlers/scanner.js';
-import { StatusEvent } from '@hive/common';
-import type { DownloadStatus } from '@hive/common';
-import type { FastifyPluginAsync } from 'fastify';
-import type { SQLWrapper } from 'drizzle-orm';
+import { DownloadStartBody } from './body.js';
+import { DownloadCurrentSchema } from './schema.js';
+import { scanAllChannels } from './utils.js';
 
-export const downloadsRoutes: FastifyPluginAsync = async (server) => {
+export const downloadsRoutes: FastifyPluginAsyncTypebox = async (server) => {
 	server.addHook('onRequest', tokenHandler);
 
 	server.get(
-		'/queue', //
-		{ schema: { tags: ['Downloads'] } },
-		async (_, reply): Promise<void> => {
-			const tasks = await server.tasks.downloader.getJobs('waiting');
-
-			await reply.send({
-				queue: tasks.map((task) => task.data)
-			});
-		}
-	);
-
-	server.get(
 		'/current', //
-		{ schema: { tags: ['Downloads'] } },
+		{
+			schema: {
+				description: 'Get the current download',
+				tags: ['Downloads'],
+				response: {
+					200: DownloadCurrentSchema,
+				},
+			},
+		},
 		async (_, reply): Promise<void> => {
 			const task = await server.tasks.downloader.getActive(0, 1);
 			if (task.length === 0) {
-				return await reply.send({
-					current: undefined
+				return await reply.status(200).send({
+					current: undefined,
 				});
 			}
 
 			const video = await db.query.videos.findFirst({
 				where: (video, { eq }) => eq(video.id, task[0].data.videoId),
-				columns: { id: true, channelId: true, title: true }
+				columns: {
+					id: true,
+					channelId: true,
+					title: true,
+				},
 			});
 
-			await reply.send({
-				current: video
+			await reply.status(200).send({
+				current: video,
 			});
-		}
+		},
 	);
 
 	server.post(
 		'/start', //
-		{ schema: { tags: ['Downloads'] } },
+		{
+			schema: {
+				description: 'Start downloading the currently pending videos',
+				tags: ['Downloads'],
+				body: DownloadStartBody,
+				response: {
+					200: EmptyResponse('Download started successfully'),
+				},
+			},
+		},
 		async (request, reply): Promise<void> => {
-			const data = DownloadStartSchema.parse(request.body);
+			const { body } = request;
 
 			const [videoIds, runningJobs] = await Promise.all([
 				db.query.videos.findMany({
 					where: (video, { and, eq, or, inArray }) => {
 						const whereArgs: (SQLWrapper | undefined)[] = [
 							eq(video.downloadStatus, 'pending'), //
-							or(eq(video.status, 'none'), eq(video.status, 'past'))
+							or(eq(video.status, 'none'), eq(video.status, 'past')),
 						];
 
-						if (data.videoIds.length > 0) {
-							whereArgs.push(inArray(video.id, data.videoIds));
+						if (body.videoIds.length > 0) {
+							whereArgs.push(inArray(video.id, body.videoIds));
 						}
 
 						return and(...whereArgs);
 					},
-					columns: { id: true, channelId: true, status: true }
+					columns: { id: true, channelId: true, status: true },
 				}),
-				server.tasks.downloader.getJobs(['active', 'waiting'])
+				server.tasks.downloader.getJobs(['active', 'waiting']),
 			]);
 
 			const runningJobsIds = runningJobs.map((job) => job.data.videoId);
@@ -92,9 +103,9 @@ export const downloadsRoutes: FastifyPluginAsync = async (server) => {
 								type: 'video',
 								videoId: video.id,
 								channelId: video.channelId,
-								live: true
+								live: true,
 							},
-							{ priority: 1 }
+							{ priority: 1 },
 						);
 					} else {
 						videosArr.push({ videoId: video.id, channelId });
@@ -109,22 +120,30 @@ export const downloadsRoutes: FastifyPluginAsync = async (server) => {
 						type: 'video',
 						videoId: video.videoId,
 						channelId: video.channelId,
-						live: false
+						live: false,
 					},
-					{ priority: 2 }
+					{ priority: 2 },
 				);
 			}
 
-			await reply.send();
-		}
+			await reply.status(200).send();
+		},
 	);
 
 	server.post(
 		'/stop', //
-		{ schema: { tags: ['Downloads'] } },
+		{
+			schema: {
+				description: 'Stop all downloads',
+				tags: ['Downloads'],
+				response: {
+					201: EmptyResponse('Downloads stopped successfully'),
+				},
+			},
+		},
 		async (_, reply): Promise<void> => {
 			await server.tasks.downloader.obliterate({
-				force: true
+				force: true,
 			});
 
 			const controllers = downloadControllers.values();
@@ -133,16 +152,25 @@ export const downloadsRoutes: FastifyPluginAsync = async (server) => {
 			}
 
 			server.notifications.emit('status', {
-				type: StatusEvent.DownloadCancelled
+				type: StatusEvent.DownloadCancelled,
 			});
 
 			await reply.status(201).send();
-		}
+		},
 	);
 
 	server.post(
 		'/scan', //
-		{ schema: { tags: ['Downloads'] } },
+		{
+			schema: {
+				description: 'Scan all channels for new videos',
+				tags: ['Downloads'],
+				response: {
+					201: EmptyResponse('Scan started successfully'),
+					409: EmptyResponse('Scan already in progress'),
+				},
+			},
+		},
 		async (_, reply): Promise<void> => {
 			if (scansInProgress.scan) {
 				return await reply.status(409).send();
@@ -151,12 +179,18 @@ export const downloadsRoutes: FastifyPluginAsync = async (server) => {
 			await scanAllChannels();
 
 			await reply.status(201).send();
-		}
+		},
 	);
 
 	server.get(
 		'/status', //
-		{ websocket: true, schema: { tags: ['Websockets'] } },
+		{
+			websocket: true,
+			schema: {
+				description: 'Websocket for download updates',
+				tags: ['Websockets'],
+			},
+		},
 		(socket) => {
 			const handleMessage = (message: DownloadStatus): void => {
 				socket.send(JSON.stringify(message));
@@ -167,6 +201,6 @@ export const downloadsRoutes: FastifyPluginAsync = async (server) => {
 			socket.on('close', () => {
 				server.notifications.off('status', handleMessage);
 			});
-		}
+		},
 	);
 };

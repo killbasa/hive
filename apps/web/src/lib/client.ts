@@ -4,5 +4,5 @@ import { config } from './config';
 
 export const client = createClient<paths>({
 	baseUrl: config.apiUrl,
-	credentials: 'include'
+	credentials: 'include',
 });

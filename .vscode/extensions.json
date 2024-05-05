@@ -1,8 +1,11 @@
 {
 	"recommendations": [
-		"dbaeumer.vscode-eslint", //
+		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
 		"editorconfig.editorconfig",
-		"ecmel.vscode-html-css"
+		"ecmel.vscode-html-css",
+		"biomejs.biome",
+		"svelte.svelte-vscode",
+		"bradlc.vscode-tailwindcss"
 	]
 }
