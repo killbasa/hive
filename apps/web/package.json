@@ -11,7 +11,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"sync": "svelte-kit sync",
-		"lint": "pnpm sync && biome check --apply . && svelte-check --tsconfig ./tsconfig.json",
+		"check": "pnpm sync && biome check --apply . && svelte-check --tsconfig ./tsconfig.json",
 		"openapi": "openapi-typescript http://localhost:3001/spec.json -o ./src/api.d.ts",
 		"clean": "rm -r dist node_modules .svelte-kit"
 	},
@@ -24,7 +24,7 @@
 		"@sveltejs/adapter-node": "^5.0.1",
 		"@sveltejs/kit": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^3.1.0",
-		"@types/node": "^20.12.8",
+		"@types/node": "^20.12.10",
 		"@typescript-eslint/eslint-plugin": "^7.8.0",
 		"@typescript-eslint/parser": "^7.8.0",
 		"autoprefixer": "^10.4.19",
@@ -47,9 +47,9 @@
 	"engines": {
 		"node": ">=20.x"
 	},
-	"packageManager": "pnpm@9.0.6",
+	"packageManager": "pnpm@9.1.0",
 	"volta": {
-		"node": "22.0.0",
-		"pnpm": "9.0.6"
+		"node": "22.1.0",
+		"pnpm": "9.1.0"
 	}
 }

@@ -14,16 +14,16 @@
 	},
 	"scripts": {
 		"build": "tsc && tsup",
-		"lint": "biome check --apply .",
+		"check": "biome check --apply .",
 		"clean": "rm -r dist node_modules"
 	},
 	"devDependencies": {
 		"tsup": "^8.0.2",
 		"typescript": "^5.4.5"
 	},
-	"packageManager": "pnpm@9.0.6",
+	"packageManager": "pnpm@9.1.0",
 	"volta": {
-		"node": "22.0.0",
-		"pnpm": "9.0.6"
+		"node": "22.1.0",
+		"pnpm": "9.1.0"
 	}
 }
