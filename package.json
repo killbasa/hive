@@ -15,6 +15,7 @@
 		"build": "pnpm -r run build",
 		"check": "pnpm -r run check",
 		"test": "pnpm -r run test",
+		"dry-run": "pnpm build && pnpm check && pnpm test",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile .",

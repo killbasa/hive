@@ -19,6 +19,14 @@ RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.04.09/yt-dlp
 		-O /tmp/yt-dlp && \
 	chmod +x /tmp/yt-dlp
 
+RUN wget https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz \
+		-O /tmp/ffmpeg.tar.xz && \
+	tar -xf /tmp/ffmpeg.tar.xz -C /tmp && \
+	mv /tmp/ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /tmp/ffmpeg && \
+	mv /tmp/ffmpeg-master-latest-linux64-gpl/bin/ffprobe /tmp/ffprobe && \
+	chmod +x /tmp/ffmpeg && \
+	chmod +x /tmp/ffprobe
+
 ## Builder ##
 FROM base as builder
 
@@ -69,6 +77,8 @@ RUN mkdir -p /var/log/supervisor && chown -R hive:hive /var/log/supervisor && \
 WORKDIR /hive
 
 COPY --from=dependencies --chown=hive:hive /tmp/yt-dlp bin/
+COPY --from=dependencies --chown=hive:hive /tmp/ffmpeg bin/
+COPY --from=dependencies --chown=hive:hive /tmp/ffprobe bin/
 COPY --from=builder --chown=hive:hive /temp/apps/api/configs/supervisord.conf /etc/supervisord.conf
 COPY --from=builder --chown=hive:hive /temp/apps/api/configs/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder --chown=hive:hive /temp/output/ ./

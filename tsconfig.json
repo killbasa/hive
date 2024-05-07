@@ -3,6 +3,5 @@
 	"compilerOptions": {
 		"module": "Node16",
 		"moduleResolution": "Node16"
-	},
-	"include": ["src"]
+	}
 }
