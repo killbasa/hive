@@ -47,7 +47,7 @@ jobs:
         uses: docker/build-push-action@v5.3.0
         with:
           push: true
-          file: ./apps/api/Dockerfile
+          file: ./apps/web/Dockerfile
           context: .
           tags: |
             ghcr.io/killbasa/hive-web:latest
