@@ -1,37 +1,49 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import Card from '$components/Card.svelte';
 	import CardSection from '$components/CardSection.svelte';
 	import NumberInput from '$components/NumberInput.svelte';
 	import TextInput from '$components/TextInput.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
+	import CronPreview from '$lib/components/misc/CronPreview.svelte';
 	import { writable } from 'svelte/store';
 	import type { PageData } from './$types';
+	import { goto, invalidate } from '$app/navigation';
+
+	type CronStore = {
+		checkSubscriptions: string | null;
+		downloadPending: string | null;
+		channelMetadata: string | null;
+	};
 
 	export let data: PageData;
 
 	const auth = writable({
 		password: '',
-		oldPassword: ''
+		oldPassword: '',
 	});
+
+	const schedule = writable<CronStore>({
+		checkSubscriptions: data.settings.cronCheckSubscriptions,
+		downloadPending: data.settings.cronDownloadPending,
+		channelMetadata: data.settings.cronChannelMetadata,
+	});
+
+	const cronSelector = writable<keyof CronStore | null>(null);
 
 	$: accountUpdateDisabled =
 		$auth.password === '' || //
 		$auth.oldPassword === '' ||
 		$auth.password === $auth.oldPassword;
 
-	const schedule = writable({
-		checkSubscriptions: data.settings.cronSubscription,
-		downloadQueue: data.settings.cronDownload
-	});
-
 	$: scheduleUpdateDisabled =
-		$schedule.checkSubscriptions === data.settings.cronSubscription && //
-		$schedule.downloadQueue === data.settings.cronDownload;
+		$schedule.checkSubscriptions === data.settings.cronCheckSubscriptions && //
+		$schedule.downloadPending === data.settings.cronDownloadPending;
 
 	async function handleSubmit() {
-		await client.POST('/auth/logout');
+		await client.POST('/auth/logout', {
+			headers: { 'Content-Type': null },
+		});
 
 		await goto('/login');
 	}
@@ -40,8 +52,8 @@
 		const response = await client.PATCH('/users', {
 			body: {
 				newPassword: $auth.password,
-				oldPassword: $auth.oldPassword
-			}
+				oldPassword: $auth.oldPassword,
+			},
 		});
 
 		if (response.response.ok) {
@@ -52,15 +64,19 @@
 	}
 
 	async function handleScheduleUpdate() {
-		const response = await client.PATCH('/settings', {
+		const { response } = await client.PATCH('/settings', {
 			body: {
-				cronSubscription: $schedule.checkSubscriptions,
-				cronDownload: $schedule.downloadQueue
-			}
+				cronCheckSubscriptions: $schedule.checkSubscriptions,
+				cronDownloadPending: $schedule.downloadPending,
+				cronChannelMetadata: $schedule.channelMetadata,
+			},
 		});
 
-		if (!response.response.ok) {
-			toast.error('An error occurred');
+		if (response.ok) {
+			toast.success('Settings saved');
+			await invalidate('state:settings');
+		} else {
+			toast.error('Something went wrong');
 		}
 	}
 </script>
@@ -84,7 +100,7 @@
 		</span>
 	</Card>
 	<Card title="Account">
-		<span class="text-lg">User: {data.user.username}</span>
+		<span class="text-lg">User: {data.user.name}</span>
 
 		<CardSection title="Session">
 			<button on:click={handleSubmit} class=" btn btn-error w-min">Logout</button>
@@ -130,17 +146,33 @@
 		</CardSection>
 	</Card>
 	<Card title="Schedules">
-		<form on:submit|preventDefault={handleScheduleUpdate} class="flex flex-col gap-2">
-			<TextInput
-				id="check-subscriptions"
-				title="Check subscriptions"
-				bind:value={$schedule.checkSubscriptions}
-			/>
-			<TextInput
-				id="download-queue"
-				title="Download queue"
-				bind:value={$schedule.downloadQueue}
-			/>
+		<form on:submit|preventDefault={handleScheduleUpdate} class="flex flex-col">
+			<div class="grid grid-cols-2 gap-4">
+				<div class="flex flex-col gap-2">
+					<TextInput
+						id="check-subscriptions"
+						title="Check subscriptions"
+						bind:value={$schedule.checkSubscriptions}
+						on:focus={() => cronSelector.set('checkSubscriptions')}
+						on:blur={() => cronSelector.set(null)}
+					/>
+					<TextInput
+						id="download-queue"
+						title="Download queue"
+						bind:value={$schedule.downloadPending}
+						on:focus={() => cronSelector.set('downloadPending')}
+						on:blur={() => cronSelector.set(null)}
+					/>
+					<TextInput
+						id="update-channels"
+						title="Update channels"
+						bind:value={$schedule.channelMetadata}
+						on:focus={() => cronSelector.set('channelMetadata')}
+						on:blur={() => cronSelector.set(null)}
+					/>
+				</div>
+				<CronPreview expression={$cronSelector ? $schedule[$cronSelector] : null} />
+			</div>
 			<div class="flex justify-end">
 				<button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}
 					>Save</button

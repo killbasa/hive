@@ -5,9 +5,9 @@ export default defineConfig({
 	clean: true,
 	dts: false,
 	entry: [
-		'src/server.ts', //
+		'src/main.ts', //
 		'!src/**/*.spec.ts',
-		'!src/**/*.test-util.ts',
+		'!src/**/*.spec-util.ts',
 	],
 	format: ['esm'],
 	keepNames: true,
@@ -22,7 +22,7 @@ export default defineConfig({
 	env: {
 		NODE_ENV: process.env.NODE_ENV ?? 'production',
 		TESTING: 'false',
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
 		npm_package_version: process.env.npm_package_version!,
+		DISABLE_AUTODL: 'false',
 	},
 });

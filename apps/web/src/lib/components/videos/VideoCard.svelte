@@ -8,7 +8,7 @@
 	const channelUrl = `${config.apiUrl}/assets/${video.channelId}`;
 </script>
 
-<div class="card border overflow-hidden">
+<div class="card border overflow-hidden rounded-lg">
 	<a href="/watch/{video.id}">
 		<div class="flex flex-col">
 			<img
@@ -25,11 +25,11 @@
 			{/if}
 		</div>
 	</a>
-	<div class="p-3 flex gap-2">
+	<div class="p-2 flex gap-2">
 		{#if showIcon}
 			<a href="/channels/{video.channelId}" class="mask mask-circle h-12 w-12 min-w-12">
 				<img
-					src="{config.apiUrl}/assets/{video.channelId}/assets/thumbnail.avatar_uncropped.jpg"
+					src="{config.apiUrl}/assets/{video.channelId}/assets/avatar.jpg"
 					alt="Channel avatar"
 				/>
 			</a>

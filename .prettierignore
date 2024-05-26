@@ -1,0 +1,10 @@
+.git/
+.idea/
+.husky/
+.turbo/
+coverage/
+data/
+dist/
+node_modules/
+pnpm-lock.yaml
+LICENSE

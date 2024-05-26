@@ -1,7 +1,7 @@
-import { exec, spawn } from 'node:child_process';
-import type { Awaitable } from '@hive/common';
 import { server } from '../../server.js';
 import { CLI_PATH, DATA_DIR } from '../constants.js';
+import { exec, spawn } from 'node:child_process';
+import type { Awaitable } from '@hive/common';
 
 export type YtdlpProgress = {
 	status: 'downloading' | 'error' | 'finished';

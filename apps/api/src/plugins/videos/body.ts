@@ -1,5 +1,5 @@
-import { Type } from '@fastify/type-provider-typebox';
 import { HiveType } from '../../lib/types/typebox.js';
+import { Type } from '@fastify/type-provider-typebox';
 import type { VideoDownloadStatus } from './schema.js';
 
 export const VideoIgnoreBody = Type.Object({
@@ -7,8 +7,9 @@ export const VideoIgnoreBody = Type.Object({
 });
 
 export const VideoPatchBody = Type.Object({
+	watchProgress: Type.Optional(Type.Number()),
+	watchCompleted: Type.Optional(Type.Boolean()),
 	downloadStatus: Type.Optional(
 		HiveType.LiteralUnion<VideoDownloadStatus[]>(['ignored', 'pending']), //
 	),
-	watchProgress: Type.Optional(Type.Number()),
 });

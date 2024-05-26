@@ -7,41 +7,47 @@
 	"type": "module",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/killbasa/hive.git",
-		"directory": "templates/node-ts"
+		"url": "https://github.com/killbasa/hive.git"
 	},
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
 		"build": "pnpm -r run build",
 		"check": "pnpm -r run check",
+		"lint": "pnpm -r run lint",
+		"format": "pnpm -r run format",
 		"test": "pnpm -r run test",
-		"dry-run": "pnpm build && pnpm check && pnpm test",
+		"e2e": "pnpm -r run e2e",
+		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
 		"docker:all": "docker compose -f compose.dev.yml",
 		"docker:api": "docker buildx build -t killbasa/hive -f apps/api/Dockerfile .",
 		"docker:web": "docker buildx build -t killbasa/hive-web -f apps/web/Dockerfile .",
-		"clean": "rm -r node_modules && pnpm -r run clean"
+		"clean": "rm -rf node_modules && pnpm -r run clean"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.7.3",
+		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.0",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^20.12.10",
-		"lint-staged": "^15.2.2",
+		"@types/node": "^20.12.12",
+		"eslint": "^9.3.0",
+		"lint-staged": "^15.2.5",
 		"prettier": "^3.2.5",
 		"typescript": "^5.4.5",
 		"vitest": "^1.6.0"
 	},
 	"lint-staged": {
-		"*.{cjs,js,ts}": ["pnpm biome check --apply \"**/*.{cjs,js,ts}\""],
-		"*.{json,jsonc}": ["biome format --write \"**/*.{json,jsonc}\""],
-		"*.{yml,yaml,md,html}": ["prettier --write --log-level=warn \"**/*.{yml,yaml,md,html}\""]
+		"*.{js,cjs}": [
+			"eslint --fix"
+		],
+		"*.{js,cjs,json,yml,yaml}": [
+			"prettier --write --log-level=warn \"**/*.{js,cjs,json,yml,yaml}\""
+		]
 	},
 	"engines": {
 		"node": ">=20.x"
 	},
-	"packageManager": "pnpm@9.1.0",
+	"packageManager": "pnpm@9.1.2",
 	"volta": {
-		"node": "22.1.0",
-		"pnpm": "9.1.0"
+		"node": "22.2.0",
+		"pnpm": "9.1.2"
 	}
 }

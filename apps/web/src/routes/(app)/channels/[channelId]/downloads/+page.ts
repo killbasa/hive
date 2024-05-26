@@ -8,6 +8,7 @@ export const load: PageLoad = async ({ fetch, url, params }) => {
 		params: {
 			query: {
 				status: ['none', 'past'],
+				type: ['video', 'short', 'stream'],
 				downloadStatus: ['pending'],
 				channelId: params.channelId,
 				search: getStringParam(url, 'search'),

@@ -1,4 +1,5 @@
 import { config } from '../config.js';
+import { isTesting } from '../constants.js';
 
 const YT_BASE_URL = 'https://www.googleapis.com/youtube';
 const YT_API_VERSION = 'v3';
@@ -10,6 +11,10 @@ export async function ytFetch<T>(
 		ids?: string[];
 	},
 ): Promise<T> {
+	if (isTesting) {
+		throw new Error('ytFetch should not be called in testing');
+	}
+
 	const url = new URL(`${YT_BASE_URL}/${YT_API_VERSION}${path}`);
 	url.searchParams.set('key', config.YT_API_KEY);
 

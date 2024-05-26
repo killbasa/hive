@@ -1,8 +1,8 @@
+import { z } from 'zod';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
 import type { ConnectionOptions } from 'bullmq';
-import { z } from 'zod';
 
 if (existsSync(resolve('.env'))) {
 	loadEnvFile();
@@ -13,7 +13,7 @@ const ConfigSchema = z.object({
 	PORT: z.coerce.number(),
 	AUTH_SECRET: z.string(),
 	AUTH_ORIGIN: z.string(),
-	AUTH_COOKIE_NAME: z.string(),
+	COOKIE_NAME: z.string(),
 	REDIS_HOST: z.string().default('localhost'),
 	REDIS_PORT: z.coerce.number().default(6379),
 	REDIS_PASSWORD: z.string().default('password'),
@@ -26,7 +26,7 @@ const obj = {
 	PORT: 3002,
 	AUTH_SECRET: process.env.AUTH_SECRET,
 	AUTH_ORIGIN: process.env.AUTH_ORIGIN,
-	AUTH_COOKIE_NAME: 'hive',
+	COOKIE_NAME: 'hive',
 	REDIS_HOST: process.env.REDIS_HOST,
 	REDIS_PORT: process.env.REDIS_PORT,
 	REDIS_PASSWORD: process.env.REDIS_PASSWORD,

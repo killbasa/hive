@@ -1,40 +1,9 @@
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function throttle<T extends (...args: any[]) => any>(fn: T, delay: number): T {
-	let wait = false;
-
-	return function (this: unknown, ...args: Parameters<T>) {
-		if (wait) {
-			return;
-		}
-
-		fn.apply(this, args);
-		wait = true;
-
-		window.setTimeout(() => {
-			wait = false;
-		}, delay);
-	} as T;
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function debounce<T extends (...args: any[]) => unknown>(fn: T, delay: number): T {
-	let timeoutId: number | undefined = undefined;
-
-	return function (this: unknown, ...args: Parameters<T>) {
-		if (timeoutId !== undefined) {
-			window.clearTimeout(timeoutId);
-		}
-
-		timeoutId = window.setTimeout(() => {
-			fn.apply(this, args);
-		}, delay);
-	} as T;
-}
+import { parseDurationString } from '@hive/common';
 
 const UNITS = ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte', 'petabyte'];
 const BYTES_PER_KB = 1000;
 
-export function humanFileSize(sizeBytes: number | bigint): string {
+export function humanFileSize(sizeBytes: number | bigint | string): string {
 	let size = Math.abs(Number(sizeBytes));
 
 	let u = 0;
@@ -51,11 +20,35 @@ export function humanFileSize(sizeBytes: number | bigint): string {
 	}).format(size);
 }
 
-export function formatLinks(description: string): string {
-	return description.replace(
+export function formatLinks(text: string): string {
+	text = text.replace(
 		/(?:https|http):\/\/\S+/g,
 		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
 	);
+
+	text = text.replace(
+		/#(\w+)/g,
+		'<a href="https://www.youtube.com/hashtag/$1" target="_blank" class="link link-primary">$&</a>',
+	);
+
+	return text;
+}
+
+export function formatTimestamps(videoId: string, text: string): string {
+	const timestamps = text.match(/(\d{1,2}:\d{2}:?\d{0,2})/g);
+
+	if (timestamps) {
+		for (const timestamp of timestamps) {
+			const seconds = parseDurationString(timestamp);
+
+			text = text.replace(
+				new RegExp(timestamp, 'g'), //
+				`<a href="/watch/${videoId}?t=${seconds}" class="link link-primary">${timestamp}</a>`,
+			);
+		}
+	}
+
+	return text;
 }
 
 export function formatDuration(value: string | number) {
@@ -70,8 +63,8 @@ export function formatDuration(value: string | number) {
 	return `${hours === 0 ? '' : `${hours}:`}${minutes}:${seconds}`;
 }
 
-export function formatFileSize(value: unknown): string {
-	if (typeof value !== 'string') {
+export function formatFileSize(value: number | null): string {
+	if (value === null) {
 		return 'N/A';
 	}
 

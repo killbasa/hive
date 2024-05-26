@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { type SvelteToastOptions, toast } from '$lib/stores/toasts';
-	import { linear } from 'svelte/easing';
+	import { toast } from '$lib/stores/toasts';
 	import { tweened } from 'svelte/motion';
+	import { linear } from 'svelte/easing';
+	import type { SvelteToastOptions } from '$lib/stores/toasts';
 
 	export let item: SvelteToastOptions;
 
@@ -34,7 +35,7 @@
 		if (paused && next !== undefined && prev !== undefined && duration) {
 			progress
 				.set(next, {
-					duration: duration - duration * (($progress - prev) / (next - prev))
+					duration: duration - duration * (($progress - prev) / (next - prev)),
 				})
 				.then(autoclose);
 

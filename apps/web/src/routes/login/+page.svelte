@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
+	import { goto } from '$app/navigation';
 
 	let username = '';
 	let password = '';
@@ -12,8 +12,8 @@
 			body: {
 				username,
 				password,
-				remember
-			}
+				remember,
+			},
 		});
 
 		if (response.response.ok) {

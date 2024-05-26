@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { updatePage } from '$lib/navigation';
 	import { stringToNum } from '$lib/utils';
+	import { page } from '$app/stores';
 
 	export let count: number;
 	export let total: number;
@@ -25,7 +25,7 @@
 			label: result < 1 ? '' : `${result}`,
 			value: entry,
 			current: result === pageNumber,
-			disabled: result < 1 || count * pageNumber === total || result === pageNumber
+			disabled: result < 1 || count * pageNumber === total || result === pageNumber,
 		};
 	});
 

@@ -1,17 +1,18 @@
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
 	import Card from '$components/Card.svelte';
 	import SearchInput from '$components/SearchInput.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
-	import VideoStatusBadge from '$components/videos/VideoStatusBadge.svelte';
+	import VideoTypeBadge from '$components/videos/VideoTypeBadge.svelte';
 	import { client } from '$lib/client';
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
 	import { formatDuration, formatFileSize } from '$lib/utils';
 	import { HiveWebSocket } from '$lib/ws';
-	import { type DownloadProgress, type DownloadStatus, StatusEvent } from '@hive/common';
+	import { StatusEvent } from '@hive/common';
 	import { onMount } from 'svelte';
+	import type { DownloadProgress, DownloadStatus } from '@hive/common';
 	import type { PageData } from './$types';
+	import { invalidate } from '$app/navigation';
 
 	type DownloadInfo = {
 		id: string;
@@ -41,7 +42,7 @@
 	let selectedVideos: string[];
 	$: selectedVideos = [];
 
-	function selectVideo(videoId: string) {
+	function selectVideo(videoId: string): void {
 		if (selectedVideos.includes(videoId)) {
 			selectedVideos = selectedVideos.filter((id) => id !== videoId);
 		} else {
@@ -49,7 +50,7 @@
 		}
 	}
 
-	function selectAll() {
+	function selectAll(): void {
 		if (allChecked) {
 			selectedVideos = [];
 		} else {
@@ -57,38 +58,54 @@
 		}
 	}
 
-	async function startDownloads() {
-		await client.POST('/downloads/start', {
+	async function startDownloads(): Promise<void> {
+		const { response } = await client.POST('/downloads/start', {
 			body: {
-				videoIds: selectedVideos
-			}
+				videoIds: selectedVideos,
+			},
 		});
+
+		if (response.ok) {
+			toast.success('Download started');
+		} else {
+			toast.error('Something went wrong');
+		}
 	}
 
 	async function scan() {
-		const response = await client.POST('/downloads/scan');
+		const { response } = await client.POST('/videos/scan', {
+			headers: { 'Content-Type': null },
+		});
 
-		if (response.response.ok) {
-			toast.success('Scan started');
+		if (response.ok) {
+			toast.success('Video scan started');
 		} else {
 			toast.error('Something went wrong');
 		}
 	}
 
 	async function stop() {
-		await client.POST('/downloads/stop');
+		await client.POST('/downloads/stop', {
+			headers: { 'Content-Type': null },
+		});
 	}
 
 	async function ignore() {
-		await client.POST('/videos/ignore', {
+		const response = await client.POST('/videos/ignore', {
 			body: {
-				videoIds: Array.from(selectedVideos)
-			}
+				videoIds: selectedVideos,
+			},
 		});
 
 		await invalidate('state:downloads');
 		allChecked = false;
 		selectedVideos = [];
+
+		if (response.response.ok) {
+			toast.success('Video(s) ignored');
+		} else {
+			toast.error('Something went wrong');
+		}
 	}
 
 	onMount(() => {
@@ -117,7 +134,7 @@
 					channelId: update.channelId,
 					title: update.title,
 					progress: update.data,
-					percentage: update.data.percentage.trim().slice(0, -1)
+					percentage: update.data.percentage.trim().slice(0, -1),
 				};
 
 				return;
@@ -133,8 +150,6 @@
 			// Don't refresh if there's more channels?
 			if (update.type === StatusEvent.ScanComplete) {
 				scanInfo = null;
-				toast.success('Scan complete');
-
 				await invalidate('state:downloads');
 				return;
 			}
@@ -145,7 +160,7 @@
 					channelPos: update.channelPos,
 					channelTotal: update.channelTotal,
 					videoPos: update.videoPos,
-					videoTotal: update.videoTotal
+					videoTotal: update.videoTotal,
 				};
 			}
 		});
@@ -200,7 +215,7 @@
 				<div class="avatar">
 					<div class="mask mask-circle h-12 w-12">
 						<img
-							src="{config.apiUrl}/assets/{scanInfo.channelId}/assets/thumbnail.avatar_uncropped.jpg"
+							src="{config.apiUrl}/assets/{scanInfo.channelId}/assets/avatar.jpg"
 							alt="Channel avatar"
 						/>
 					</div>
@@ -240,7 +255,7 @@
 				<button class="btn btn-error" {disabled} on:click={ignore}>Ignore</button>
 				<button class="btn btn-success" on:click={scan}>Scan channels</button>
 			</div>
-			<div>
+			<div class="flex gap-4">
 				<SearchInput placeholder="Filter videos" />
 			</div>
 		</div>
@@ -257,7 +272,7 @@
 							/>
 						</label>
 					</th>
-					<th>Status</th>
+					<th>Type</th>
 					<th>Thumbnail</th>
 					<th>Title</th>
 					<th>Duration</th>
@@ -273,13 +288,15 @@
 									name="select-video"
 									type="checkbox"
 									class="checkbox"
-									on:change={() => selectVideo(video.id)}
+									on:change={() => {
+										selectVideo(video.id);
+									}}
 									checked={selectedVideos.includes(video.id)}
 								/>
 							</label>
 						</th>
 						<td>
-							<VideoStatusBadge type={video.type} />
+							<VideoTypeBadge type={video.type} />
 						</td>
 						<td>
 							<div class="flex items-center gap-3">

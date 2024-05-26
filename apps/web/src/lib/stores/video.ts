@@ -1,6 +1,7 @@
-import type { VideoWithComments } from '$lib/types/videos';
 import { getContext, setContext } from 'svelte';
-import { type Writable, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
+import type { Writable } from 'svelte/store';
+import type { VideoWithComments } from '$lib/types/videos';
 
 const STORE_KEY = 'video';
 type VideoContext = VideoWithComments | null;

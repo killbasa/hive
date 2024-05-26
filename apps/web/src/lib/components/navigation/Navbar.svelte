@@ -14,9 +14,6 @@
 			<a href="/channels" class="text-lg px-4 {style}">
 				<li>Channels</li>
 			</a>
-			<a href="/streams" class="text-lg px-4 {style}">
-				<li>Streams</li>
-			</a>
 			<a href="/downloads" class="text-lg px-4 {style}">
 				<li>Downloads</li>
 			</a>

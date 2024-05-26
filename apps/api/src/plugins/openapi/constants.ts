@@ -1,6 +1,6 @@
 import { isDev } from '../../lib/constants.js';
 
-const ScalarVersion = '1.22.20';
+const ScalarVersion = '1.22.43';
 export const ScalarCDNUrl = `https://cdn.jsdelivr.net/npm/@scalar/api-reference@${ScalarVersion}/dist/browser/standalone.min.js`;
 
 export const ScalarHTML = scalarHTML(ScalarCDNUrl);

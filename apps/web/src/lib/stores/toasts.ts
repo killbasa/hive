@@ -52,7 +52,6 @@ function createToast() {
 				return [];
 			}
 
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			const found = id || Math.max(...n.map((i) => i.id!));
 			return n.filter((i) => i.id !== found);
 		});

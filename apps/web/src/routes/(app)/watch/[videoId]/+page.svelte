@@ -2,6 +2,7 @@
 	import Description from '$components/Description.svelte';
 	import { setVideoContext } from '$lib/stores/video';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 	setVideoContext(data);
@@ -12,16 +13,17 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<div id="video-element"></div>
+	<div id="video-element" class="justify-center flex"></div>
 	<div>
 		<h2>{data.title}</h2>
-		<Description text={data.description} />
+		<Description videoId={data.id} text={data.description} />
 		<a href="https://www.youtube.com/watch?v={data.id}" target="_blank" class="btn">
 			Watch on YouTube
 		</a>
 	</div>
 	<div>
 		<h2 class="card-title border-b">Comments</h2>
+		{Number($page.url.searchParams.get('t'))}
 		<ul>
 			{#each data.comments as comment (comment.id)}
 				<li>

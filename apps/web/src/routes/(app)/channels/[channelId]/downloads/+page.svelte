@@ -2,7 +2,7 @@
 	import Card from '$components/Card.svelte';
 	import SearchInput from '$components/SearchInput.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
-	import VideoStatusBadge from '$components/videos/VideoStatusBadge.svelte';
+	import VideoStatusBadge from '$components/videos/VideoTypeBadge.svelte';
 	import { config } from '$lib/config';
 	import { formatDuration, formatFileSize } from '$lib/utils';
 	import type { PageData } from './$types';
@@ -25,7 +25,7 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>Status</th>
+				<th>Type</th>
 				<th>Thumbnail</th>
 				<th>Title</th>
 				<th>Duration</th>

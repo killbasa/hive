@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { Type } from '@fastify/type-provider-typebox';
 import type { TSchema } from '@fastify/type-provider-typebox';
 

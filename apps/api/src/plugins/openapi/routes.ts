@@ -1,6 +1,6 @@
+import { ScalarContentSecurityPolicies, ScalarHTML } from './constants.js';
 import { isDev } from '../../lib/constants.js';
 import type { HiveRoutes } from '../../lib/types/hive.js';
-import { ScalarContentSecurityPolicies, ScalarHTML } from './constants.js';
 
 export const referenceRoutes: HiveRoutes = {
 	public: (server, _, done) => {
@@ -8,27 +8,46 @@ export const referenceRoutes: HiveRoutes = {
 			'/spec.json',
 			{
 				schema: {
-					description: 'Get the OpenAPI spec',
+					description: 'Get the OpenAPI JSON spec',
 					tags: ['Open API'],
 				},
 			},
 			async (_, reply): Promise<void> => {
 				await reply
 					.headers({
-						'Content-Type': 'application/json; charset=utf-8',
+						'content-type': 'application/json; charset=utf-8',
 					})
-					.send(server.swagger());
+					.send(server.swagger({ yaml: false }));
+			},
+		);
+
+		server.get(
+			'/spec.yaml',
+			{
+				schema: {
+					description: 'Get the OpenAPI YAML spec',
+					tags: ['Open API'],
+				},
+			},
+			async (_, reply): Promise<void> => {
+				await reply
+					.headers({
+						'content-type': 'text/plain; charset=utf-8',
+					})
+					.send(server.swagger({ yaml: true }));
 			},
 		);
 
 		server.get(
 			'/reference', //
-			{ schema: { hide: true } },
+			{
+				schema: { hide: true },
+			},
 			async (_, reply): Promise<void> => {
 				await reply
 					.headers({
-						'Content-Type': 'text/html; charset=utf-8',
-						'Content-Security-Policy': ScalarContentSecurityPolicies,
+						'content-type': 'text/html; charset=utf-8',
+						'content-security-policy': ScalarContentSecurityPolicies,
 					})
 					.send(ScalarHTML);
 			},

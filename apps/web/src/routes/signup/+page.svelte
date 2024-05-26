@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
+	import { goto } from '$app/navigation';
 
 	let username = '';
 	let password = '';
@@ -14,18 +14,22 @@
 			return;
 		}
 
-		const response = await client.POST('/auth/credentials/signup', {
+		const { response, error } = await client.PUT('/auth/credentials/signup', {
 			body: {
 				username,
-				password
-			}
+				password,
+			},
 		});
 
-		if (response.response.ok) {
+		if (response.ok) {
 			toast.success('Account created');
 			await goto('/login');
+		} else if (response.status === 403) {
+			toast.error('User registration is disabled');
+		} else if (response.status === 409) {
+			toast.error('User already exists');
 		} else {
-			toast.error(response.error?.message ?? 'An error occurred');
+			toast.error(error?.message ?? 'An error occurred');
 		}
 	}
 </script>

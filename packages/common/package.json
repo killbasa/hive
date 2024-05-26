@@ -14,16 +14,32 @@
 	},
 	"scripts": {
 		"build": "tsc && tsup",
-		"check": "biome check --apply .",
-		"clean": "rm -r dist node_modules"
+		"check": "tsc",
+		"lint": "eslint --fix",
+		"format": "prettier --write .",
+		"test": "vitest --coverage --run",
+		"test:watch": "vitest --coverage",
+		"clean": "rm -rf dist node_modules"
 	},
 	"devDependencies": {
+		"@vitest/coverage-v8": "^1.6.0",
+		"eslint": "^9.3.0",
+		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
-		"typescript": "^5.4.5"
+		"typescript": "^5.4.5",
+		"vitest": "^1.6.0"
 	},
-	"packageManager": "pnpm@9.1.0",
+	"lint-staged": {
+		"*.{js,ts}": [
+			"eslint --fix"
+		],
+		"*.{js,ts,json}": [
+			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
+		]
+	},
+	"packageManager": "pnpm@9.1.2",
 	"volta": {
-		"node": "22.1.0",
-		"pnpm": "9.1.0"
+		"node": "22.2.0",
+		"pnpm": "9.1.2"
 	}
 }

@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.1.0-alpine3.19 as base
+FROM node:22.2.0-alpine3.19 as base
 
 RUN apk update --no-cache
 
@@ -15,7 +15,9 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/web ./apps/web/
 COPY packages ./packages/
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store corepack enable && \
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+	corepack enable pnpm && \
+	corepack use pnpm@9.1.2 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/web run build && \

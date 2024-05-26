@@ -1,8 +1,8 @@
-import { Type } from '@fastify/type-provider-typebox';
 import { config } from '../../lib/config.js';
 import { MessageResponse } from '../../lib/responses.js';
-import type { HiveRoutes } from '../../lib/types/hive.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
+import { Type } from '@fastify/type-provider-typebox';
+import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const coreRoutes: HiveRoutes = {
 	public: (server, _, done) => {
@@ -34,14 +34,14 @@ export const coreRoutes: HiveRoutes = {
 					tags: ['Core'],
 					response: {
 						200: Type.String({ description: 'Prometheus metrics' }),
-						501: MessageResponse('Metrics not enabled'),
+						501: MessageResponse('Metrics are not enabled for the instance'),
 					},
 				},
 			},
 			async (_, reply): Promise<void> => {
 				if (server.metrics === undefined) {
 					await reply.status(501).send({
-						message: 'Metrics not enabled',
+						message: 'Metrics are not enabled for the instance',
 					});
 					return;
 				}

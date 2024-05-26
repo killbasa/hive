@@ -1,13 +1,19 @@
 <script lang="ts">
-	import { formatLinks } from '$lib/utils';
+	import { formatLinks, formatTimestamps } from '$lib/utils';
 	import { onMount } from 'svelte';
 
 	export let text: string;
+	export let videoId: string | undefined = undefined;
 
 	let description: HTMLParagraphElement;
 
 	onMount(() => {
-		description.innerHTML = formatLinks(text);
+		let formattedText = formatLinks(text);
+		if (videoId) {
+			formattedText = formatTimestamps(videoId, formattedText);
+		}
+
+		description.innerHTML = formattedText;
 	});
 </script>
 

@@ -1,12 +1,14 @@
+import { cookies } from './cookies.js';
+import { credentialAuthRoutes } from './credentials/routes.js';
+import { apikeyAuthRoutes } from './apikey/routes.js';
 import { config } from '../../lib/config.js';
 import { EmptyResponse } from '../../lib/responses.js';
 import type { HiveRoutes } from '../../lib/types/hive.js';
-import { cookies } from './cookies.js';
-import { credentialAuthRoutes } from './credentials/routes.js';
 
 export const authRoutes: HiveRoutes = {
 	subroutes: {
 		credentials: credentialAuthRoutes,
+		apikey: apikeyAuthRoutes,
 	},
 	authenticated: (server, _, done) => {
 		server.get(
@@ -42,7 +44,7 @@ export const authRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(config.AUTH_COOKIE_NAME, cookie)
+					.clearCookie(config.COOKIE_NAME, cookie)
 					.code(200)
 					.send();
 			},

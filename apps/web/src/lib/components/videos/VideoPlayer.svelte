@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { afterNavigate } from '$app/navigation';
-	import { page } from '$app/stores';
 	import { client } from '$lib/client';
 	import { config } from '$lib/config';
 	import { getVideoContext } from '$lib/stores/video';
-	import { debounce, throttle } from '$lib/utils';
-	import { Time } from '@hive/common';
+	import { Time, throttle, debounce } from '@hive/common';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { afterNavigate } from '$app/navigation';
+
+	const video = getVideoContext();
 
 	let element: HTMLVideoElement;
 	let divElement: HTMLDivElement;
@@ -15,8 +16,6 @@
 
 	$: currentTime = 0;
 	$: isWatchPage = $page.url.pathname.startsWith('/watch');
-
-	const video = getVideoContext();
 
 	video.subscribe((data) => {
 		hide = data === null;
@@ -33,8 +32,7 @@
 	function loadPlayer(): void {
 		if (!$video) return;
 
-		currentTime = $video.watchProgress;
-		element.currentTime = currentTime;
+		setTime($page.url.searchParams.get('t') ?? $video.watchProgress);
 
 		const local = localStorage.getItem('videoVolume') ?? '1';
 		const parsedVol = Number.parseFloat(local);
@@ -57,6 +55,18 @@
 		}
 	}
 
+	function setTime(value: string | number | null): void {
+		if (value === null || !element) return;
+		if (typeof value === 'string') {
+			value = Number(value);
+		}
+
+		if (Number.isNaN(value)) return;
+
+		currentTime = Number(value);
+		element.currentTime = currentTime;
+	}
+
 	const debounceUpdate = debounce(postUpdate, Time.Second);
 	const throttleUpdate = throttle(postUpdate, Time.Second * 2);
 
@@ -66,8 +76,9 @@
 		await client.PATCH('/videos/{videoId}', {
 			params: { path: { videoId: $video.id } },
 			body: {
-				watchProgress: time
-			}
+				watchProgress: time,
+				watchCompleted: $video.duration ? time / $video.duration > 0.9 : false,
+			},
 		});
 	}
 
@@ -80,11 +91,13 @@
 	}
 
 	function mountVideo() {
-		const watchPageElement = document.getElementById('video-element');
+		if (isWatchPage) {
+			const watchPageElement = document.getElementById('video-element');
 
-		if (isWatchPage && watchPageElement && !watchPageElement.hasChildNodes()) {
-			watchPageElement.appendChild(element);
-		} else if (!isWatchPage && element && !divElement.hasChildNodes()) {
+			if (watchPageElement && !watchPageElement.hasChildNodes()) {
+				watchPageElement.appendChild(element);
+			}
+		} else if (element && !divElement.hasChildNodes()) {
 			divElement.appendChild(element);
 		}
 	}
@@ -92,11 +105,12 @@
 	afterNavigate((data) => {
 		if (data.from === null) return;
 
-		if (!isWatchPage && element.paused) {
+		if (!isWatchPage && (element?.paused || $video?.type === 'short')) {
 			closeVideo();
 		}
 
 		mountVideo();
+		setTime($page.url.searchParams.get('t'));
 	});
 
 	if (import.meta.hot) {
@@ -107,7 +121,7 @@
 </script>
 
 <div
-	class="flex flex-col rounded-lg overflow-hidden {$video && isWatchPage
+	class="flex flex-col rounded-lg overflow-hidden {$video && isWatchPage //
 		? 'w-full'
 		: 'fixed bottom-2 right-2 w-[400px]'}"
 >
@@ -137,9 +151,10 @@
 			on:volumechange={onVolumeChange}
 			on:loadstart={loadPlayer}
 			on:timeupdate={onTimeUpdate}
+			on:ended={onTimeUpdate}
 			controls
 			playsinline
-			width="100%"
+			style={$video.type === 'short' ? 'width: 450px;' : 'width: 100%;'}
 			hidden={hide}
 			bind:this={element}
 		>

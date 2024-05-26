@@ -1,12 +1,12 @@
-import { hash, verify } from 'argon2';
-import { count, eq } from 'drizzle-orm';
+import { LoginBody, SignupBody } from './body.js';
 import { db } from '../../../db/client.js';
 import { users } from '../../../db/schema.js';
 import { config } from '../../../lib/config.js';
 import { EmptyResponse, MessageResponse } from '../../../lib/responses.js';
-import type { HiveRoutes } from '../../../lib/types/hive.js';
 import { cookies } from '../cookies.js';
-import { LoginBody, SignupBody } from './body.js';
+import { count, eq } from 'drizzle-orm';
+import { hash, verify } from 'argon2';
+import type { HiveRoutes } from '../../../lib/types/hive.js';
 
 export const credentialAuthRoutes: HiveRoutes = {
 	public: (server, _, done) => {
@@ -48,16 +48,18 @@ export const credentialAuthRoutes: HiveRoutes = {
 					name: user.name,
 				});
 
-				const cookie = cookies.create(body.remember);
+				const cookie = cookies.create({
+					extendedExpiry: body.remember,
+				});
 
 				await reply //
-					.setCookie(config.AUTH_COOKIE_NAME, token, cookie)
+					.setCookie(config.COOKIE_NAME, token, cookie)
 					.code(200)
 					.send();
 			},
 		);
 
-		server.post(
+		server.put(
 			'/signup', //
 			{
 				schema: {

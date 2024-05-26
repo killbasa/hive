@@ -6,6 +6,11 @@ export async function mv(oldPath: string, newPath: string): Promise<void> {
 	const source = resolve(oldPath);
 	const target = resolve(newPath);
 
+	if (!existsSync(target)) {
+		const parent = resolve(target, '..');
+		await mkdir(parent, { recursive: true });
+	}
+
 	await rename(source, target);
 }
 
@@ -37,7 +42,11 @@ export async function du(rootPath: string): Promise<bigint> {
 
 		const dir = await readdir(path);
 
-		await Promise.all(dir.map((directoryItem) => checkDir(join(path, directoryItem))));
+		await Promise.all(
+			dir.map(async (directoryItem) => {
+				await checkDir(join(path, directoryItem));
+			}),
+		);
 	}
 
 	await checkDir(rootPath);

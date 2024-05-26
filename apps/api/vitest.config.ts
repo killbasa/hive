@@ -3,13 +3,14 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
 	test: {
 		globals: true,
-		include: ['src/**/*.spec.ts'],
 		env: {
+			NODE_ENV: 'development',
 			TESTING: 'true',
 		},
 		coverage: {
-			provider: 'istanbul',
-			reporter: ['text'],
+			provider: 'v8',
+			reporter: ['text-summary'],
 		},
+		pool: 'forks',
 	},
 });

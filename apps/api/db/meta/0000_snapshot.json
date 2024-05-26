@@ -1,7 +1,7 @@
 {
-	"version": "5",
+	"version": "6",
 	"dialect": "sqlite",
-	"id": "fc21ca8a-4177-4407-bb8a-f273bd104606",
+	"id": "8429dc3c-1df3-40ab-8d55-97b197ad1f73",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"tables": {
 		"channels": {
@@ -216,21 +216,26 @@
 					"notNull": true,
 					"autoincrement": false
 				},
-				"cron_subscription": {
-					"name": "cron_subscription",
+				"cron_channel_metadata": {
+					"name": "cron_channel_metadata",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false,
-					"default": "'0 0 * * *'"
+					"notNull": false,
+					"autoincrement": false
 				},
-				"cron_download": {
-					"name": "cron_download",
+				"cron_check_subscriptions": {
+					"name": "cron_check_subscriptions",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false,
-					"default": "'0 1 * * *'"
+					"notNull": false,
+					"autoincrement": false
+				},
+				"cron_download_pending": {
+					"name": "cron_download_pending",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
 				},
 				"download_limit": {
 					"name": "download_limit",
@@ -360,6 +365,13 @@
 					"primaryKey": false,
 					"notNull": true,
 					"autoincrement": false
+				},
+				"api_key": {
+					"name": "api_key",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
 				}
 			},
 			"indexes": {
@@ -453,7 +465,7 @@
 				},
 				"upload_date": {
 					"name": "upload_date",
-					"type": "text",
+					"type": "integer",
 					"primaryKey": false,
 					"notNull": false,
 					"autoincrement": false

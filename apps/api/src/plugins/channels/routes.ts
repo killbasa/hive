@@ -1,13 +1,16 @@
-import { Type } from '@fastify/type-provider-typebox';
-import { count } from 'drizzle-orm';
-import { db } from '../../db/client.js';
-import { channels } from '../../db/schema.js';
-import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
-import type { HiveRoutes } from '../../lib/types/hive.js';
-import { doesChannelExist, parseTags } from '../../lib/youtube/channels.js';
 import { ChannelPostBody } from './body.js';
 import { ChannelQuerySchema } from './query.js';
-import { ChanneListSchema, ChannelSchema } from './schema.js';
+import { ChanneListSchema, ChannelSchema, ChannelStatsSchema } from './schema.js';
+import { db } from '../../db/client.js';
+import { channels, videos } from '../../db/schema.js';
+import { CHANNEL_PATH, isChannelDownloaded } from '../../lib/fs/channels.js';
+import { du } from '../../lib/fs/utils.js';
+import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
+import { doesChannelExist, parseTags } from '../../lib/youtube/channels.js';
+import { and, count, eq } from 'drizzle-orm';
+import { Type } from '@fastify/type-provider-typebox';
+import type { SQLWrapper } from 'drizzle-orm';
+import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const channelRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
@@ -44,7 +47,7 @@ export const channelRoutes: HiveRoutes = {
 			},
 		);
 
-		server.post(
+		server.put(
 			'', //
 			{
 				schema: {
@@ -85,10 +88,14 @@ export const channelRoutes: HiveRoutes = {
 					});
 				}
 
-				await server.tasks.scanner.add(`channel/${body.id}/download`, {
-					type: 'channel',
-					channelId: body.id,
-				});
+				await server.tasks.scanner.add(
+					`channel/${body.id}/download`,
+					{
+						type: 'channel',
+						channelId: body.id,
+					},
+					{ jobId: `channel/${body.id}/download` },
+				);
 
 				await reply.status(201).send();
 			},
@@ -123,6 +130,91 @@ export const channelRoutes: HiveRoutes = {
 					...result,
 					tags: parseTags(result.tags),
 				});
+			},
+		);
+
+		server.post(
+			'/:channelId/scan', //
+			{
+				schema: {
+					description: 'Scan a channel for new metadata and assets',
+					tags: ['Channels'],
+					params: Type.Object({
+						channelId: Type.String(),
+					}),
+					response: {
+						201: EmptyResponse('Scan started successfully'),
+					},
+				},
+			},
+			async (request, reply): Promise<void> => {
+				const { channelId } = request.params;
+
+				await server.tasks.scanner.add(
+					`channel/${channelId}/scan`,
+					{
+						type: 'channel',
+						channelId,
+					},
+					{ jobId: `channel/${channelId}/scan` },
+				);
+
+				await reply.status(201).send();
+			},
+		);
+
+		server.get<{ Params: { channelId: string } }>(
+			'/:channelId/stats', //
+			{
+				schema: {
+					description: 'Get stats about a channel',
+					tags: ['Channels'],
+					params: Type.Object({
+						channelId: Type.String(),
+					}),
+					response: {
+						200: ChannelStatsSchema,
+						404: EmptyResponse('Channel not found'),
+					},
+				},
+			},
+			async (request, reply): Promise<void> => {
+				const { channelId } = request.params;
+
+				const result = isChannelDownloaded(channelId);
+				if (!result) {
+					return await reply.status(404).send();
+				}
+
+				const where: (SQLWrapper | undefined)[] = [
+					eq(videos.channelId, channelId), //
+					eq(videos.downloadStatus, 'done'),
+				];
+
+				const [videoCount, streamCount, shortCount, dirSize] = await Promise.all([
+					db
+						.select({ total: count() })
+						.from(videos)
+						.where(and(...where, eq(videos.type, 'video'))),
+					db
+						.select({ total: count() })
+						.from(videos)
+						.where(and(...where, eq(videos.type, 'stream'))),
+					db
+						.select({ total: count() })
+						.from(videos)
+						.where(and(...where, eq(videos.type, 'short'))),
+					du(CHANNEL_PATH(channelId)),
+				]);
+
+				const stats: typeof ChannelStatsSchema.static = {
+					videos: videoCount[0].total,
+					streams: streamCount[0].total,
+					shorts: shortCount[0].total,
+					directorySize: dirSize.toString(),
+				};
+
+				await reply.status(200).send(stats);
 			},
 		);
 

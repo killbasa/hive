@@ -1,0 +1,13 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true
+	},
+	"include": [
+		"scripts",
+		".lintstagedrc.js",
+		".prettierrc.cjs",
+		"eslint.config.js"
+	]
+}

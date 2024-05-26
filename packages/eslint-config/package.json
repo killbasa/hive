@@ -1,0 +1,68 @@
+{
+	"name": "@hive/eslint-config",
+	"version": "0.0.1",
+	"author": "killbasa <contact@shaneb.xyz>",
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"type": "module",
+	"main": "dist/cjs/index.cjs",
+	"module": "dist/esm/index.js",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.cts",
+				"default": "./dist/cjs/index.cjs"
+			}
+		},
+		"./svelte": {
+			"import": {
+				"types": "./dist/esm/svelte.d.ts",
+				"default": "./dist/esm/svelte.js"
+			},
+			"require": {
+				"types": "./dist/cjs/svelte.d.cts",
+				"default": "./dist/cjs/svelte.cjs"
+			}
+		}
+	},
+	"scripts": {
+		"build": "tsup",
+		"format": "prettier --write ."
+	},
+	"dependencies": {
+		"@eslint/js": "^9.3.0",
+		"@typescript-eslint/eslint-plugin": "^7.1.0",
+		"@typescript-eslint/parser": "^7.1.0",
+		"@typescript-eslint/utils": "^7.10.0",
+		"eslint": "^9.3.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
+		"eslint-plugin-import": "^2.29.1",
+		"eslint-plugin-prettier": "^5.1.3",
+		"eslint-plugin-svelte": "^2.39.0",
+		"globals": "^15.3.0",
+		"prettier": "^3.2.5",
+		"svelte-eslint-parser": "^0.36.0",
+		"typescript-eslint": "^7.10.0"
+	},
+	"devDependencies": {
+		"tsup": "^8.0.2",
+		"typescript": "^5.3.3"
+	},
+	"lint-staged": {
+		"*.{js,ts}": [
+			"eslint --fix"
+		],
+		"*.{js,ts,json}": [
+			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
+		]
+	},
+	"packageManager": "pnpm@9.1.2",
+	"volta": {
+		"node": "22.2.0",
+		"pnpm": "9.1.2"
+	}
+}

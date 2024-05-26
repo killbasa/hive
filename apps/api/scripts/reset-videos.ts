@@ -1,8 +1,8 @@
+import { db } from './load-db';
+import * as schema from '../src/db/schema';
 import { existsSync, readdirSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import * as schema from '../src/db/schema';
-import { db } from './load-db';
 
 await db.delete(schema.comments);
 await db.delete(schema.streamComments);

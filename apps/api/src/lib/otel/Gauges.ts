@@ -1,7 +1,9 @@
-import type { Meter } from '@opentelemetry/api';
-import { count } from 'drizzle-orm';
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+
 import { db } from '../../db/client.js';
 import { channels, comments, playlists, videos } from '../../db/schema.js';
+import { count } from 'drizzle-orm';
+import type { Meter } from '@opentelemetry/api';
 
 export class HiveGauges {
 	public constructor(meter: Meter) {

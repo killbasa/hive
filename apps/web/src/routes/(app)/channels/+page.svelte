@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
 	import Card from '$components/Card.svelte';
 	import TextInput from '$components/TextInput.svelte';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
@@ -7,6 +6,7 @@
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
 	import type { PageData } from './$types';
+	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -14,17 +14,26 @@
 	let modal: HTMLDialogElement;
 
 	async function addChannel() {
-		await client.POST('/channels', {
+		const { response, error } = await client.PUT('/channels', {
 			body: {
-				id: channelId
-			}
+				id: channelId,
+			},
 		});
 
-		channelId = '';
-		toast.success('Channel added');
+		if (response.ok) {
+			channelId = '';
+			toast.success('Channel added');
+		} else if (response.status === 409) {
+			toast.error('Channel already exists');
+		} else if (response.status === 404) {
+			toast.error('Channel not found');
+		} else {
+			toast.error(error?.message ?? 'An error occurred');
+		}
 	}
 
 	function toggleModal() {
+		channelId = '';
 		modal.showModal();
 	}
 

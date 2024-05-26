@@ -1,9 +1,9 @@
-import type { Meter } from '@opentelemetry/api';
+import { HiveGauges } from './Gauges.js';
+import { config } from '../config.js';
 import { PrometheusExporter, PrometheusSerializer } from '@opentelemetry/exporter-prometheus';
 import { metrics, resources } from '@opentelemetry/sdk-node';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
-import { config } from '../config.js';
-import { HiveGauges } from './Gauges.js';
+import type { Meter } from '@opentelemetry/api';
 
 export class HiveMetrics {
 	public readonly gauges: HiveGauges;

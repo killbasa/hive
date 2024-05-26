@@ -12,9 +12,11 @@
 
 <Card>
 	<Description text={data.channel.description} />
-	<div class="flex gap-1 flex-wrap">
-		{#each data.channel.tags as tag}
-			<span class="badge badge-neutral whitespace-nowrap pb-0.5">{tag}</span>
-		{/each}
-	</div>
+	{#if data.channel.tags.length > 0}
+		<div class="flex gap-1 flex-wrap">
+			{#each data.channel.tags as tag}
+				<span class="badge badge-neutral whitespace-nowrap pb-0.5">{tag}</span>
+			{/each}
+		</div>
+	{/if}
 </Card>

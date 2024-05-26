@@ -1,10 +1,15 @@
-import { server } from '../../server.js';
-import { moveChannel } from '../fs/channels.js';
 import { YtdlpChannelArgs } from './ChannelArgs.js';
 import { ytdlp } from './cli.js';
 import { YTDLP_CHANNEL_PATH } from './constants.js';
+import { moveChannel } from '../fs/channels.js';
+import { server } from '../../server.js';
 
-export async function downloadChannel(id: string, options?: { controller?: AbortController }): Promise<void> {
+export async function downloadChannel(
+	id: string,
+	options?: {
+		controller?: AbortController;
+	},
+): Promise<void> {
 	const args = new YtdlpChannelArgs() //
 		.saveJson()
 		.saveThumbnails()
@@ -22,6 +27,10 @@ export async function downloadChannel(id: string, options?: { controller?: Abort
 	);
 
 	if (!options?.controller?.signal.aborted) {
-		await moveChannel(id);
+		const success = await moveChannel(id);
+
+		if (!success) {
+			server.log.warn(`failed to download channel: ${id}`);
+		}
 	}
 }

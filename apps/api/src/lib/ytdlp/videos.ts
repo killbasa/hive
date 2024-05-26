@@ -1,9 +1,10 @@
-import { StatusEvent } from '@hive/common';
-import { server } from '../../server.js';
-import { readVideoMetadata } from '../fs/videos.js';
 import { YtdlpVideoArgs } from './VideoArgs.js';
 import { ytdlp, ytdlpExec } from './cli.js';
 import { YTDLP_VIDEO_PATH } from './constants.js';
+import { readVideoMetadata } from '../fs/videos.js';
+import { server } from '../../server.js';
+import { StatusEvent, throttle } from '@hive/common';
+import type { YtdlpProgress } from './cli.js';
 
 export async function downloadVideoAssets(
 	videoId: string, //
@@ -47,6 +48,15 @@ export async function downloadVideo(
 
 	const metadata = await readVideoMetadata(channelId, videoId);
 
+	const emitUpdate = throttle((data: YtdlpProgress) => {
+		server.notifications.emit('status', {
+			type: StatusEvent.DownloadUpdate,
+			channelId,
+			title: metadata.title,
+			data,
+		});
+	}, 500);
+
 	return await ytdlp(
 		`https://youtube.com/watch?v=${videoId}`,
 		args,
@@ -60,12 +70,7 @@ export async function downloadVideo(
 				});
 			},
 			onUpdate: (data) => {
-				server.notifications.emit('status', {
-					type: StatusEvent.DownloadUpdate,
-					channelId,
-					title: metadata.title,
-					data,
-				});
+				emitUpdate(data);
 			},
 			onError: (data) => {
 				server.log.error(data.toString());

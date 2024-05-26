@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { updatePage } from '$lib/navigation';
-	import { debounce } from '$lib/utils';
+	import { debounce } from '@hive/common';
+	import { page } from '$app/stores';
 
 	export let placeholder: string;
 	export let delay = 250;
@@ -18,7 +18,7 @@
 					params.set('search', filterValue);
 				}
 			},
-			{ noScroll: true }
+			{ noScroll: true },
 		);
 
 		input.focus();

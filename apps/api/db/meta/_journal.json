@@ -1,12 +1,12 @@
 {
-	"version": "5",
+	"version": "6",
 	"dialect": "sqlite",
 	"entries": [
 		{
 			"idx": 0,
-			"version": "5",
-			"when": 1713701572620,
-			"tag": "0000_even_imperial_guard",
+			"version": "6",
+			"when": 1716231622800,
+			"tag": "0000_past_mantis",
 			"breakpoints": true
 		}
 	]

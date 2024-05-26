@@ -2,54 +2,57 @@
 	"folders": [
 		{
 			"name": "root",
-			"path": "../"
+			"path": "../",
 		},
 		{
 			"name": "api",
-			"path": "../apps/api"
+			"path": "../apps/api",
 		},
 		{
 			"name": "web",
-			"path": "../apps/web"
+			"path": "../apps/web",
 		},
 		{
 			"name": "packages",
-			"path": "../packages"
-		}
+			"path": "../packages",
+		},
+		{
+			"name": "cli",
+			"path": "../cli",
+		},
 	],
 	"settings": {
 		"files.exclude": {
 			"apps": true,
 			"packages": true,
+			"cli": true,
 			"**/coverage": true,
-			"**/node_modules": true
+			"**/node_modules": true,
 		},
 		"typescript.tsdk": "./node_modules/typescript/lib",
 		"typescript.referencesCodeLens.enabled": true,
 		"eslint.format.enable": true,
-		"eslint.validate": ["svelte"],
+		"eslint.validate": ["javascript", "typescript", "svelte"],
 		"editor.formatOnSave": true,
-		"editor.codeActionsOnSave": {
-			"source.organizeImports.biome": "explicit"
-		},
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
 		"[javascript]": {
-			"editor.defaultFormatter": "biomejs.biome"
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 		},
 		"[typescript]": {
-			"editor.defaultFormatter": "biomejs.biome"
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 		},
 		"[svelte]": {
-			"editor.defaultFormatter": "svelte.svelte-vscode"
+			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 		},
-		"[json]": {
-			"editor.defaultFormatter": "biomejs.biome"
-		},
-		"[jsonc]": {
-			"editor.defaultFormatter": "biomejs.biome"
+		"[go]": {
+			"editor.defaultFormatter": "golang.go",
 		},
 		"files.associations": {
-			"*.css": "css"
-		}
-	}
+			"*.css": "css",
+		},
+		"gopls": {
+			"ui.semanticTokens": true,
+		},
+		"go.goroot": "/usr/local/go",
+	},
 }

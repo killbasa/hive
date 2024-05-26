@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import { Type } from '@fastify/type-provider-typebox';
 
 export const EmptyResponse = (description: string) =>

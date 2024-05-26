@@ -1,3 +1,4 @@
+import { isDev } from '../constants.js';
 import type { YtdlpArgs } from './cli.js';
 
 export class YtdlpVideoArgs implements YtdlpArgs {
@@ -5,6 +6,11 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 
 	public constructor() {
 		this.data.push('--no-warnings');
+
+		if (isDev) {
+			// ffprobe ref: https://github.com/yt-dlp/yt-dlp/issues/9228#issuecomment-1949621546
+			this.data.push('--ffmpeg-location', '../bin/ffmpeg');
+		}
 	}
 
 	public format(data: string): this {

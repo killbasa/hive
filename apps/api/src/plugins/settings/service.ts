@@ -1,7 +1,10 @@
-import { eq } from 'drizzle-orm';
-import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import { db } from '../../db/client.js';
 import { settings } from '../../db/schema.js';
+import { eq } from 'drizzle-orm';
+import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 
 export class HiveSettings {
 	readonly #id = 1;

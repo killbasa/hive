@@ -9,6 +9,5 @@ export const load: PageLoad = async ({ fetch, params }) => {
 		},
 	});
 
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	return response.data!;
 };

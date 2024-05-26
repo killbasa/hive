@@ -4,5 +4,16 @@
 		"allowJs": true,
 		"checkJs": true
 	},
-	"include": ["src", "scripts", "drizzle.config.ts", "tsup.config.ts", "vitest.config.ts"]
+	"include": [
+		"src",
+		"scripts",
+		"tests",
+		".lintstagedrc.js",
+		".prettierrc.cjs",
+		"drizzle.config.ts",
+		"eslint.config.js",
+		"tsup.config.ts",
+		"vitest.config.ts",
+		"vitest.workspace.ts"
+	]
 }

@@ -1,11 +1,11 @@
+import { HiveType } from '../../lib/types/typebox.js';
 import { Type } from '@fastify/type-provider-typebox';
 import type { Static } from '@fastify/type-provider-typebox';
-import { HiveType } from '../../lib/types/typebox.js';
 
-export const VideoTypeSchema = HiveType.LiteralUnion(['video', 'short', 'stream']);
+export const VideoTypeSchema = HiveType.LiteralUnion(['unknown', 'video', 'short', 'stream']);
 export type VideoType = Static<typeof VideoTypeSchema>;
 
-export const VideoStatusSchema = HiveType.LiteralUnion(['none', 'new', 'live', 'upcoming', 'past']);
+export const VideoStatusSchema = HiveType.LiteralUnion(['unknown', 'none', 'live', 'upcoming', 'past']);
 export type VideoStatus = Static<typeof VideoStatusSchema>;
 
 export const VideoDownloadStatusSchema = HiveType.LiteralUnion(['ignored', 'pending', 'done']);
@@ -21,7 +21,7 @@ export const VideoSchema = Type.Object({
 	watchProgress: Type.Number(),
 	watchCompleted: Type.Boolean(),
 	fileSize: HiveType.Nullable(Type.Number()),
-	uploadDate: HiveType.Nullable(Type.String()),
+	uploadDate: HiveType.Nullable(Type.Number()),
 	type: VideoTypeSchema,
 	status: VideoStatusSchema,
 	downloadStatus: VideoDownloadStatusSchema,

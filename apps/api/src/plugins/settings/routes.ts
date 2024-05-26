@@ -1,9 +1,10 @@
-import { EmptyResponse } from '../../lib/responses.js';
-import type { HiveRoutes } from '../../lib/types/hive.js';
-import { setDownloadCronTask, setScanCronTask } from '../tasks/handlers/repeat.js';
 import { SettingsPatchBody } from './body.js';
 import { parseCron } from './cron.js';
 import { SettingsSchema } from './schema.js';
+import { RepeatJobIds, setRepeatJob } from '../../tasks/handlers/repeat.js';
+import { EmptyResponse } from '../../lib/responses.js';
+import { server as serverCore } from '../../server.js';
+import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const settingsRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
@@ -40,22 +41,7 @@ export const settingsRoutes: HiveRoutes = {
 			async (request, reply): Promise<void> => {
 				const { body } = request;
 
-				if (body.cronSubscription !== undefined) {
-					const result = parseCron(body.cronSubscription);
-
-					if (result !== null) {
-						await setScanCronTask(body.cronSubscription);
-					}
-				}
-
-				if (body.cronDownload !== undefined) {
-					const result = parseCron(body.cronDownload);
-
-					if (result !== null) {
-						await setDownloadCronTask(body.cronSubscription);
-					}
-				}
-
+				await applyCronChanges(body);
 				await server.settings.set(body);
 
 				await reply.code(204).send();
@@ -65,3 +51,47 @@ export const settingsRoutes: HiveRoutes = {
 		done();
 	},
 };
+
+async function applyCronChanges(data: typeof SettingsPatchBody.static): Promise<void> {
+	const {
+		cronCheckSubscriptions, //
+		cronDownloadPending,
+		cronChannelMetadata,
+	} = await serverCore.settings.get();
+
+	if (data.cronCheckSubscriptions !== cronCheckSubscriptions) {
+		if (data.cronCheckSubscriptions === null) {
+			await setRepeatJob(RepeatJobIds.ScanChannels, null);
+		} else {
+			const result = parseCron(data.cronCheckSubscriptions);
+
+			if (result !== null) {
+				await setRepeatJob(RepeatJobIds.ScanChannels, data.cronCheckSubscriptions);
+			}
+		}
+	}
+
+	if (data.cronDownloadPending !== cronDownloadPending) {
+		if (data.cronDownloadPending === null) {
+			await setRepeatJob(RepeatJobIds.DownloadPending, null);
+		} else {
+			const result = parseCron(data.cronDownloadPending);
+
+			if (result !== null) {
+				await setRepeatJob(RepeatJobIds.DownloadPending, data.cronDownloadPending);
+			}
+		}
+	}
+
+	if (data.cronChannelMetadata !== cronChannelMetadata) {
+		if (data.cronChannelMetadata === null) {
+			await setRepeatJob(RepeatJobIds.ChannelMetadata, null);
+		} else {
+			const result = parseCron(data.cronChannelMetadata);
+
+			if (result !== null) {
+				await setRepeatJob(RepeatJobIds.ChannelMetadata, data.cronChannelMetadata);
+			}
+		}
+	}
+}

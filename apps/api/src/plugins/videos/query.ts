@@ -1,5 +1,5 @@
-import { Type } from '@fastify/type-provider-typebox';
 import { VideoDownloadStatusSchema, VideoStatusSchema, VideoTypeSchema } from './schema.js';
+import { Type } from '@fastify/type-provider-typebox';
 
 export const VideoListGetQuery = Type.Object({
 	page: Type.Number({ minimum: 1, default: 1 }),

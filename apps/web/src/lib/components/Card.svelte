@@ -2,7 +2,7 @@
 	export let title: string | undefined = undefined;
 </script>
 
-<div class="card border">
+<div class="card border rounded-md">
 	<slot name="figure" />
 	<div class="card-body">
 		{#if title}

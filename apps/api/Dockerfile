@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.1.0-alpine3.19 as base
+FROM node:22.2.0-alpine3.19 as base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -43,7 +43,9 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
 COPY apps/api ./apps/api/
 COPY packages ./packages/
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store corepack enable && \
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+	corepack enable pnpm && \
+	corepack use pnpm@9.1.2 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/api run build:prod && \
@@ -61,7 +63,7 @@ ENV PATH=/hive/bin:$PATH
 
 RUN adduser --system --uid 1001 hive && \
 	addgroup --system --gid 1001 hive && \
-	mkdir -p /var/lib/hive && chown -R hive:hive /var/lib/hive && \
+	mkdir -p /var/lib/hive/media && mkdir -p /var/lib/hive/downloads && chown -R hive:hive /var/lib/hive && \
 	mkdir -p /hive/bin && chown -R hive:hive /hive/bin
 
 # setup nginx - https://hg.nginx.org/nginx/

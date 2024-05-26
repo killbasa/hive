@@ -45,9 +45,9 @@ export const videos = sqliteTable(
 		watchProgress: integer('watch_progress').notNull().default(0),
 		watchCompleted: integer('watch_completed', { mode: 'boolean' }).notNull().default(false),
 		fileSize: integer('file_size'),
-		uploadDate: text('upload_date'),
-		type: text('type', { enum: ['video', 'short', 'stream'] }).notNull(),
-		status: text('status', { enum: ['none', 'new', 'live', 'upcoming', 'past'] }).notNull(),
+		uploadDate: integer('upload_date'),
+		type: text('type', { enum: ['unknown', 'video', 'short', 'stream'] }).notNull(),
+		status: text('status', { enum: ['unknown', 'none', 'live', 'upcoming', 'past'] }).notNull(),
 		downloadStatus: text('download_status', { enum: ['ignored', 'pending', 'done'] }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
 	},
@@ -169,8 +169,9 @@ export const settings = sqliteTable(
 	'settings',
 	{
 		id: integer('id').primaryKey(),
-		cronSubscription: text('cron_subscription').notNull().default('0 0 * * *'),
-		cronDownload: text('cron_download').notNull().default('0 1 * * *'),
+		cronChannelMetadata: text('cron_channel_metadata'),
+		cronCheckSubscriptions: text('cron_check_subscriptions'),
+		cronDownloadPending: text('cron_download_pending'),
 		downloadLimit: integer('download_limit'),
 	},
 	(table) => {
@@ -190,6 +191,7 @@ export const users = sqliteTable(
 		id: integer('id').primaryKey(),
 		name: text('name').unique().notNull(),
 		password: text('password').notNull(),
+		apiKey: text('api_key'),
 	},
 	(table) => {
 		return {

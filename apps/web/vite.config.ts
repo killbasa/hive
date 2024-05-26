@@ -1,5 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { type CommonServerOptions, defineConfig } from 'vite';
+import { defineConfig } from 'vite';
+import type { CommonServerOptions } from 'vite';
 
 const serverOptions: CommonServerOptions = {
 	port: 3000,
@@ -9,7 +10,7 @@ const serverOptions: CommonServerOptions = {
 export default defineConfig({
 	plugins: [sveltekit()],
 	optimizeDeps: {
-		entries: ['zod', 'openapi-fetch'],
+		entries: ['@tabler/icons-svelte', 'cron-parser', 'openapi-fetch', 'zod'],
 	},
 	server: serverOptions,
 	preview: serverOptions,

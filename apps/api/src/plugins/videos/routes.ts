@@ -1,12 +1,13 @@
-import { and, count, eq, gt, inArray, like } from 'drizzle-orm';
-import type { SQLWrapper } from 'drizzle-orm';
-import { db } from '../../db/client.js';
-import { videos } from '../../db/schema.js';
-import { EmptyResponse } from '../../lib/responses.js';
-import type { HiveRoutes } from '../../lib/types/hive.js';
 import { VideoIgnoreBody, VideoPatchBody } from './body.js';
 import { VideoGetQuery, VideoListGetQuery, VideoPatchQuery } from './query.js';
 import { VideoListSchema, VideoSchema, VideoWithCommentsSchema } from './schema.js';
+import { scanAllChannels } from './utils.js';
+import { EmptyResponse } from '../../lib/responses.js';
+import { videos } from '../../db/schema.js';
+import { db } from '../../db/client.js';
+import { and, count, eq, inArray, like, ne } from 'drizzle-orm';
+import type { HiveRoutes } from '../../lib/types/hive.js';
+import type { SQLWrapper } from 'drizzle-orm';
 
 export const videoRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
@@ -24,7 +25,9 @@ export const videoRoutes: HiveRoutes = {
 			},
 			async (request, reply): Promise<void> => {
 				const { query } = request;
-				const whereArgs: (SQLWrapper | undefined)[] = [];
+				const whereArgs: (SQLWrapper | undefined)[] = [
+					ne(videos.status, 'unknown'), //
+				];
 
 				if (query.type) {
 					whereArgs.push(inArray(videos.type, query.type));
@@ -47,7 +50,7 @@ export const videoRoutes: HiveRoutes = {
 				}
 
 				if (query.inProgress) {
-					whereArgs.push(gt(videos.watchProgress, 0));
+					whereArgs.push(eq(videos.watchCompleted, false));
 				}
 
 				const where = and(...whereArgs);
@@ -97,6 +100,24 @@ export const videoRoutes: HiveRoutes = {
 			},
 		);
 
+		server.post(
+			'/scan', //
+			{
+				schema: {
+					description: 'Scan all channels for new videos',
+					tags: ['Videos'],
+					response: {
+						201: EmptyResponse('Scan started successfully'),
+					},
+				},
+			},
+			async (_, reply): Promise<void> => {
+				await scanAllChannels();
+
+				await reply.status(201).send();
+			},
+		);
+
 		server.get(
 			'/:videoId',
 			{
@@ -114,7 +135,9 @@ export const videoRoutes: HiveRoutes = {
 				const { videoId } = request.params;
 
 				const result = await db.query.videos.findFirst({
-					where: ({ id }, { eq }) => eq(id, videoId),
+					where: ({ id, status }, { and, ne, eq }) => {
+						return and(eq(id, videoId), ne(status, 'unknown'));
+					},
 					with: { comments: true },
 					columns: { updatedAt: false },
 				});
@@ -146,9 +169,10 @@ export const videoRoutes: HiveRoutes = {
 					.update(videos)
 					.set({
 						watchProgress: request.body.watchProgress,
+						watchCompleted: request.body.watchCompleted,
 						downloadStatus: request.body.downloadStatus,
 					})
-					.where(eq(videos.id, videoId))
+					.where(and(eq(videos.id, videoId)))
 					.returning();
 
 				await reply.status(200).send(result.at(0));
