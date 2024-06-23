@@ -4,631 +4,1277 @@
  */
 
 export interface paths {
-	'/heartbeat': {
-		/** @description Check if the server is running */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							/** @enum {string} */
-							message: 'OK';
-						};
-					};
-				};
-			};
-		};
-	};
-	'/metrics': {
-		/** @description Get Prometheus metrics for the server */
-		get: {
-			responses: {
-				/** @description Prometheus metrics */
-				200: {
-					content: {
-						'application/json': string;
-					};
-				};
-				/** @description Metrics are not enabled for the instance */
-				501: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/version': {
-		/** @description Get the version numbers for Hive */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							api: string;
-							ytdlp: string;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/spec.json': {
-		/** @description Get the OpenAPI JSON spec */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/spec.yaml': {
-		/** @description Get the OpenAPI YAML spec */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/auth/credentials/login': {
-		/** @description Login to the application */
-		post: {
-			requestBody: {
-				content: {
-					'application/json': {
-						username: string;
-						password: string;
-						/** @default false */
-						remember: boolean;
-					};
-				};
-			};
-			responses: {
-				/** @description Logged in successfully */
-				200: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-				/** @description Invalid username or password */
-				401: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/auth/credentials/signup': {
-		/** @description Signup for the application */
-		put: {
-			requestBody: {
-				content: {
-					'application/json': {
-						username: string;
-						password: string;
-					};
-				};
-			};
-			responses: {
-				/** @description Account created */
-				201: {
-					content: never;
-				};
-				/** @description User registration is disabled */
-				403: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-				/** @description User already exists */
-				409: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/auth/apikey/create': {
-		/** @description Create an API key */
-		post: {
-			responses: {};
-		};
-	};
-	'/auth/apikey/delete': {
-		/** @description Delete an API key */
-		post: {
-			responses: {};
-		};
-	};
-	'/auth/apikey/list': {
-		/** @description Get a list of API keys */
-		get: {
-			responses: {};
-		};
-	};
-	'/auth/verify': {
-		/** @description Verify the user is authenticated */
-		get: {
-			responses: {
-				/** @description User is authenticated */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/auth/logout': {
-		/** @description Logout the user */
-		post: {
-			responses: {
-				/** @description Logged out successfully */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/users': {
-		/** @description Get the user for the current request */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							name: string;
-						};
-					};
-				};
-				/** @description User not found */
-				404: {
-					content: never;
-				};
-			};
-		};
-		/** @description Update a user */
-		patch: {
-			requestBody: {
-				content: {
-					'application/json': {
-						newPassword: string;
-						oldPassword: string;
-					};
-				};
-			};
-			responses: {
-				/** @description User updated successfully */
-				204: {
-					content: never;
-				};
-				/** @description Invalid username or password */
-				401: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/settings': {
-		/** @description Get the settings */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							cronCheckSubscriptions: null | string;
-							cronDownloadPending: null | string;
-							cronChannelMetadata: null | string;
-							downloadLimit: null | number;
-						};
-					};
-				};
-			};
-		};
-		/** @description Update the settings */
-		patch: {
-			requestBody: {
-				content: {
-					'application/json': {
-						cronCheckSubscriptions: null | string;
-						cronDownloadPending: null | string;
-						cronChannelMetadata: null | string;
-						downloadLimit?: number;
-					};
-				};
-			};
-			responses: {
-				/** @description Settings updated successfully */
-				204: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/channels': {
-		/** @description Get a list of channels */
-		get: {
-			parameters: {
-				query: {
-					page: number;
-				};
-			};
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							channels: {
-								id: string;
-								description: string;
-								tags: string[];
-								customUrl: string;
-								name: string;
-							}[];
-							total: number;
-						};
-					};
-				};
-			};
-		};
-		/** @description Add a channel */
-		put: {
-			requestBody: {
-				content: {
-					'application/json': {
-						id: string;
-					};
-				};
-			};
-			responses: {
-				/** @description Channel added successfully */
-				201: {
-					content: never;
-				};
-				/** @description Channel does not exist */
-				404: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-				/** @description Channel already downloaded */
-				409: {
-					content: {
-						'application/json': {
-							message: string;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/channels/{channelId}': {
-		/** @description Get a channel */
-		get: {
-			parameters: {
-				path: {
-					channelId: string;
-				};
-			};
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							id: string;
-							description: string;
-							tags: string[];
-							customUrl: string;
-							name: string;
-						};
-					};
-				};
-				/** @description Channel not found */
-				404: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/channels/{channelId}/scan': {
-		/** @description Scan a channel for new metadata and assets */
-		post: {
-			parameters: {
-				path: {
-					channelId: string;
-				};
-			};
-			responses: {
-				/** @description Scan started successfully */
-				201: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/channels/{channelId}/stats': {
-		/** @description Get stats about a channel */
-		get: {
-			parameters: {
-				path: {
-					channelId: string;
-				};
-			};
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							videos: number;
-							streams: number;
-							shorts: number;
-							directorySize: string;
-						};
-					};
-				};
-				/** @description Channel not found */
-				404: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/videos': {
-		/** @description Get a list of videos */
-		get: {
-			parameters: {
-				query: {
-					page: number;
-					type?: ('unknown' | 'video' | 'short' | 'stream')[];
-					status?: ('unknown' | 'none' | 'live' | 'upcoming' | 'past')[];
-					downloadStatus?: ('ignored' | 'pending' | 'done')[];
-					channelId?: string;
-					search?: string;
-					inProgress?: boolean;
-				};
-			};
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							videos: {
-								id: string;
-								channelId: string;
-								playlistId: null | string;
-								title: string;
-								description: string;
-								duration: null | number;
-								watchProgress: number;
-								watchCompleted: boolean;
-								fileSize: null | number;
-								uploadDate: null | number;
-								type: 'unknown' | 'video' | 'short' | 'stream';
-								status: 'unknown' | 'none' | 'live' | 'upcoming' | 'past';
-								downloadStatus: 'ignored' | 'pending' | 'done';
-							}[];
-							total: number;
-						};
-					};
-				};
-			};
-		};
-	};
-	'/videos/ignore': {
-		/** @description Ignore videos */
-		post: {
-			requestBody: {
-				content: {
-					'application/json': {
-						videoIds: string[];
-					};
-				};
-			};
-			responses: {
-				/** @description Videos IDs ignored */
-				204: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/videos/scan': {
-		/** @description Scan all channels for new videos */
-		post: {
-			responses: {
-				/** @description Scan started successfully */
-				201: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/videos/{videoId}': {
-		/** @description Get a video */
-		get: {
-			parameters: {
-				path: {
-					videoId: string;
-				};
-			};
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							id: string;
-							channelId: string;
-							playlistId: null | string;
-							title: string;
-							description: string;
-							duration: null | number;
-							watchProgress: number;
-							watchCompleted: boolean;
-							fileSize: null | number;
-							uploadDate: null | number;
-							type: 'unknown' | 'video' | 'short' | 'stream';
-							status: 'unknown' | 'none' | 'live' | 'upcoming' | 'past';
-							downloadStatus: 'ignored' | 'pending' | 'done';
-							comments: {
-								id: number;
-								videoId: string;
-								text: string;
-								author: string;
-								authorId: string;
-								timeText: string;
-								isUploader: boolean;
-								isFavorited: boolean;
-							}[];
-						};
-					};
-				};
-				/** @description Video not found */
-				404: {
-					content: never;
-				};
-			};
-		};
-		/** @description Update a video */
-		patch: {
-			parameters: {
-				path: {
-					videoId: string;
-				};
-			};
-			requestBody?: {
-				content: {
-					'application/json': {
-						watchProgress?: number;
-						watchCompleted?: boolean;
-						downloadStatus?: 'ignored' | 'pending';
-					};
-				};
-			};
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: {
-						'application/json': {
-							id: string;
-							channelId: string;
-							playlistId: null | string;
-							title: string;
-							description: string;
-							duration: null | number;
-							watchProgress: number;
-							watchCompleted: boolean;
-							fileSize: null | number;
-							uploadDate: null | number;
-							type: 'unknown' | 'video' | 'short' | 'stream';
-							status: 'unknown' | 'none' | 'live' | 'upcoming' | 'past';
-							downloadStatus: 'ignored' | 'pending' | 'done';
-						};
-					};
-				};
-			};
-		};
-	};
-	'/downloads/start': {
-		/** @description Start downloading the currently pending videos */
-		post: {
-			requestBody: {
-				content: {
-					'application/json': {
-						videoIds: string[];
-					};
-				};
-			};
-			responses: {
-				/** @description Download started successfully */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/downloads/stop': {
-		/** @description Stop all downloads */
-		post: {
-			responses: {
-				/** @description Downloads stopped successfully */
-				201: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/downloads/status': {
-		/** @description Websocket for download updates */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/downloads/stats': {
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
-	'/notifications': {
-		/** @description Websocket for server notifications */
-		get: {
-			responses: {
-				/** @description Default Response */
-				200: {
-					content: never;
-				};
-			};
-		};
-	};
+    "/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Check if the server is running */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {string} */
+                            message: "OK";
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get Prometheus metrics for the server */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Prometheus metrics */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                /** @description Metrics are not enabled for the instance */
+                501: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/version": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the version numbers for Hive */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            api: string;
+                            ytdlp: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/spec.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the OpenAPI JSON spec */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/spec.yaml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the OpenAPI YAML spec */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/credentials/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Login to the application */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        username: string;
+                        password: string;
+                        /** @default false */
+                        remember: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Logged in successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Invalid username or password */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/credentials/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Signup for the application */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        username: string;
+                        password: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Account created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description User registration is disabled */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description User already exists */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/apikey/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Create an API key */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: never;
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/apikey/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Delete an API key */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: never;
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/apikey/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a list of API keys */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: never;
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Verify the user is authenticated */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description User is authenticated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Logout the user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Logged out successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the user for the current request */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            name: string;
+                        };
+                    };
+                };
+                /** @description User not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Update a user */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        newPassword: string;
+                        oldPassword: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description User updated successfully */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid username or password */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the settings */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            cronCheckSubscriptions: null | string;
+                            cronDownloadPending: null | string;
+                            cronChannelMetadata: null | string;
+                            downloadLimit: null | number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Update the settings */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        cronCheckSubscriptions: null | string;
+                        cronDownloadPending: null | string;
+                        cronChannelMetadata: null | string;
+                        downloadLimit?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Settings updated successfully */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a list of channels */
+        get: {
+            parameters: {
+                query: {
+                    page: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            channels: {
+                                id: string;
+                                description: string;
+                                tags: string[];
+                                customUrl: string;
+                                name: string;
+                            }[];
+                            total: number;
+                        };
+                    };
+                };
+            };
+        };
+        /** @description Add a channel */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Channel added successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Channel does not exist */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Channel already downloaded */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/channels/{channelId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a channel */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    channelId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description: string;
+                            tags: string[];
+                            customUrl: string;
+                            name: string;
+                        };
+                    };
+                };
+                /** @description Channel not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/channels/{channelId}/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Scan a channel for new metadata and assets */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    channelId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Scan started successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/channels/{channelId}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get stats about a channel */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    channelId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            videos: number;
+                            streams: number;
+                            shorts: number;
+                            directorySize: string;
+                        };
+                    };
+                };
+                /** @description Channel not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/videos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a list of videos */
+        get: {
+            parameters: {
+                query: {
+                    page: number;
+                    type?: ("unknown" | "video" | "short" | "stream")[];
+                    status?: ("unknown" | "none" | "live" | "upcoming" | "past")[];
+                    downloadStatus?: ("ignored" | "pending" | "done")[];
+                    channelId?: string;
+                    search?: string;
+                    inProgress?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            videos: {
+                                id: string;
+                                channelId: string;
+                                playlistId: null | string;
+                                title: string;
+                                description: string;
+                                duration: null | number;
+                                watchProgress: number;
+                                watchCompleted: boolean;
+                                fileSize: null | number;
+                                uploadDate: null | number;
+                                type: "unknown" | "video" | "short" | "stream";
+                                status: "unknown" | "none" | "live" | "upcoming" | "past";
+                                downloadStatus: "ignored" | "pending" | "done";
+                            }[];
+                            total: number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/videos/ignore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Ignore videos */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        videoIds: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Videos IDs ignored */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/videos/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Scan all channels for new videos */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Scan started successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/videos/{videoId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a video */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    videoId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            channelId: string;
+                            playlistId: null | string;
+                            title: string;
+                            description: string;
+                            duration: null | number;
+                            watchProgress: number;
+                            watchCompleted: boolean;
+                            fileSize: null | number;
+                            uploadDate: null | number;
+                            type: "unknown" | "video" | "short" | "stream";
+                            status: "unknown" | "none" | "live" | "upcoming" | "past";
+                            downloadStatus: "ignored" | "pending" | "done";
+                            comments: {
+                                id: number;
+                                videoId: string;
+                                text: string;
+                                author: string;
+                                authorId: string;
+                                timeText: string;
+                                isUploader: boolean;
+                                isFavorited: boolean;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Video not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Update a video */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    videoId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        watchProgress?: number;
+                        watchCompleted?: boolean;
+                        downloadStatus?: "ignored" | "pending";
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            channelId: string;
+                            playlistId: null | string;
+                            title: string;
+                            description: string;
+                            duration: null | number;
+                            watchProgress: number;
+                            watchCompleted: boolean;
+                            fileSize: null | number;
+                            uploadDate: null | number;
+                            type: "unknown" | "video" | "short" | "stream";
+                            status: "unknown" | "none" | "live" | "upcoming" | "past";
+                            downloadStatus: "ignored" | "pending" | "done";
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/downloads/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Start downloading the currently pending videos */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        videoIds: string[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Download started successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloads/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Stop all downloads */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Downloads stopped successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloads/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Websocket for download updates */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloads/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Websocket for server notifications */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
-	schemas: {};
-	responses: never;
-	parameters: never;
-	requestBodies: never;
-	headers: never;
-	pathItems: never;
+    schemas: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
 export type operations = Record<string, never>;

@@ -22,29 +22,29 @@
 	},
 	"dependencies": {
 		"@hive/common": "workspace:^",
-		"@tabler/icons-svelte": "^3.5.0",
+		"@tabler/icons-svelte": "^3.6.0",
 		"cron-parser": "^4.9.0",
-		"openapi-fetch": "^0.9.7",
+		"openapi-fetch": "^0.10.1",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@hive/eslint-config": "workspace:^",
-		"@sveltejs/adapter-node": "^5.0.1",
-		"@sveltejs/kit": "^2.5.10",
+		"@sveltejs/adapter-node": "^5.2.0",
+		"@sveltejs/kit": "^2.5.17",
 		"@sveltejs/vite-plugin-svelte": "^3.1.1",
-		"@types/node": "^20.14.2",
+		"@types/node": "^20.14.8",
 		"autoprefixer": "^10.4.19",
-		"daisyui": "^4.12.2",
-		"eslint": "^9.4.0",
-		"openapi-typescript": "^6.7.6",
+		"daisyui": "^4.12.6",
+		"eslint": "^9.5.0",
+		"openapi-typescript": "^7.0.0",
 		"postcss": "^8.4.38",
-		"prettier": "^3.3.1",
-		"prettier-plugin-svelte": "^3.2.4",
+		"prettier": "^3.3.2",
+		"prettier-plugin-svelte": "^3.2.5",
 		"svelte": "^4.2.18",
-		"svelte-check": "^3.8.0",
+		"svelte-check": "^3.8.1",
 		"tailwindcss": "^3.4.4",
-		"typescript": "^5.4.5",
-		"vite": "^5.2.13"
+		"typescript": "^5.5.2",
+		"vite": "^5.3.1"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte}": [
