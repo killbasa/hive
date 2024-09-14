@@ -49,7 +49,6 @@ export const baseConfig: TSESLint.FlatConfig.Config = {
 				'ts-ignore': 'allow-with-description',
 			},
 		],
-		'@typescript-eslint/ban-types': 'error',
 		'@typescript-eslint/class-literal-property-style': 'error',
 		'@typescript-eslint/consistent-generic-constructors': 'off',
 		'@typescript-eslint/consistent-indexed-object-style': 'error',

@@ -37,7 +37,7 @@ export async function moveChannel(channelId: string): Promise<boolean> {
 		await Promise.all([
 			mv(`${source}/assets/thumbnail.info.json`, `${target}/assets/metadata.json`),
 			mv(`${source}/assets/thumbnail.avatar_uncropped.jpg`, `${target}/assets/avatar.jpg`),
-			mv(`${source}/assets/thumbnail.12.jpg`, `${target}/assets/banner.jpg`),
+			mv(`${source}/assets/thumbnail.1.jpg`, `${target}/assets/banner.jpg`),
 		]);
 
 		const fh = await open(`${target}/assets/archive.txt`, 'w');

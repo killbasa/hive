@@ -77,7 +77,7 @@ The only version of yt-dlp that is guarateed to work is the version that is bund
 1. Download yt-dlp binary
 
 ```sh
-wget https://github.com/yt-dlp/yt-dlp/releases/download/2024.04.09/yt-dlp
+wget https://github.com/yt-dlp/yt-dlp/releases/download/2024.08.06/yt-dlp
 chmod +x yt-dlp
 mv ./yt-dlp ./apps/api/bin
 ```

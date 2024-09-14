@@ -70,7 +70,6 @@ const config: TSESLint.FlatConfig.ConfigArray = tseslint.config(
 			],
 		},
 	},
-	// @ts-expect-error - Bad types
 	...svelte.configs['flat/prettier'],
 	{
 		name: 'hive/svelte',

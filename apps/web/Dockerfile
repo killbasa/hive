@@ -1,10 +1,10 @@
 ## Base ##
-FROM node:22.2.0-alpine3.19 as base
+FROM node:22.8.0-alpine3.20 AS base
 
 RUN apk update --no-cache
 
 ## Builder ##
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /temp
 
@@ -17,14 +17,14 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@9.1.2 && \
+	corepack use pnpm@9.10.0 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/web run build && \
 	pnpm --filter @hive/web deploy --prod output
 
 ## App ##
-FROM base as app
+FROM base AS app
 
 LABEL org.opencontainers.image.source=https://github.com/killbasa/hive
 LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later

@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.2.0-alpine3.19 as base
+FROM node:22.8.0-alpine3.20 AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -7,28 +7,20 @@ FROM node:22.2.0-alpine3.19 as base
 # supervisor: run multiple processes in a container
 RUN apk update --no-cache && \
 	apk add --no-cache \
-		python3=3.11.9-r0 \
-		ffmpeg=6.1.1-r0 \
-		nginx=1.24.0-r16 \
-		supervisor=4.2.5-r4
+		python3=3.12.3-r1 \
+		ffmpeg=6.1.1-r8 \
+		nginx=1.26.1-r0 \
+		supervisor=4.2.5-r5
 
 ## Depdencies ##
-FROM alpine:3.19 as dependencies
+FROM alpine:3.19 AS dependencies
 
-RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.04.09/yt-dlp \
+RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.05.27/yt-dlp \
 		-O /tmp/yt-dlp && \
 	chmod +x /tmp/yt-dlp
 
-RUN wget https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz \
-		-O /tmp/ffmpeg.tar.xz && \
-	tar -xf /tmp/ffmpeg.tar.xz -C /tmp && \
-	mv /tmp/ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /tmp/ffmpeg && \
-	mv /tmp/ffmpeg-master-latest-linux64-gpl/bin/ffprobe /tmp/ffprobe && \
-	chmod +x /tmp/ffmpeg && \
-	chmod +x /tmp/ffprobe
-
 ## Builder ##
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /temp
 
@@ -45,7 +37,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@9.1.2 && \
+	corepack use pnpm@9.10.0 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/api run build:prod && \
@@ -53,7 +45,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	pnpm --filter @hive/api deploy --prod output
 
 ## App ##
-FROM base as app
+FROM base AS app
 
 LABEL org.opencontainers.image.source=https://github.com/killbasa/hive
 LABEL org.opencontainers.image.licenses=AGPL-3.0-or-later
@@ -79,8 +71,6 @@ RUN mkdir -p /var/log/supervisor && chown -R hive:hive /var/log/supervisor && \
 WORKDIR /hive
 
 COPY --from=dependencies --chown=hive:hive /tmp/yt-dlp bin/
-COPY --from=dependencies --chown=hive:hive /tmp/ffmpeg bin/
-COPY --from=dependencies --chown=hive:hive /tmp/ffprobe bin/
 COPY --from=builder --chown=hive:hive /temp/apps/api/configs/supervisord.conf /etc/supervisord.conf
 COPY --from=builder --chown=hive:hive /temp/apps/api/configs/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder --chown=hive:hive /temp/output/ ./

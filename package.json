@@ -27,12 +27,12 @@
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.0",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^20.14.8",
-		"eslint": "^9.5.0",
-		"lint-staged": "^15.2.7",
-		"prettier": "^3.3.2",
-		"typescript": "^5.5.2",
-		"vitest": "^1.6.0"
+		"@types/node": "^22.5.5",
+		"eslint": "^9.10.0",
+		"lint-staged": "^15.2.10",
+		"prettier": "^3.3.3",
+		"typescript": "^5.6.2",
+		"vitest": "^2.1.1"
 	},
 	"lint-staged": {
 		"*.{js,cjs}": [
@@ -45,9 +45,9 @@
 	"engines": {
 		"node": ">=20.x"
 	},
-	"packageManager": "pnpm@9.1.2",
+	"packageManager": "pnpm@9.10.0",
 	"volta": {
-		"node": "22.2.0",
-		"pnpm": "9.1.2"
+		"node": "22.8.0",
+		"pnpm": "9.5.0"
 	}
 }
