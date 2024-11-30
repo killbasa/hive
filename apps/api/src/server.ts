@@ -15,8 +15,7 @@ import { Queue } from 'bullmq';
 import Fastify from 'fastify';
 import type { QueueOptions } from 'bullmq';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import type { FastifyInstance, LogLevel, RegisterOptions } from 'fastify';
-import type { HiveRoutes } from './lib/types/hive.js';
+import type { FastifyInstance, LogLevel } from 'fastify';
 
 export async function buildServer(): Promise<FastifyInstance> {
 	let level: LogLevel;
@@ -106,11 +105,11 @@ export async function buildServer(): Promise<FastifyInstance> {
 	 * Decorators
 	 */
 
-	server.decorate('routes', async (routes: HiveRoutes, options?: RegisterOptions) => {
+	server.decorate('routes', async (routes, options = {}) => {
 		if (routes.subroutes) {
 			for (const [prefix, route] of Object.entries(routes.subroutes)) {
 				await server.routes(route, {
-					prefix: options?.prefix ? `${options.prefix}/${prefix}` : prefix,
+					prefix: options.prefix ? `${options.prefix}/${prefix}` : prefix,
 				});
 			}
 		}

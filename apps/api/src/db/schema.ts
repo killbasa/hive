@@ -60,7 +60,7 @@ export const videos = sqliteTable(
 	},
 );
 
-export const videosRelations = relations(videos, ({ one, many }) => ({
+export const videosRelations = relations(videos, ({ one }) => ({
 	channel: one(channels, {
 		fields: [videos.channelId],
 		references: [channels.id],
@@ -69,8 +69,6 @@ export const videosRelations = relations(videos, ({ one, many }) => ({
 		fields: [videos.channelId],
 		references: [playlists.id],
 	}),
-	comments: many(comments),
-	streamComments: many(streamComments),
 }));
 
 /**
@@ -97,68 +95,6 @@ export const playlists = sqliteTable(
 
 export const playlistsRelations = relations(channels, ({ many }) => ({
 	videos: many(videos),
-}));
-
-/**
- * Comments
- */
-
-export const comments = sqliteTable(
-	'comments',
-	{
-		id: integer('id').primaryKey(),
-		videoId: text('video_id')
-			.references(() => videos.id)
-			.notNull(),
-		text: text('text').notNull(),
-		author: text('author').notNull(),
-		authorId: text('author_id').notNull(),
-		timeText: text('timestamp').notNull(),
-		isUploader: integer('is_uploader', { mode: 'boolean' }).notNull(),
-		isFavorited: integer('is_favorited', { mode: 'boolean' }).notNull(),
-	},
-	(table) => {
-		return {
-			idx: index('comment_idx').on(table.id),
-			videoIdx: index('comment_video_idx').on(table.videoId),
-		};
-	},
-);
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-	video: one(videos, {
-		fields: [comments.videoId],
-		references: [videos.id],
-	}),
-}));
-
-export const streamComments = sqliteTable(
-	'stream_comments',
-	{
-		id: integer('id').primaryKey(),
-		videoId: text('video_id')
-			.references(() => videos.id)
-			.notNull(),
-		author: text('author').notNull(),
-		text: text('text').notNull(),
-		timestamp: integer('timestamp', { mode: 'timestamp' }).notNull(),
-		isMod: integer('is_mod', { mode: 'boolean' }).notNull(),
-		isVerified: integer('is_verified', { mode: 'boolean' }).notNull(),
-		isUploader: integer('is_uploader', { mode: 'boolean' }).notNull(),
-	},
-	(table) => {
-		return {
-			idx: index('streamcomment_idx').on(table.id),
-			videoIdx: index('streamcomment_video_idx').on(table.videoId),
-		};
-	},
-);
-
-export const streamCommentsRelations = relations(streamComments, ({ one }) => ({
-	video: one(videos, {
-		fields: [streamComments.videoId],
-		references: [videos.id],
-	}),
 }));
 
 /**

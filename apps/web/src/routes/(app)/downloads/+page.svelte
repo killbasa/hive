@@ -30,17 +30,21 @@
 		videoTotal: number;
 	};
 
-	export let data: PageData;
+	let {
+		data,
+	}: {
+		data: PageData;
+	} = $props();
 
 	let ws: HiveWebSocket;
-	let allChecked = false;
-	$: downloads = data.videos;
+	let allChecked = $state(false);
+	let downloads = $state(data.videos);
 
-	let downloadInfo: DownloadInfo | null = null;
-	let scanInfo: ScanInfo | null = null;
+	let downloadInfo: DownloadInfo | null = $state(null);
+	let scanInfo: ScanInfo | null = $state(null);
 
-	let selectedVideos: string[];
-	$: selectedVideos = [];
+	let selectedVideos: string[] = $state([]);
+	let disabled = $derived(selectedVideos.length === 0);
 
 	function selectVideo(videoId: string): void {
 		if (selectedVideos.includes(videoId)) {
@@ -169,8 +173,6 @@
 			ws.close();
 		};
 	});
-
-	$: disabled = selectedVideos.length === 0;
 </script>
 
 <svelte:head>
@@ -204,8 +206,8 @@
 					class="progress progress-success"
 					value={downloadInfo.percentage}
 					max="100"
-				/>
-				<button class="btn btn-error w-min" type="button" on:click={stop}>Stop</button>
+				></progress>
+				<button class="btn btn-error w-min" type="button" onclick={stop}>Stop</button>
 			{:else}
 				None
 			{/if}
@@ -233,7 +235,7 @@
 						class="progress progress-success"
 						value={scanInfo.channelPos}
 						max={scanInfo.channelTotal}
-					/>
+					></progress>
 				</div>
 				<div>
 					<span>{scanInfo.videoPos} / {scanInfo.videoTotal}</span>
@@ -241,7 +243,8 @@
 						class="progress progress-success"
 						value={scanInfo.videoPos}
 						max={scanInfo.videoTotal}
-					/>
+					>
+					</progress>
 				</div>
 			{:else}
 				None
@@ -251,9 +254,9 @@
 	<Card title="Downloads ({downloads.length}/{data.total})">
 		<div class="justify-between flex">
 			<div class="flex gap-2">
-				<button class="btn btn-success" on:click={startDownloads}>Download</button>
-				<button class="btn btn-error" {disabled} on:click={ignore}>Ignore</button>
-				<button class="btn btn-success" on:click={scan}>Scan channels</button>
+				<button class="btn btn-success" onclick={startDownloads}>Download</button>
+				<button class="btn btn-error" {disabled} onclick={ignore}>Ignore</button>
+				<button class="btn btn-success" onclick={scan}>Scan channels</button>
 			</div>
 			<div class="flex gap-4">
 				<SearchInput placeholder="Filter videos" />
@@ -267,7 +270,7 @@
 							<input
 								type="checkbox"
 								class="checkbox"
-								on:click={selectAll}
+								onclick={selectAll}
 								bind:checked={allChecked}
 							/>
 						</label>
@@ -288,7 +291,7 @@
 									name="select-video"
 									type="checkbox"
 									class="checkbox"
-									on:change={() => {
+									onchange={() => {
 										selectVideo(video.id);
 									}}
 									checked={selectedVideos.includes(video.id)}
@@ -324,8 +327,8 @@
 				{/each}
 			</tbody>
 		</table>
-		<svelte:fragment slot="footer">
+		{#snippet footer()}
 			<Pagination count={data.videos.length} total={data.total} />
-		</svelte:fragment>
+		{/snippet}
 	</Card>
 </section>

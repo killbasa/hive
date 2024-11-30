@@ -1,5 +1,4 @@
 import svelteParser from 'svelte-eslint-parser';
-// @ts-expect-error - No types
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPrettier from 'eslint-plugin-prettier/recommended';

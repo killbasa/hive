@@ -8,9 +8,13 @@
 	import type { PageData } from './$types';
 	import { invalidate } from '$app/navigation';
 
-	export let data: PageData;
+	let {
+		data,
+	}: {
+		data: PageData;
+	} = $props();
 
-	let channelId = '';
+	let channelId = $state('');
 	let modal: HTMLDialogElement;
 
 	async function addChannel() {
@@ -49,8 +53,8 @@
 <section>
 	<Card title="Channels">
 		<div class="flex gap-2">
-			<button class="btn btn-success" on:click={toggleModal}>Add</button>
-			<button class="btn btn-primary" on:click={refresh}>Refresh</button>
+			<button class="btn btn-success" onclick={toggleModal}>Add</button>
+			<button class="btn btn-primary" onclick={refresh}>Refresh</button>
 		</div>
 		<table class="table">
 			<thead>
@@ -86,9 +90,9 @@
 				{/each}
 			</tbody>
 		</table>
-		<svelte:fragment slot="footer">
+		{#snippet footer()}
 			<Pagination count={data.channels.length} total={data.total} />
-		</svelte:fragment>
+		{/snippet}
 	</Card>
 	<dialog id="AddModal" class="modal" bind:this={modal}>
 		<div class="modal-box">
@@ -98,8 +102,8 @@
 			</div>
 			<div class="modal-action">
 				<form method="dialog">
-					<button class="btn" on:click={toggleModal}>Cancel</button>
-					<button class="btn" on:click={addChannel}>Submit</button>
+					<button class="btn" onclick={toggleModal}>Cancel</button>
+					<button class="btn" onclick={addChannel}>Submit</button>
 				</form>
 			</div>
 		</div>

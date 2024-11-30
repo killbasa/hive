@@ -33,12 +33,3 @@ export type VideoMetadata = {
 	/** Aspect ratio of the video, if known */
 	aspect_ratio: number;
 };
-
-export type CommentMetadata = {
-	text: string;
-	author_id: string;
-	author: string;
-	_time_text: string;
-	author_is_uploader: boolean;
-	is_favorited: boolean;
-};

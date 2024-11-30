@@ -5,7 +5,11 @@
 	import VideoCard from '$components/videos/VideoCard.svelte';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let {
+		data,
+	}: {
+		data: PageData;
+	} = $props();
 </script>
 
 <svelte:head>
@@ -21,7 +25,7 @@
 			<VideoCard {video} />
 		{/each}
 	</div>
-	<svelte:fragment slot="footer">
+	{#snippet footer()}
 		<Pagination count={data.videos.length} total={data.total} />
-	</svelte:fragment>
+	{/snippet}
 </Card>

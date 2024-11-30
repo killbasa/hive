@@ -1,10 +1,10 @@
 import { getContext, setContext } from 'svelte';
 import { writable } from 'svelte/store';
+import type { Video } from '$lib/types/videos';
 import type { Writable } from 'svelte/store';
-import type { VideoWithComments } from '$lib/types/videos';
 
 const STORE_KEY = 'video';
-type VideoContext = VideoWithComments | null;
+type VideoContext = Video | null;
 
 export function getVideoContext(): Writable<VideoContext> {
 	return getContext<Writable<VideoContext>>(STORE_KEY);

@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
+	import type { FormEventHandler } from 'svelte/elements';
 	import { goto } from '$app/navigation';
 
-	let username = '';
-	let password = '';
-	let remember = false;
+	let username = $state('');
+	let password = $state('');
+	let remember = $state(false);
 
-	async function handleSubmit() {
+	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+		event.preventDefault();
+
 		const response = await client.POST('/auth/credentials/login', {
 			body: {
 				username,
@@ -21,7 +24,7 @@
 		} else {
 			toast.error(response.error?.message ?? 'An error occurred');
 		}
-	}
+	};
 </script>
 
 <svelte:head>
@@ -30,7 +33,7 @@
 
 <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 flex flex-col items-center">
 	<h1>Hive</h1>
-	<form on:submit|preventDefault={handleSubmit} class="flex flex-col gap-2 w-80">
+	<form onsubmit={handleSubmit} class="flex flex-col gap-2 w-80">
 		<input
 			type="text"
 			name="username"

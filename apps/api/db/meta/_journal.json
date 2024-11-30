@@ -8,6 +8,13 @@
 			"when": 1716231622800,
 			"tag": "0000_past_mantis",
 			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "6",
+			"when": 1732982838707,
+			"tag": "0001_parallel_pyro",
+			"breakpoints": true
 		}
 	]
 }

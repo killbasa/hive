@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.8.0-alpine3.20 AS base
+FROM node:22.11.0-alpine3.20 AS base
 
 RUN apk update --no-cache
 
@@ -17,7 +17,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@9.10.0 && \
+	corepack use pnpm@9.11.0 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/web run build && \

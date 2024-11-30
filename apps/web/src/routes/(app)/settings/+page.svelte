@@ -8,6 +8,7 @@
 	import CronPreview from '$lib/components/misc/CronPreview.svelte';
 	import { writable } from 'svelte/store';
 	import type { PageData } from './$types';
+	import type { FormEventHandler } from 'svelte/elements';
 	import { goto, invalidate } from '$app/navigation';
 
 	type CronStore = {
@@ -16,7 +17,11 @@
 		channelMetadata: string | null;
 	};
 
-	export let data: PageData;
+	let {
+		data,
+	}: {
+		data: PageData;
+	} = $props();
 
 	const auth = writable({
 		password: '',
@@ -31,14 +36,16 @@
 
 	const cronSelector = writable<keyof CronStore | null>(null);
 
-	$: accountUpdateDisabled =
+	let accountUpdateDisabled: boolean = $derived(
 		$auth.password === '' || //
-		$auth.oldPassword === '' ||
-		$auth.password === $auth.oldPassword;
+			$auth.oldPassword === '' ||
+			$auth.password === $auth.oldPassword,
+	);
 
-	$: scheduleUpdateDisabled =
+	let scheduleUpdateDisabled: boolean = $derived(
 		$schedule.checkSubscriptions === data.settings.cronCheckSubscriptions && //
-		$schedule.downloadPending === data.settings.cronDownloadPending;
+			$schedule.downloadPending === data.settings.cronDownloadPending,
+	);
 
 	async function handleSubmit() {
 		await client.POST('/auth/logout', {
@@ -48,7 +55,9 @@
 		await goto('/login');
 	}
 
-	async function handleAccountUpdate() {
+	const handleAccountUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
+		event.preventDefault();
+
 		const response = await client.PATCH('/users', {
 			body: {
 				newPassword: $auth.password,
@@ -61,9 +70,11 @@
 		} else {
 			toast.error(response.error?.message ?? 'An error occurred');
 		}
-	}
+	};
 
-	async function handleScheduleUpdate() {
+	const handleScheduleUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
+		event.preventDefault();
+
 		const { response } = await client.PATCH('/settings', {
 			body: {
 				cronCheckSubscriptions: $schedule.checkSubscriptions,
@@ -78,7 +89,7 @@
 		} else {
 			toast.error('Something went wrong');
 		}
-	}
+	};
 </script>
 
 <svelte:head>
@@ -103,7 +114,7 @@
 		<span class="text-lg">User: {data.user.name}</span>
 
 		<CardSection title="Session">
-			<button on:click={handleSubmit} class=" btn btn-error w-min">Logout</button>
+			<button onclick={handleSubmit} class=" btn btn-error w-min">Logout</button>
 		</CardSection>
 
 		<CardSection title="API key">
@@ -120,7 +131,7 @@
 		</CardSection>
 
 		<CardSection title="Update account info">
-			<form on:submit|preventDefault={handleAccountUpdate} class="flex flex-col gap-2">
+			<form onsubmit={handleAccountUpdate} class="flex flex-col gap-2">
 				<input
 					type="password"
 					name="new-password"
@@ -146,29 +157,29 @@
 		</CardSection>
 	</Card>
 	<Card title="Schedules">
-		<form on:submit|preventDefault={handleScheduleUpdate} class="flex flex-col">
+		<form onsubmit={handleScheduleUpdate} class="flex flex-col gap-2">
 			<div class="grid grid-cols-2 gap-4">
 				<div class="flex flex-col gap-2">
 					<TextInput
 						id="check-subscriptions"
 						title="Check subscriptions"
 						bind:value={$schedule.checkSubscriptions}
-						on:focus={() => cronSelector.set('checkSubscriptions')}
-						on:blur={() => cronSelector.set(null)}
+						onfocus={() => cronSelector.set('checkSubscriptions')}
+						onblur={() => cronSelector.set(null)}
 					/>
 					<TextInput
 						id="download-queue"
 						title="Download queue"
 						bind:value={$schedule.downloadPending}
-						on:focus={() => cronSelector.set('downloadPending')}
-						on:blur={() => cronSelector.set(null)}
+						onfocus={() => cronSelector.set('downloadPending')}
+						onblur={() => cronSelector.set(null)}
 					/>
 					<TextInput
 						id="update-channels"
 						title="Update channels"
 						bind:value={$schedule.channelMetadata}
-						on:focus={() => cronSelector.set('channelMetadata')}
-						on:blur={() => cronSelector.set(null)}
+						onfocus={() => cronSelector.set('channelMetadata')}
+						onblur={() => cronSelector.set(null)}
 					/>
 				</div>
 				<CronPreview expression={$cronSelector ? $schedule[$cronSelector] : null} />

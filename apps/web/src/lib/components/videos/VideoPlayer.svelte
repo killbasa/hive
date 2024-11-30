@@ -4,47 +4,43 @@
 	import { getVideoContext } from '$lib/stores/video';
 	import { Time, throttle, debounce } from '@hive/common';
 	import { onMount } from 'svelte';
+	import type { EventHandler } from 'svelte/elements';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 
 	const video = getVideoContext();
 
-	let element: HTMLVideoElement;
+	let element = $state<HTMLVideoElement | null>(null);
 	let divElement: HTMLDivElement;
-	let ready = false;
-	let hide = false;
+	let ready = $state(false);
+	let isHidden = $state(false);
 
-	$: currentTime = 0;
-	$: isWatchPage = $page.url.pathname.startsWith('/watch');
+	let currentTime = $state(0);
+	let isWatchPage = $derived($page.url.pathname.startsWith('/watch'));
 
-	video.subscribe((data) => {
-		hide = data === null;
+	const onVolumeChange: EventHandler<Event, HTMLVideoElement> = () => {
+		if (!element) return;
 
-		if (data !== null) {
-			localStorage.setItem('currentVideo', data.id);
-		}
-	});
-
-	function onVolumeChange() {
 		localStorage.setItem('videoVolume', element.volume.toString());
-	}
+	};
 
-	function loadPlayer(): void {
-		if (!$video) return;
+	const loadPlayer: EventHandler<Event, HTMLVideoElement> = () => {
+		console.log('loadPlayer');
+		if (!$video || !element) return;
 
 		setTime($page.url.searchParams.get('t') ?? $video.watchProgress);
 
 		const local = localStorage.getItem('videoVolume') ?? '1';
 		const parsedVol = Number.parseFloat(local);
-		element.volume = isNaN(parsedVol) ? 1 : parsedVol;
+		element.volume = Number.isNaN(parsedVol) ? 1 : parsedVol;
 
 		window.setTimeout(() => {
 			ready = true;
 		}, 500);
-	}
+	};
 
-	async function onTimeUpdate() {
-		if (!ready) return;
+	const onTimeUpdate: EventHandler<Event, HTMLVideoElement> = async () => {
+		if (!ready || !element) return;
 
 		currentTime = element.currentTime;
 
@@ -53,17 +49,17 @@
 		} else {
 			await throttleUpdate(currentTime);
 		}
-	}
+	};
 
 	function setTime(value: string | number | null): void {
 		if (value === null || !element) return;
 		if (typeof value === 'string') {
-			value = Number(value);
+			value = Number.parseInt(value);
 		}
 
 		if (Number.isNaN(value)) return;
 
-		currentTime = Number(value);
+		currentTime = value;
 		element.currentTime = currentTime;
 	}
 
@@ -82,38 +78,53 @@
 		});
 	}
 
-	function closeVideo() {
+	function minimizeVideo(): void {
+		isHidden = !isHidden;
+	}
+
+	function closeVideo(): void {
 		video.set(null);
+		unmountVideo();
 	}
 
-	function minimizeVideo() {
-		hide = !hide;
-	}
+	function mountVideo(): void {
+		if (!element) return;
 
-	function mountVideo() {
 		if (isWatchPage) {
+			// Add video to watch page
 			const watchPageElement = document.getElementById('video-element');
 
 			if (watchPageElement && !watchPageElement.hasChildNodes()) {
 				watchPageElement.appendChild(element);
 			}
-		} else if (element && !divElement.hasChildNodes()) {
+		} else if (!divElement.hasChildNodes()) {
+			// Show corner player
 			divElement.appendChild(element);
 		}
 	}
 
-	afterNavigate((data) => {
-		if (data.from === null) return;
+	function unmountVideo(): void {
+		if (!element) return;
 
+		// Remove corner player
+		if (!isWatchPage && divElement.hasChildNodes()) {
+			divElement.removeChild(element);
+		}
+	}
+
+	afterNavigate((data) => {
+		if (!data.from || data.willUnload) return;
+
+		// Close video if it's a short or the video is paused
 		if (!isWatchPage && (element?.paused || $video?.type === 'short')) {
-			closeVideo();
+			return closeVideo();
 		}
 
 		mountVideo();
-		setTime($page.url.searchParams.get('t'));
 	});
 
 	if (import.meta.hot) {
+		// Mount video if it was unmounted due to HMR
 		onMount(() => {
 			mountVideo();
 		});
@@ -128,16 +139,19 @@
 	{#if $video}
 		{#if !isWatchPage}
 			<div class="p-1 bg-slate-800">
-				<button class="btn btn-sm btn-tertiary" on:click={closeVideo}>Close</button>
-				<a role="button" class="btn btn-sm btn-tertiary" href="/watch/{$video.id}">Expand</a
+				<button class="btn btn-sm btn-tertiary" onclick={closeVideo}>Close</button>
+				<a role="button" class="btn btn-sm btn-tertiary" href="/watch/{$video.id}"
+					>Watch page</a
 				>
-				<button class="btn btn-sm btn-tertiary" on:click={minimizeVideo}>Collapse</button>
+				<button class="btn btn-sm btn-tertiary" onclick={minimizeVideo}
+					>{isHidden ? 'Show' : 'Collapse'}</button
+				>
 			</div>
 			<progress
 				class="progress-primary h-2"
 				value={Math.floor(currentTime)}
 				max={$video.duration}
-			/>
+			></progress>
 		{/if}
 	{/if}
 	<div bind:this={divElement}></div>
@@ -148,14 +162,14 @@
 		<video
 			id={Date.now().toString()}
 			poster="{config.apiUrl}/assets/{$video.channelId}/videos/{$video.id}/thumbnail.png"
-			on:volumechange={onVolumeChange}
-			on:loadstart={loadPlayer}
-			on:timeupdate={onTimeUpdate}
-			on:ended={onTimeUpdate}
+			onvolumechange={onVolumeChange}
+			onloadstart={loadPlayer}
+			ontimeupdate={onTimeUpdate}
+			onended={onTimeUpdate}
 			controls
 			playsinline
 			style={$video.type === 'short' ? 'width: 450px;' : 'width: 100%;'}
-			hidden={hide}
+			hidden={isHidden}
 			bind:this={element}
 		>
 			<source

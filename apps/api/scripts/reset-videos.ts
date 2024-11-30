@@ -1,11 +1,9 @@
-import { db } from './load-db';
-import * as schema from '../src/db/schema';
+import { db } from './load-db.js';
+import * as schema from '../src/db/schema.js';
 import { existsSync, readdirSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-await db.delete(schema.comments);
-await db.delete(schema.streamComments);
 await db.delete(schema.playlists);
 await db.update(schema.videos).set({ downloadStatus: 'pending' });
 
@@ -25,10 +23,7 @@ for (const channel of readdirSync(resolve('./data/media'))) {
 	const videoPath = `${channelPath}/videos`;
 	if (existsSync(videoPath)) {
 		for (const video of readdirSync(resolve(`${channelPath}/videos`))) {
-			paths.push(
-				resolve(`${videoPath}/${video}/comments.json`), //
-				resolve(`${videoPath}/${video}/video.mp4`),
-			);
+			paths.push(resolve(`${videoPath}/${video}/video.mp4`));
 		}
 	}
 

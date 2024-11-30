@@ -1,4 +1,3 @@
-// @ts-expect-error - No types
 import eslint from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -171,7 +170,13 @@ export const baseConfig: TSESLint.FlatConfig.Config = {
 		'@typescript-eslint/restrict-template-expressions': 'off',
 		'@typescript-eslint/sort-type-constituents': 'error',
 		'@typescript-eslint/strict-boolean-expressions': 'off',
-		'@typescript-eslint/switch-exhaustiveness-check': 'error',
+		'@typescript-eslint/switch-exhaustiveness-check': [
+			'error',
+			{
+				allowDefaultCaseForExhaustiveSwitch: true,
+				considerDefaultExhaustiveForUnions: true,
+			},
+		],
 		'@typescript-eslint/triple-slash-reference': 'error',
 		'@typescript-eslint/typedef': 'off',
 		'@typescript-eslint/unbound-method': 'error',

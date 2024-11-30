@@ -1,12 +1,21 @@
 <script lang="ts">
-	export let id: string;
-	export let title: string;
-	export let value: number | null = null;
-	export let positive = false;
+	let {
+		id,
+		title,
+		value,
+		positive = false,
+	}: {
+		id: string;
+		title: string;
+		value?: number;
+		positive?: boolean;
+	} = $props();
 
-	$: if (positive && value && value < 0) {
-		value = 0;
-	}
+	$effect(() => {
+		if (positive && value && value < 0) {
+			value = 0;
+		}
+	});
 </script>
 
 <div class="flex flex-col max-w-96">

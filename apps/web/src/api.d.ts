@@ -1017,16 +1017,6 @@ export interface paths {
                             type: "unknown" | "video" | "short" | "stream";
                             status: "unknown" | "none" | "live" | "upcoming" | "past";
                             downloadStatus: "ignored" | "pending" | "done";
-                            comments: {
-                                id: number;
-                                videoId: string;
-                                text: string;
-                                author: string;
-                                authorId: string;
-                                timeText: string;
-                                isUploader: boolean;
-                                isFavorited: boolean;
-                            }[];
                         };
                     };
                 };

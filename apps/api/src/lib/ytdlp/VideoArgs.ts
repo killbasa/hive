@@ -18,11 +18,6 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 		return this;
 	}
 
-	public saveComments(): this {
-		this.data.push('--write-comments');
-		return this;
-	}
-
 	public saveThumbnail(): this {
 		this.data.push('--write-thumbnail', '--convert-thumbnails', 'png');
 		return this;

@@ -1,4 +1,4 @@
-import { db } from './load-db';
-import * as schema from '../src/db/schema';
+import { db } from './load-db.js';
+import * as schema from '../src/db/schema.js';
 
 await db.delete(schema.users);

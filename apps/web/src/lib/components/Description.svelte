@@ -2,8 +2,13 @@
 	import { formatLinks, formatTimestamps } from '$lib/utils';
 	import { onMount } from 'svelte';
 
-	export let text: string;
-	export let videoId: string | undefined = undefined;
+	let {
+		text,
+		videoId,
+	}: {
+		text: string;
+		videoId?: string;
+	} = $props();
 
 	let description: HTMLParagraphElement;
 

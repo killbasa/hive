@@ -3,8 +3,13 @@
 	import { stringToNum } from '$lib/utils';
 	import { page } from '$app/stores';
 
-	export let count: number;
-	export let total: number;
+	let {
+		count,
+		total,
+	}: {
+		count: number;
+		total: number;
+	} = $props();
 
 	async function toPage(diff: number) {
 		await updatePage((params) => {
@@ -17,21 +22,22 @@
 		});
 	}
 
-	let pages: { label: string; value: number; disabled: boolean; current: boolean }[];
-	$: pages = [-2, -1, 0, 1, 2].map((entry) => {
-		const result = pageNumber + entry;
+	let pages = $derived<{ label: string; value: number; disabled: boolean; current: boolean }[]>(
+		[-2, -1, 0, 1, 2].map((entry) => {
+			const result = pageNumber + entry;
 
-		return {
-			label: result < 1 ? '' : `${result}`,
-			value: entry,
-			current: result === pageNumber,
-			disabled: result < 1 || count * pageNumber === total || result === pageNumber,
-		};
-	});
+			return {
+				label: result < 1 ? '' : `${result}`,
+				value: entry,
+				current: result === pageNumber,
+				disabled: result < 1 || count * pageNumber === total || result === pageNumber,
+			};
+		}),
+	);
 
-	$: pageNumber = stringToNum($page.url.searchParams.get('page'), 1);
-	$: backDisabled = pageNumber === 1;
-	$: nextDisabled = count === 0 || total % count === 0;
+	let pageNumber = $derived(stringToNum($page.url.searchParams.get('page'), 1));
+	let backDisabled = $derived(pageNumber === 1);
+	let nextDisabled = $derived(count === 0 || total % count === 0);
 </script>
 
 <nav>
@@ -42,7 +48,7 @@
 				class:btn-disabled={backDisabled}
 				class:opacity-90={backDisabled}
 				disabled={backDisabled}
-				on:click={() => toPage(-1)}
+				onclick={() => toPage(-1)}
 			>
 				Previous
 			</button>
@@ -56,7 +62,7 @@
 					class:btn-disabled={entry.disabled}
 					class:opacity-90={entry.disabled}
 					disabled={entry.current || entry.disabled}
-					on:click={() => toPage(entry.value)}
+					onclick={() => toPage(entry.value)}
 				>
 					{entry.label}
 				</button>
@@ -68,7 +74,7 @@
 				class:btn-disabled={nextDisabled}
 				class:opacity-90={nextDisabled}
 				disabled={nextDisabled}
-				on:click={() => toPage(1)}
+				onclick={() => toPage(1)}
 			>
 				Next
 			</button>

@@ -2,8 +2,13 @@
 	import { config } from '$lib/config';
 	import type { Video } from '$lib/types/videos';
 
-	export let video: Video;
-	export let showIcon = false;
+	let {
+		video,
+		showIcon = false,
+	}: {
+		video: Video;
+		showIcon?: boolean;
+	} = $props();
 
 	const channelUrl = `${config.apiUrl}/assets/${video.channelId}`;
 </script>
@@ -21,7 +26,7 @@
 					class="progress-primary h-2"
 					value={Math.floor(video.watchProgress)}
 					max={video.duration}
-				/>
+				></progress>
 			{/if}
 		</div>
 	</a>

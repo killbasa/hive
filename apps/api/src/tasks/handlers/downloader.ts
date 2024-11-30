@@ -1,6 +1,6 @@
 import { db } from '../../db/client.js';
 import { videos } from '../../db/schema.js';
-import { VIDEO_DL_PATH, extractCommentsFromVideoMetadata, indexComments, moveVideoAssets } from '../../lib/fs/videos.js';
+import { VIDEO_DL_PATH, moveVideoAssets } from '../../lib/fs/videos.js';
 import { downloadVideo } from '../../lib/ytdlp/videos.js';
 import { server } from '../../server.js';
 import { eq } from 'drizzle-orm';
@@ -28,15 +28,11 @@ export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async (
 		return;
 	}
 
-	await extractCommentsFromVideoMetadata(channelId, videoId);
-
 	const mvSuccess = await moveVideoAssets(channelId, videoId);
 	if (!mvSuccess) {
 		server.log.error(`failed to move video assets: ${videoId}`);
 		return;
 	}
-
-	await indexComments(channelId, videoId);
 
 	await db //
 		.update(videos)
@@ -50,10 +46,4 @@ export const handleDownloadVideoTask: TaskHandler<DownloaderVideoTask> = async (
 	});
 
 	server.log.info(`downloaded video: ${videoId}`);
-};
-
-export const handleDownloadCommentsTask: TaskHandler = () => {
-	server.log.info('downloading video comments: NO_ID');
-
-	server.log.info('downloaded video comments: NO_ID');
 };

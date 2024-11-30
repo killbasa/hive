@@ -7,9 +7,13 @@
 	import { formatDuration, formatFileSize } from '$lib/utils';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let {
+		data,
+	}: {
+		data: PageData;
+	} = $props();
 
-	$: downloads = data.videos;
+	let downloads = $derived(data.videos);
 </script>
 
 <svelte:head>
@@ -64,7 +68,7 @@
 			{/each}
 		</tbody>
 	</table>
-	<svelte:fragment slot="footer">
+	{#snippet footer()}
 		<Pagination count={data.videos.length} total={data.total} />
-	</svelte:fragment>
+	{/snippet}
 </Card>

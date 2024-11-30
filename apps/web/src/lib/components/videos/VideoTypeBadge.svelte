@@ -1,7 +1,11 @@
-<script setup lang="ts">
+<script lang="ts">
 	import type { Video } from '$lib/types/videos';
 
-	export let type: Video['type'];
+	let {
+		type,
+	}: {
+		type: Video['type'];
+	} = $props();
 </script>
 
 {#if type === 'video'}

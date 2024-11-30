@@ -1,12 +1,27 @@
 <script lang="ts">
-	export let id: string;
-	export let title: string;
-	export let value: string | null = null;
-	export let placeholder = '';
+	import type { FormEventHandler } from 'svelte/elements';
 
-	$: if (value === '') {
-		value = null;
-	}
+	let {
+		id,
+		title,
+		value = $bindable(null),
+		placeholder = '',
+		onfocus,
+		onblur,
+	}: {
+		id: string;
+		title: string;
+		value: string | null;
+		placeholder?: string;
+		onfocus?: FormEventHandler<HTMLInputElement>;
+		onblur?: FormEventHandler<HTMLInputElement>;
+	} = $props();
+
+	$effect(() => {
+		if (value === null) {
+			value = '';
+		}
+	});
 </script>
 
 <div class="flex flex-col">
@@ -17,7 +32,7 @@
 		class="input input-bordered focus:input-primary"
 		{id}
 		{placeholder}
-		on:focus
-		on:blur
+		{onfocus}
+		{onblur}
 	/>
 </div>

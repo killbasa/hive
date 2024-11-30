@@ -31,21 +31,3 @@ export const VideoListSchema = Type.Object({
 	videos: Type.Array(VideoSchema),
 	total: Type.Number(),
 });
-
-export const VideoCommentSchema = Type.Object({
-	id: Type.Number(),
-	videoId: Type.String(),
-	text: Type.String(),
-	author: Type.String(),
-	authorId: Type.String(),
-	timeText: Type.String(),
-	isUploader: Type.Boolean(),
-	isFavorited: Type.Boolean(),
-});
-
-export const VideoWithCommentsSchema = Type.Composite([
-	VideoSchema,
-	Type.Object({
-		comments: Type.Array(VideoCommentSchema),
-	}),
-]);

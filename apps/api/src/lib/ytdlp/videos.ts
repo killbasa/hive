@@ -37,7 +37,6 @@ export async function downloadVideo(
 ): Promise<boolean> {
 	const args = new YtdlpVideoArgs() //
 		.downloadArchive(channelId)
-		.saveComments()
 		.format('bestvideo[vcodec*=avc1]+bestaudio[acodec*=mp4a]/mp4')
 		.writeTo(`${YTDLP_VIDEO_PATH}/video.%(ext)s`)
 		.showProgress();

@@ -1,11 +1,18 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 
-	export let channelId: string;
-	export let size = 12;
+	let {
+		channelId,
+		size = 12,
+		...rest
+	}: {
+		channelId: string;
+		size?: number;
+		class?: string;
+	} = $props();
 </script>
 
-<div class="avatar {$$restProps.class ?? ''}">
+<div class="avatar {rest.class ?? ''}">
 	<div class="mask mask-circle h-{size} w-{size}">
 		<img src="{config.apiUrl}/assets/{channelId}/assets/avatar.jpg" alt="Channel avatar" />
 	</div>

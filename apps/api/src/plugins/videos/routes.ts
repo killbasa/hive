@@ -1,6 +1,6 @@
 import { VideoIgnoreBody, VideoPatchBody } from './body.js';
 import { VideoGetQuery, VideoListGetQuery, VideoPatchQuery } from './query.js';
-import { VideoListSchema, VideoSchema, VideoWithCommentsSchema } from './schema.js';
+import { VideoListSchema, VideoSchema } from './schema.js';
 import { scanAllChannels } from './utils.js';
 import { EmptyResponse } from '../../lib/responses.js';
 import { videos } from '../../db/schema.js';
@@ -126,7 +126,7 @@ export const videoRoutes: HiveRoutes = {
 					tags: ['Videos'],
 					params: VideoGetQuery,
 					response: {
-						200: VideoWithCommentsSchema,
+						200: VideoSchema,
 						404: EmptyResponse('Video not found'),
 					},
 				},
@@ -138,7 +138,6 @@ export const videoRoutes: HiveRoutes = {
 					where: ({ id, status }, { and, ne, eq }) => {
 						return and(eq(id, videoId), ne(status, 'unknown'));
 					},
-					with: { comments: true },
 					columns: { updatedAt: false },
 				});
 				if (result === undefined) {

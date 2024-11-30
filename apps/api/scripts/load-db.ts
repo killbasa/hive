@@ -1,4 +1,4 @@
-import * as schema from '../src/db/schema';
+import * as schema from '../src/db/schema.js';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { resolve } from 'node:path';

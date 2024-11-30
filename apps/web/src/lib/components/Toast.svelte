@@ -3,8 +3,13 @@
 	import { tweened } from 'svelte/motion';
 	import { linear } from 'svelte/easing';
 	import type { SvelteToastOptions } from '$lib/stores/toasts';
+	import type { FormEventHandler } from 'svelte/elements';
 
-	export let item: SvelteToastOptions;
+	let {
+		item,
+	}: {
+		item: SvelteToastOptions;
+	} = $props();
 
 	let next = item.initial;
 	let prev = next;
@@ -20,16 +25,16 @@
 		if ($progress === 1 || $progress === 0) close();
 	}
 
-	function pause() {
+	const pause: FormEventHandler<HTMLDivElement> = () => {
 		if (!item.pausable) return;
 
 		if (!paused && $progress !== next) {
 			progress.set($progress, { duration: 0 });
 			paused = true;
 		}
-	}
+	};
 
-	function resume() {
+	const resume: FormEventHandler<HTMLDivElement> = () => {
 		const { duration } = item;
 
 		if (paused && next !== undefined && prev !== undefined && duration) {
@@ -41,33 +46,37 @@
 
 			paused = false;
 		}
-	}
+	};
 
-	$: if (next !== item.next) {
-		next = item.next;
-		prev = $progress;
-		paused = false;
+	$effect(() => {
+		if (next !== item.next) {
+			next = item.next;
+			prev = $progress;
+			paused = false;
 
-		if (next !== undefined) progress.set(next).then(autoclose);
-	}
+			if (next !== undefined) progress.set(next).then(autoclose);
+		}
+	});
 
-	$: if (item.progress !== undefined) {
-		item.next = item.progress;
-	}
+	$effect(() => {
+		if (item.progress !== undefined) {
+			item.next = item.progress;
+		}
+	});
 </script>
 
 <div
 	role="status"
 	class="toast-item {item.classes?.join(' ')}"
 	class:pointer-events-auto={item.pausable}
-	on:mouseenter={pause}
-	on:mouseleave={resume}
+	onmouseenter={pause}
+	onmouseleave={resume}
 >
 	<div class="flex-1 my-3 mx-2">
 		{item.message}
 	</div>
-	<button class="w-8 h-full pointer-events-auto" on:click={close}>✕</button>
-	<progress class="progress-bar" value={$progress} />
+	<button class="w-8 h-full pointer-events-auto" onclick={close}>✕</button>
+	<progress class="progress-bar" value={$progress}></progress>
 </div>
 
 <style lang="postcss">

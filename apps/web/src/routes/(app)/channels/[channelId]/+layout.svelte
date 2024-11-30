@@ -5,9 +5,16 @@
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
 	import { humanFileSize } from '$lib/utils';
+	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 
-	export let data: LayoutData;
+	let {
+		data,
+		children,
+	}: {
+		data: LayoutData;
+		children: Snippet;
+	} = $props();
 
 	const channelUrl = `${config.apiUrl}/assets/${data.channel.id}`;
 	const navStyle = 'text-xl link-primary';
@@ -28,11 +35,11 @@
 
 <section class="flex flex-col gap-4">
 	<Card>
-		<svelte:fragment slot="figure">
+		{#snippet figure()}
 			<figure>
 				<img src="{channelUrl}/assets/banner.jpg" alt="Channel banner" />
 			</figure>
-		</svelte:fragment>
+		{/snippet}
 		<div class="flex items-center">
 			<ChannelAvatar channelId={data.channel.id} size={24} class="mr-4" />
 			<span class="text-5xl font-bold">{data.channel.name}</span>
@@ -42,7 +49,7 @@
 			<span>streams: {data.stats.streams}</span>
 			<span>shorts: {data.stats.shorts}</span>
 			<span>size: {humanFileSize(data.stats.directorySize)}</span>
-			<button class="btn btn-success" on:click={scan}>Scan channel</button>
+			<button class="btn btn-success" onclick={scan}>Scan channel</button>
 		</div>
 		<ul class="flex flex-row mx-auto gap-4">
 			<a href="/channels/{data.channel.id}" class={navStyle}>
@@ -62,5 +69,5 @@
 			</a>
 		</ul>
 	</Card>
-	<slot />
+	{@render children()}
 </section>

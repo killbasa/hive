@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 
 import { db } from '../../db/client.js';
-import { channels, comments, playlists, videos } from '../../db/schema.js';
+import { channels, playlists, videos } from '../../db/schema.js';
 import { count } from 'drizzle-orm';
 import type { Meter } from '@opentelemetry/api';
 
@@ -31,15 +31,6 @@ export class HiveGauges {
 			})
 			.addCallback(async (gauge) => {
 				const result = await db.select({ total: count() }).from(videos);
-				gauge.observe(result[0].total);
-			});
-
-		meter
-			.createObservableGauge('hive_comments_total', {
-				description: 'Gauge for the total amount of comments.',
-			})
-			.addCallback(async (gauge) => {
-				const result = await db.select({ total: count() }).from(comments);
 				gauge.observe(result[0].total);
 			});
 	}

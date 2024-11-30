@@ -6,7 +6,11 @@
 		timeStyle: 'long',
 	});
 
-	export let expression: string | null;
+	let {
+		expression,
+	}: {
+		expression: string | null;
+	} = $props();
 
 	function cronPreviewText(expr: string | null): string {
 		if (expr === null) {
@@ -37,9 +41,9 @@
 	}
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col h-full">
 	<span>Cron preview</span>
-	<div class="bg-neutral text-neutral-content rounded-md p-4">
+	<div class="bg-neutral text-neutral-content rounded-md p-4 h-full overflow-x-scroll">
 		<pre><code>{cronPreviewText(expression)}</code></pre>
 	</div>
 </div>

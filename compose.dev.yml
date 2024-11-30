@@ -7,7 +7,7 @@ services:
     env_file:
       - apps/api/.env
     environment:
-      REDIS_HOST: redis
+      REDIS_HOST: valkey
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
     volumes:
@@ -15,7 +15,7 @@ services:
     ports:
       - 127.0.0.1:3001:3001
     depends_on:
-      - redis
+      - valkey
 
   web:
     image: killbasa/hive-web
@@ -29,7 +29,7 @@ services:
     depends_on:
       - hive
 
-  redis:
-    image: redis:7.2.4-alpine3.19
+  valkey:
+    image: valkey/valkey:8.0.1-alpine3.20
     restart: unless-stopped
-    command: ["redis-server", "--requirepass password"]
+    command: ["valkey-server", "--requirepass password"]
