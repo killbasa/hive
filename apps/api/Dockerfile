@@ -7,7 +7,7 @@ FROM node:22.12.0-alpine3.20 AS base
 # supervisor: run multiple processes in a container
 RUN apk update --no-cache && \
 	apk add --no-cache \
-		python3=3.12.7-r0 \
+		python3=3.12.8-r1 \
 		ffmpeg=6.1.1-r8 \
 		nginx=1.26.2-r0 \
 		supervisor=4.2.5-r5
