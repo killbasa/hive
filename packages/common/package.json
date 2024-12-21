@@ -22,12 +22,13 @@
 		"clean": "rm -rf dist node_modules"
 	},
 	"devDependencies": {
-		"@vitest/coverage-v8": "^2.1.6",
-		"eslint": "^9.16.0",
-		"prettier": "^3.4.1",
+		"@vitest/coverage-v8": "^2.1.8",
+		"eslint": "^9.17.0",
+		"eslint-config-prettier": "^9.1.0",
+		"prettier": "^3.4.2",
 		"tsup": "^8.3.5",
 		"typescript": "5.7.2",
-		"vitest": "^2.1.6"
+		"vitest": "^2.1.8"
 	},
 	"lint-staged": {
 		"*.{js,ts}": [
@@ -37,10 +38,10 @@
 			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
 		]
 	},
-	"packageManager": "pnpm@9.14.2",
+	"packageManager": "pnpm@9.15.1",
 	"volta": {
-		"node": "22.11.0",
+		"node": "22.12.0",
 		"npm": "10.9.0",
-		"pnpm": "9.14.2"
+		"pnpm": "9.15.1"
 	}
 }

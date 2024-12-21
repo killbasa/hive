@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.11.0-alpine3.20 AS base
+FROM node:22.12.0-alpine3.20 AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -37,7 +37,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@9.14.2 && \
+	corepack use pnpm@9.15.1 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/api run build:prod && \
