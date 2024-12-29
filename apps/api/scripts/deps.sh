@@ -1,5 +1,8 @@
 #! /bin/sh
 
+scriptdir="$(dirname "$0")"
+cd "$(dirname $scriptdir)"
+
 # yt-dlp
 ytdlp_url="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
 ytdlp_path="./bin/yt-dlp"
@@ -14,6 +17,7 @@ chmod +x $ytdlp_path
 echo "yt-dlp updated to $($ytdlp_path --version)"
 
 if [ "$(uname)" == "Darwin" ]; then
+	# ref: https://github.com/yt-dlp/FFmpeg-Builds/issues/67
 	echo "FFMpeg builds not available for Mac OS X"
 	exit 0
 fi

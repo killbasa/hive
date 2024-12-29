@@ -38,7 +38,6 @@
 
 	let ws: HiveWebSocket;
 	let allChecked = $state(false);
-	let downloads = $state(data.videos);
 
 	let downloadInfo: DownloadInfo | null = $state(null);
 	let scanInfo: ScanInfo | null = $state(null);
@@ -50,7 +49,7 @@
 		if (selectedVideos.includes(videoId)) {
 			selectedVideos = selectedVideos.filter((id) => id !== videoId);
 		} else {
-			selectedVideos = [...selectedVideos, videoId];
+			selectedVideos.push(videoId);
 		}
 	}
 
@@ -58,7 +57,7 @@
 		if (allChecked) {
 			selectedVideos = [];
 		} else {
-			selectedVideos = downloads.map(({ id }) => id);
+			selectedVideos = data.videos.map(({ id }) => id);
 		}
 	}
 
@@ -251,8 +250,9 @@
 			{/if}
 		</Card>
 	</div>
-	<Card title="Downloads ({downloads.length}/{data.total})">
+	<Card title="Downloads ({data.videos.length}/{data.total})">
 		<div class="justify-between flex">
+			{JSON.stringify(selectedVideos)}
 			<div class="flex gap-2">
 				<button class="btn btn-success" onclick={startDownloads}>Download</button>
 				<button class="btn btn-error" {disabled} onclick={ignore}>Ignore</button>
@@ -283,7 +283,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each downloads as video (video.id)}
+				{#each data.videos as video (video.id)}
 					<tr>
 						<th>
 							<label>

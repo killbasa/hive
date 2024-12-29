@@ -2,7 +2,7 @@
 	import { updatePage } from '$lib/navigation';
 	import { debounce } from '@hive/common';
 	import type { FormEventHandler } from 'svelte/elements';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let {
 		placeholder,
@@ -13,7 +13,7 @@
 	} = $props();
 
 	let input: HTMLInputElement;
-	let filterValue = $state($page.url.searchParams.get('search') ?? '');
+	let filterValue = $state(page.url.searchParams.get('search') ?? '');
 
 	const handleFilter: FormEventHandler<HTMLInputElement> = debounce(async () => {
 		await updatePage(

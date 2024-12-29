@@ -14,6 +14,10 @@ const config = {
 			$hooks: resolve('./src/hooks'),
 			$api: resolve('./src/api.d.ts'),
 		},
+		output: {
+			preloadStrategy: 'modulepreload',
+			bundleStrategy: 'single',
+		},
 	},
 };
 

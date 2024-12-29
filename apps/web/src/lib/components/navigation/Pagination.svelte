@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { updatePage } from '$lib/navigation';
 	import { stringToNum } from '$lib/utils';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let {
 		count,
@@ -35,7 +35,7 @@
 		}),
 	);
 
-	let pageNumber = $derived(stringToNum($page.url.searchParams.get('page'), 1));
+	let pageNumber = $derived(stringToNum(page.url.searchParams.get('page'), 1));
 	let backDisabled = $derived(pageNumber === 1);
 	let nextDisabled = $derived(count === 0 || total % count === 0);
 </script>

@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.12.0-alpine3.20 AS base
+FROM node:22.12.0-alpine3.21 AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -8,8 +8,8 @@ FROM node:22.12.0-alpine3.20 AS base
 RUN apk update --no-cache && \
 	apk add --no-cache \
 		python3=3.12.8-r1 \
-		ffmpeg=6.1.1-r8 \
-		nginx=1.26.2-r0 \
+		ffmpeg=6.1.2-r1 \
+		nginx=1.26.2-r3 \
 		supervisor=4.2.5-r5
 
 ## Depdencies ##

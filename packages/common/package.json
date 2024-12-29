@@ -38,6 +38,9 @@
 			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
 		]
 	},
+	"engines": {
+		"node": "22.x"
+	},
 	"packageManager": "pnpm@9.15.2",
 	"volta": {
 		"node": "22.12.0",

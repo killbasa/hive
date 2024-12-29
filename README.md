@@ -100,3 +100,7 @@ docker compose -f apps/api/compose.yml up -d
 ```sh
 pnpm build
 ```
+
+### Developing on Mac OS
+
+You'll need to use a virtualization method that supports host mode networking (required by the API nginx).

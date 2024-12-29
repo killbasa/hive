@@ -1,13 +1,11 @@
-import { get } from 'svelte/store';
 import { goto } from '$app/navigation';
-import { page } from '$app/stores';
+import { page } from '$app/state';
 
 export async function updatePage(
 	updater: (params: URLSearchParams) => void,
 	options?: Parameters<typeof goto>[1],
 ): Promise<void> {
-	const { url } = get(page);
-	const params = new URLSearchParams(url.searchParams);
+	const params = new URLSearchParams(page.url.searchParams);
 
 	updater(params);
 
