@@ -1,4 +1,4 @@
-import { server } from './server.js';
+import { registerSwagger, server } from './server.js';
 import { initDb } from './db/client.js';
 import { config } from './lib/config.js';
 import { API_HOST, DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
@@ -30,3 +30,5 @@ const start = async (): Promise<void> => {
 };
 
 await start();
+
+export { registerSwagger, routes };

@@ -47,6 +47,77 @@ export async function buildServer(): Promise<FastifyInstance> {
 	/**
 	 * Plugins
 	 */
+	await registerSwagger(server);
+
+	await server.register(FastifyCookie);
+	await server.register(FastifyJwt, {
+		secret: config.AUTH_SECRET,
+		cookie: {
+			cookieName: config.COOKIE_NAME,
+			signed: false,
+		},
+	});
+
+	await server.register(FastifyCors, {
+		origin: config.AUTH_ORIGIN,
+		credentials: true,
+	});
+
+	await server.register(FastifyHelmet, {
+		crossOriginResourcePolicy: {
+			policy: 'same-site',
+		},
+	});
+	await server.register(FastifyWebsocket);
+
+	/**
+	 * Decorators
+	 */
+	server.decorate('settings', new HiveSettings());
+	server.decorate('notifications', new HiveNotifier());
+
+	if (config.METRICS_ENABLED) {
+		server.decorate('metrics', new HiveMetrics());
+	}
+
+	const options: QueueOptions = {
+		connection: RedisConnectionOptions,
+		defaultJobOptions: {
+			removeOnComplete: true,
+			removeOnFail: true,
+		},
+	};
+
+	server.decorate('tasks', {
+		internal: new Queue('internal', options),
+		downloader: new Queue('downloader', options),
+		scanner: new Queue('scanner', options),
+	});
+
+	return server;
+}
+
+export async function registerSwagger(server: FastifyInstance): Promise<void> {
+	server.decorate('routes', async (routes, options = {}) => {
+		if (routes.subroutes) {
+			for (const [prefix, route] of Object.entries(routes.subroutes)) {
+				await server.routes(route, {
+					prefix: options.prefix ? `${options.prefix}/${prefix}` : prefix,
+				});
+			}
+		}
+
+		if (routes.public) {
+			await server.register(routes.public, options);
+		}
+
+		if (routes.authenticated) {
+			await server.register((instance, opts, done) => {
+				instance.addHook('onRequest', authHandler);
+				routes.authenticated?.(instance, opts, done);
+			}, options);
+		}
+	});
 
 	await server.register(FastifySwagger, {
 		mode: 'dynamic',
@@ -79,75 +150,6 @@ export async function buildServer(): Promise<FastifyInstance> {
 			},
 		},
 	});
-
-	await server.register(FastifyCookie);
-	await server.register(FastifyJwt, {
-		secret: config.AUTH_SECRET,
-		cookie: {
-			cookieName: config.COOKIE_NAME,
-			signed: false,
-		},
-	});
-
-	await server.register(FastifyCors, {
-		origin: config.AUTH_ORIGIN,
-		credentials: true,
-	});
-
-	await server.register(FastifyHelmet, {
-		crossOriginResourcePolicy: {
-			policy: 'same-site',
-		},
-	});
-	await server.register(FastifyWebsocket);
-
-	/**
-	 * Decorators
-	 */
-
-	server.decorate('routes', async (routes, options = {}) => {
-		if (routes.subroutes) {
-			for (const [prefix, route] of Object.entries(routes.subroutes)) {
-				await server.routes(route, {
-					prefix: options.prefix ? `${options.prefix}/${prefix}` : prefix,
-				});
-			}
-		}
-
-		if (routes.public) {
-			await server.register(routes.public, options);
-		}
-
-		if (routes.authenticated) {
-			await server.register((instance, opts, done) => {
-				instance.addHook('onRequest', authHandler);
-				routes.authenticated?.(instance, opts, done);
-			}, options);
-		}
-	});
-
-	server.decorate('settings', new HiveSettings());
-	server.decorate('notifications', new HiveNotifier());
-
-	if (config.METRICS_ENABLED) {
-		server.decorate('metrics', new HiveMetrics());
-	}
-
-	const options: QueueOptions = {
-		connection: RedisConnectionOptions,
-		defaultJobOptions: {
-			removeOnComplete: true,
-			removeOnFail: true,
-		},
-	};
-
-	server.decorate('tasks', {
-		internal: new Queue('internal', options),
-		downloader: new Queue('downloader', options),
-		scanner: new Queue('scanner', options),
-	});
-
-	return server;
 }
 
 export const server = await buildServer();

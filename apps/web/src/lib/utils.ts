@@ -1,4 +1,11 @@
 import { parseDurationString } from '@hive/common';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import type { ClassValue } from 'clsx';
+
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
+}
 
 const UNITS = ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte', 'petabyte'];
 const BYTES_PER_KB = 1000;

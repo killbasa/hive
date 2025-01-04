@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Card from '$components/Card.svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import SearchInput from '$components/SearchInput.svelte';
-	import Pagination from '$components/navigation/Pagination.svelte';
 	import VideoCard from '$components/videos/VideoCard.svelte';
+	import Paginator from '$components/navigation/Paginator.svelte';
 	import type { PageData } from './$types';
 
 	let {
@@ -16,16 +16,21 @@
 	<title>{data.channel.name}</title>
 </svelte:head>
 
-<Card title="Videos ({data.total})">
-	<div>
-		<SearchInput placeholder="Filter videos" />
-	</div>
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-3 py-2">
-		{#each data.videos as video (video.id)}
-			<VideoCard {video} />
-		{/each}
-	</div>
-	{#snippet footer()}
-		<Pagination count={data.videos.length} total={data.total} />
-	{/snippet}
-</Card>
+<Card.Root>
+	<Card.Header>
+		<Card.Title>Videos ({data.total})</Card.Title>
+	</Card.Header>
+	<Card.Content>
+		<div>
+			<SearchInput placeholder="Filter videos" />
+		</div>
+		<div class="grid grid-cols-2 gap-4 lg:grid-cols-3 py-2">
+			{#each data.videos as video (video.id)}
+				<VideoCard {video} />
+			{/each}
+		</div>
+	</Card.Content>
+	<Card.Footer>
+		<Paginator perPage={24} total={data.total} />
+	</Card.Footer>
+</Card.Root>

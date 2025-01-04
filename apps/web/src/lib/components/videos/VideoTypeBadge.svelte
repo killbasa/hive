@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import type { Video } from '$lib/types/videos';
 
 	let {
@@ -9,9 +10,9 @@
 </script>
 
 {#if type === 'video'}
-	<span class="badge badge-neutral">Video</span>
+	<Badge variant="default">Video</Badge>
 {:else if type === 'short'}
-	<span class="badge badge-primary">Short</span>
+	<Badge variant="default">Short</Badge>
 {:else}
-	<span class="badge badge-success">Stream</span>
+	<Badge variant="default">Stream</Badge>
 {/if}
