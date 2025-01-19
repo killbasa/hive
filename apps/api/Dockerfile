@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:22.12.0-alpine3.21 AS base
+FROM node:22.13.0-alpine3.21 AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -9,7 +9,7 @@ RUN apk update --no-cache && \
 	apk add --no-cache \
 		python3=3.12.8-r1 \
 		ffmpeg=6.1.2-r1 \
-		nginx=1.26.2-r3 \
+		nginx=1.26.2-r4 \
 		supervisor=4.2.5-r5
 
 ## Depdencies ##
@@ -37,7 +37,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@9.15.2 && \
+	corepack use pnpm@9.15.4 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/api run build:prod && \

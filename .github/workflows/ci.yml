@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
 
       - name: Set up NodeJS
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: 22.12.0
+          node-version: 22.13.0
           cache: pnpm
 
       - name: Install dependencies
