@@ -44,11 +44,11 @@
 		"@opentelemetry/exporter-prometheus": "^0.57.1",
 		"@opentelemetry/sdk-node": "^0.57.1",
 		"@opentelemetry/semantic-conventions": "^1.28.0",
-		"@scalar/api-reference": "^1.25.105",
+		"@scalar/api-reference": "^1.25.108",
 		"@sinclair/typebox": "^0.34.14",
 		"argon2": "^0.41.1",
 		"better-sqlite3": "^11.8.1",
-		"bullmq": "^5.34.10",
+		"bullmq": "^5.35.0",
 		"cron-parser": "^4.9.0",
 		"drizzle-orm": "^0.38.4",
 		"fast-xml-parser": "^4.5.1",
@@ -58,17 +58,17 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@swc/core": "1.10.8",
+		"@swc/core": "1.10.9",
 		"@types/better-sqlite3": "^7.6.12",
 		"@types/ws": "^8.5.13",
-		"@vitest/coverage-v8": "^3.0.2",
+		"@vitest/coverage-v8": "^3.0.3",
 		"drizzle-kit": "^0.30.2",
 		"eslint": "^9.18.0",
 		"prettier": "^3.4.2",
 		"tsup": "^8.3.5",
 		"tsx": "^4.19.2",
 		"typescript": "5.7.3",
-		"vitest": "^3.0.2"
+		"vitest": "^3.0.3"
 	},
 	"lint-staged": {
 		"*.{js,cjs,ts}": [
