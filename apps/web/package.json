@@ -22,36 +22,36 @@
 	},
 	"dependencies": {
 		"@hive/common": "workspace:^",
-		"@tabler/icons-svelte": "^3.29.0",
-		"@tanstack/table-core": "^8.20.5",
-		"cron-parser": "^4.9.0",
+		"@tabler/icons-svelte": "^3.30.0",
+		"@tanstack/table-core": "^8.21.2",
+		"cron-parser": "^5.0.0",
 		"openapi-fetch": "^0.13.4",
-		"zod": "^3.24.1"
+		"zod": "^3.24.2"
 	},
 	"devDependencies": {
-		"@hive/eslint-config": "workspace:^",
+		"@killbasa/eslint-config": "^3.0.2",
 		"@sveltejs/adapter-node": "^5.2.12",
-		"@sveltejs/kit": "^2.16.1",
+		"@sveltejs/kit": "^2.17.2",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
-		"@types/node": "^22.10.10",
+		"@types/node": "^22.13.4",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "1.0.0-next.76",
+		"bits-ui": "1.1.0",
 		"clsx": "^2.1.1",
 		"daisyui": "^4.12.23",
-		"eslint": "^9.19.0",
-		"lucide-svelte": "^0.474.0",
-		"openapi-typescript": "^7.6.0",
-		"postcss": "^8.5.1",
-		"prettier": "^3.4.2",
+		"eslint": "^9.20.1",
+		"lucide-svelte": "^0.475.0",
+		"openapi-typescript": "^7.6.1",
+		"postcss": "^8.5.2",
+		"prettier": "^3.5.1",
 		"prettier-plugin-svelte": "^3.3.3",
-		"svelte": "^5.19.3",
+		"svelte": "^5.20.1",
 		"svelte-check": "^4.1.4",
-		"tailwind-merge": "^2.6.0",
+		"tailwind-merge": "^3.0.1",
 		"tailwind-variants": "^0.3.1",
-		"tailwindcss": "4.0.0",
+		"tailwindcss": "4.0.6",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "5.7.3",
-		"vite": "^6.0.11"
+		"vite": "^6.1.0"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte}": [
@@ -64,10 +64,10 @@
 	"engines": {
 		"node": "22.x"
 	},
-	"packageManager": "pnpm@9.15.4",
+	"packageManager": "pnpm@10.4.0",
 	"volta": {
-		"node": "22.13.1",
+		"node": "22.14.0",
 		"npm": "11.0.0",
-		"pnpm": "9.15.4"
+		"pnpm": "10.4.0"
 	}
 }

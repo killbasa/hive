@@ -25,18 +25,15 @@
 		"clean": "rm -rf node_modules && pnpm -r run clean"
 	},
 	"devDependencies": {
-		"@hive/eslint-config": "workspace:^",
+		"@killbasa/eslint-config": "^3.0.2",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.10.10",
-		"eslint": "^9.19.0",
-		"lint-staged": "^15.4.2",
-		"prettier": "^3.4.2",
+		"@types/node": "^22.13.4",
+		"eslint": "^9.20.1",
+		"lint-staged": "^15.4.3",
+		"prettier": "^3.5.1",
 		"typescript": "5.7.3",
-		"vitest": "^3.0.4"
-	},
-	"resolutions": {
-		"tailwindcss": "3.4.17"
+		"vitest": "^3.0.5"
 	},
 	"lint-staged": {
 		"*.{js,cjs}": [
@@ -49,10 +46,10 @@
 	"engines": {
 		"node": "22.x"
 	},
-	"packageManager": "pnpm@9.15.4",
+	"packageManager": "pnpm@10.4.0",
 	"volta": {
-		"node": "22.13.1",
+		"node": "22.14.0",
 		"npm": "11.0.0",
-		"pnpm": "9.15.4"
+		"pnpm": "10.4.0"
 	}
 }
