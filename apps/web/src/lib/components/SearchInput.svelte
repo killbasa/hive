@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Input from './ui/input/input.svelte';
 	import { updatePage } from '$lib/navigation';
 	import { debounce } from '@hive/common';
 	import type { FormEventHandler } from 'svelte/elements';
@@ -12,7 +13,7 @@
 		delay?: number;
 	} = $props();
 
-	let input: HTMLInputElement;
+	let input = $state<HTMLInputElement | null>(null);
 	let filterValue = $state(page.url.searchParams.get('search') ?? '');
 
 	const handleFilter: FormEventHandler<HTMLInputElement> = debounce(async () => {
@@ -27,15 +28,15 @@
 			{ noScroll: true },
 		);
 
-		input.focus();
+		input?.focus();
 	}, delay);
 </script>
 
-<input
+<Input
 	type="text"
 	class="input input-bordered focus:input-primary"
 	{placeholder}
 	bind:value={filterValue}
 	oninput={handleFilter}
-	bind:this={input}
+	bind:ref={input}
 />

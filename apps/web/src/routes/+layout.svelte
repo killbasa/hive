@@ -1,6 +1,5 @@
 <script lang="ts">
-	import '$lib/styles/global.css';
-	import '$lib/styles/tailwind.postcss';
+	import '$lib/styles/tailwind.css';
 	import '$lib/styles/typography.css';
 
 	import Toaster from '$components/Toaster.svelte';

@@ -15,3 +15,16 @@ export function getYtdlpVersion(): string {
 
 	return YTDLP_VERSION;
 }
+
+const TagRegex = /^refs\/tags\/(\d{4}.\d{2}.\d{2})$/;
+
+export function getYtdlpGitTag(): string {
+	// Need to use wget due to alpine images not having curl
+	const tags = execSync(`wget -qO- https://api.github.com/repos/yt-dlp/yt-dlp/git/matching-refs/tags`);
+	const arr = JSON.parse(tags.toString());
+	const latest = arr[arr.length - 1].ref;
+
+	const match = latest.match(TagRegex);
+	const latestTag = match[1];
+	return latestTag;
+}

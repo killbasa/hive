@@ -1,5 +1,6 @@
 <script lang="ts">
-	import cron from 'cron-parser';
+	import { parseCronExpression } from 'cron-schedule';
+	import type { Cron } from 'cron-schedule';
 
 	const timeFormatter = new Intl.DateTimeFormat('en-US', {
 		dateStyle: 'long',
@@ -25,16 +26,17 @@
 
 		let result = '';
 
-		for (let i = 0; i < 5; i++) {
-			result += timeFormatter.format(value?.next().getTime()) + '\n';
+		const next = value.getNextDates(5);
+		for (const date of next) {
+			result += timeFormatter.format(date.getTime()) + '\n';
 		}
 
 		return result;
 	}
 
-	function tryParseCron(value: string): cron.CronExpression | null {
+	function tryParseCron(value: string): Cron | null {
 		try {
-			return cron.parseExpression(value);
+			return parseCronExpression(value);
 		} catch {
 			return null;
 		}

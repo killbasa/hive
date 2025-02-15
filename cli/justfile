@@ -9,7 +9,7 @@ install: build
 	go install
 
 gen:
-	openapi-generator generate -i http://localhost:3001/spec.json \
+	openapi-generator generate -i ../apps/api/openapi.json \
 		-g go \
 		-o ./client \
 		--additional-properties=packageName=client,isGoSubmodule \

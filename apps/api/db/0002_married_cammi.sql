@@ -1,0 +1,1 @@
+ALTER TABLE `videos` ADD `members_only` integer DEFAULT false NOT NULL;

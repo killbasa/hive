@@ -21,14 +21,19 @@ export function humanFileSize(sizeBytes: number | bigint | string): string {
 }
 
 export function formatLinks(text: string): string {
-	text = text.replace(
-		/(?:https|http):\/\/\S+/g,
+	text = text.replaceAll(
+		/^(?:https|http):\/\/\S+$/g,
 		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
 	);
 
-	text = text.replace(
-		/#(\w+)/g,
+	text = text.replaceAll(
+		/^#(\w+)$/g,
 		'<a href="https://www.youtube.com/hashtag/$1" target="_blank" class="link link-primary">$&</a>',
+	);
+
+	text = text.replaceAll(
+		/^@(\w+)$/g,
+		'<a href="https://www.youtube.com/@$1" target="_blank" class="link link-primary">$&</a>',
 	);
 
 	return text;
@@ -42,7 +47,7 @@ export function formatTimestamps(videoId: string, text: string): string {
 			const seconds = parseDurationString(timestamp);
 
 			text = text.replace(
-				new RegExp(timestamp, 'g'), //
+				new RegExp(`^${timestamp}$`, 'g'), //
 				`<a href="/watch/${videoId}?t=${seconds}" class="link link-primary">${timestamp}</a>`,
 			);
 		}

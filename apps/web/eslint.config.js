@@ -1,4 +1,4 @@
-import eslintConfig from '@hive/eslint-config/svelte';
+import eslintConfig from '@killbasa/eslint-config/svelte';
 
 /**
  * @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigArray}

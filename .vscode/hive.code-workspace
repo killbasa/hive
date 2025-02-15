@@ -27,7 +27,7 @@
 			"packages": true,
 			"cli": true,
 			"**/coverage": true,
-			"**/node_modules": true,
+			"**/node_modules": false,
 		},
 		"typescript.tsdk": "./node_modules/typescript/lib",
 		"typescript.referencesCodeLens.enabled": true,
@@ -48,6 +48,7 @@
 			"editor.defaultFormatter": "golang.go",
 		},
 		"files.associations": {
+			"tailwind.css": "tailwindcss",
 			"*.css": "css",
 		},
 		"gopls": {

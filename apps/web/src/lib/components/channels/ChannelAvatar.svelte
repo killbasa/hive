@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
 
 	let {
 		channelId,
@@ -12,8 +13,6 @@
 	} = $props();
 </script>
 
-<div class="avatar {rest.class ?? ''}">
-	<div class="mask mask-circle h-{size} w-{size}">
-		<img src="{config.apiUrl}/assets/{channelId}/assets/avatar.jpg" alt="Channel avatar" />
-	</div>
-</div>
+<Avatar.Root class="flex h-{size} w-{size} {rest}">
+	<Avatar.Image src="{config.apiUrl}/assets/{channelId}/assets/avatar.jpg" alt="Channel avatar" />
+</Avatar.Root>

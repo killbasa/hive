@@ -15,11 +15,9 @@ export const channels = sqliteTable(
 		tags: text('tags').notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
 	},
-	(table) => {
-		return {
-			idx: index('channel_idx').on(table.id),
-		};
-	},
+	(table) => [
+		index('channel_idx').on(table.id), //
+	],
 );
 
 export const channelsRelations = relations(channels, ({ many }) => ({
@@ -50,14 +48,13 @@ export const videos = sqliteTable(
 		status: text('status', { enum: ['unknown', 'none', 'live', 'upcoming', 'past'] }).notNull(),
 		downloadStatus: text('download_status', { enum: ['ignored', 'pending', 'done'] }).notNull(),
 		updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+		membersOnly: integer('members_only', { mode: 'boolean' }).notNull().default(false),
 	},
-	(table) => {
-		return {
-			idx: index('video_idx').on(table.id),
-			channelIdx: index('video_channel_idx').on(table.channelId),
-			playlistIdx: index('video_playlist_idx').on(table.playlistId),
-		};
-	},
+	(table) => [
+		index('video_idx').on(table.id), //
+		index('video_channel_idx').on(table.channelId),
+		index('video_playlist_idx').on(table.playlistId),
+	],
 );
 
 export const videosRelations = relations(videos, ({ one }) => ({
@@ -85,12 +82,10 @@ export const playlists = sqliteTable(
 		title: text('title').notNull(),
 		description: text('description').notNull(),
 	},
-	(table) => {
-		return {
-			idx: index('playlist_idx').on(table.id),
-			channelIdx: index('playlist_channel_idx').on(table.channelId),
-		};
-	},
+	(table) => [
+		index('playlist_idx').on(table.id), //
+		index('playlist_channel_idx').on(table.channelId),
+	],
 );
 
 export const playlistsRelations = relations(channels, ({ many }) => ({
@@ -110,11 +105,9 @@ export const settings = sqliteTable(
 		cronDownloadPending: text('cron_download_pending'),
 		downloadLimit: integer('download_limit'),
 	},
-	(table) => {
-		return {
-			idx: index('setting_idx').on(table.id),
-		};
-	},
+	(table) => [
+		index('setting_idx').on(table.id), //
+	],
 );
 
 /**
@@ -129,10 +122,8 @@ export const users = sqliteTable(
 		password: text('password').notNull(),
 		apiKey: text('api_key'),
 	},
-	(table) => {
-		return {
-			idx: index('user_idx').on(table.id),
-			nameIdx: index('user_name_idx').on(table.name),
-		};
-	},
+	(table) => [
+		index('user_idx').on(table.id), //
+		index('user_name_idx').on(table.name),
+	],
 );

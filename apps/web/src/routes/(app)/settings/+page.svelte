@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Card from '$components/Card.svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import CardSection from '$components/CardSection.svelte';
-	import NumberInput from '$components/NumberInput.svelte';
-	import TextInput from '$components/TextInput.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
 	import CronPreview from '$lib/components/misc/CronPreview.svelte';
+	import Input from '$components/ui/input/input.svelte';
+	import Button from '$components/ui/button/button.svelte';
 	import { writable } from 'svelte/store';
 	import type { PageData } from './$types';
 	import type { FormEventHandler } from 'svelte/elements';
@@ -97,105 +97,131 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<Card title="Info">
-		<span>Version: {data.version.api}</span>
-		<span>
-			yt-dlp version:
-			<a
-				href="https://github.com/yt-dlp/yt-dlp/releases/tag/{data.version.ytdlp}"
-				target="_blank"
-				class="link-primary link"
-			>
-				{data.version.ytdlp}
-			</a>
-		</span>
-	</Card>
-	<Card title="Account">
-		<span class="text-lg">User: {data.user.name}</span>
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Info</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<span>Version: {data.version.api}</span>
+			<span>
+				yt-dlp version:
+				<a
+					href="https://github.com/yt-dlp/yt-dlp/releases/tag/{data.version.ytdlp}"
+					target="_blank"
+					class="link-primary link"
+				>
+					{data.version.ytdlp}
+				</a>
+			</span>
+		</Card.Content>
+	</Card.Root>
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Account</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<span class="text-lg">User: {data.user.name}</span>
 
-		<CardSection title="Session">
-			<button onclick={handleSubmit} class=" btn btn-error w-min">Logout</button>
-		</CardSection>
+			<CardSection title="Session">
+				<Button onclick={handleSubmit} class=" btn btn-error w-min">Logout</Button>
+			</CardSection>
 
-		<CardSection title="API key">
-			<div class="join">
-				<button class="btn input-bordered join-item">Copy</button>
-				<input
-					type="password"
-					name="api-key"
-					class="input input-bordered join-item focus:input-primary w-full"
-					bind:value={$auth.password}
-					required
-				/>
-			</div>
-		</CardSection>
+			<CardSection title="API key">
+				<div class="join">
+					<Button class="btn input-bordered join-item">Copy</Button>
+					<Input
+						type="password"
+						name="api-key"
+						class="input input-bordered join-item focus:input-primary w-full"
+						bind:value={$auth.password}
+						required
+					/>
+				</div>
+			</CardSection>
 
-		<CardSection title="Update account info">
-			<form onsubmit={handleAccountUpdate} class="flex flex-col gap-2">
-				<input
-					type="password"
-					name="new-password"
-					placeholder="New password"
-					class="input input-bordered focus:input-primary"
-					bind:value={$auth.password}
-					required
-				/>
-				<input
-					type="password"
-					name="old-password"
-					placeholder="Old password"
-					class="input input-bordered focus:input-primary"
-					bind:value={$auth.oldPassword}
-					required
-				/>
+			<CardSection title="Update account info">
+				<form onsubmit={handleAccountUpdate} class="flex flex-col gap-2">
+					<Input
+						type="password"
+						name="new-password"
+						placeholder="New password"
+						class="input input-bordered focus:input-primary"
+						bind:value={$auth.password}
+						required
+					/>
+					<Input
+						type="password"
+						name="old-password"
+						placeholder="Old password"
+						class="input input-bordered focus:input-primary"
+						bind:value={$auth.oldPassword}
+						required
+					/>
+					<div class="flex justify-end">
+						<button
+							class="btn btn-success"
+							type="submit"
+							disabled={accountUpdateDisabled}>Save</button
+						>
+					</div>
+				</form>
+			</CardSection>
+		</Card.Content>
+	</Card.Root>
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Schedules</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<form onsubmit={handleScheduleUpdate} class="flex flex-col gap-2">
+				<div class="grid grid-cols-2 gap-4">
+					<div class="flex flex-col gap-2">
+						<Input
+							id="check-subscriptions"
+							title="Check subscriptions"
+							bind:value={$schedule.checkSubscriptions}
+							onfocus={() => cronSelector.set('checkSubscriptions')}
+							onblur={() => cronSelector.set(null)}
+						/>
+						<Input
+							id="download-queue"
+							title="Download queue"
+							bind:value={$schedule.downloadPending}
+							onfocus={() => cronSelector.set('downloadPending')}
+							onblur={() => cronSelector.set(null)}
+						/>
+						<Input
+							id="update-channels"
+							title="Update channels"
+							bind:value={$schedule.channelMetadata}
+							onfocus={() => cronSelector.set('channelMetadata')}
+							onblur={() => cronSelector.set(null)}
+						/>
+					</div>
+					<CronPreview expression={$cronSelector ? $schedule[$cronSelector] : null} />
+				</div>
 				<div class="flex justify-end">
-					<button class="btn btn-success" type="submit" disabled={accountUpdateDisabled}
-						>Save</button
+					<Button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}
+						>Save</Button
 					>
 				</div>
 			</form>
-		</CardSection>
-	</Card>
-	<Card title="Schedules">
-		<form onsubmit={handleScheduleUpdate} class="flex flex-col gap-2">
-			<div class="grid grid-cols-2 gap-4">
-				<div class="flex flex-col gap-2">
-					<TextInput
-						id="check-subscriptions"
-						title="Check subscriptions"
-						bind:value={$schedule.checkSubscriptions}
-						onfocus={() => cronSelector.set('checkSubscriptions')}
-						onblur={() => cronSelector.set(null)}
-					/>
-					<TextInput
-						id="download-queue"
-						title="Download queue"
-						bind:value={$schedule.downloadPending}
-						onfocus={() => cronSelector.set('downloadPending')}
-						onblur={() => cronSelector.set(null)}
-					/>
-					<TextInput
-						id="update-channels"
-						title="Update channels"
-						bind:value={$schedule.channelMetadata}
-						onfocus={() => cronSelector.set('channelMetadata')}
-						onblur={() => cronSelector.set(null)}
-					/>
-				</div>
-				<CronPreview expression={$cronSelector ? $schedule[$cronSelector] : null} />
-			</div>
+		</Card.Content>
+	</Card.Root>
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Downloads</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<Input id="download-limit" title="Download speed limit (KB/s)" type="number" />
 			<div class="flex justify-end">
-				<button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}
-					>Save</button
-				>
+				<Button class="btn btn-success" type="button" disabled>Save</Button>
 			</div>
-		</form>
-	</Card>
-	<Card title="Downloads">
-		<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />
-		<div class="flex justify-end">
-			<button class="btn btn-success" type="button" disabled>Save</button>
-		</div>
-	</Card>
-	<Card title="File sharing"></Card>
+		</Card.Content>
+	</Card.Root>
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>File sharing</Card.Title>
+		</Card.Header>
+	</Card.Root>
 </section>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import { config } from '$lib/config';
 	import type { Video } from '$lib/types/videos';
 
@@ -32,11 +33,13 @@
 	</a>
 	<div class="p-2 flex gap-2">
 		{#if showIcon}
-			<a href="/channels/{video.channelId}" class="mask mask-circle h-12 w-12 min-w-12">
-				<img
-					src="{config.apiUrl}/assets/{video.channelId}/assets/avatar.jpg"
-					alt="Channel avatar"
-				/>
+			<a href="/channels/{video.channelId}">
+				<Avatar.Root>
+					<Avatar.Image
+						src="{config.apiUrl}/assets/{video.channelId}/assets/avatar.jpg"
+						alt="Channel avatar"
+					/>
+				</Avatar.Root>
 			</a>
 		{/if}
 		<span class="font-bold text-lg">{video.title}</span>
