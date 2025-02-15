@@ -1,8 +1,0 @@
-{
-	"name": "@hive/cli",
-	"private": true,
-	"scripts": {
-		"build": "just build",
-		"clean": "rm -rf bin"
-	}
-}
