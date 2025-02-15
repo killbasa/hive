@@ -20,6 +20,7 @@ export class YtdlpChannelArgs {
 			case 'thumbnail':
 				this.data.push('--output', `thumbnail:${data}`);
 				break;
+			case undefined:
 			default:
 				this.data.push('--output', data);
 		}

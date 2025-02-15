@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useSidebar } from './context.svelte.js';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/components/utils';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 

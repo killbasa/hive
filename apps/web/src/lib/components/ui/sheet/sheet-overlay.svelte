@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/components/utils';
 	import { Dialog as SheetPrimitive } from 'bits-ui';
 
 	let {
@@ -7,8 +7,6 @@
 		class: className,
 		...restProps
 	}: SheetPrimitive.OverlayProps = $props();
-
-	export { className as class };
 </script>
 
 <SheetPrimitive.Overlay

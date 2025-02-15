@@ -6,6 +6,8 @@ export default defineConfig({
 	dts: false,
 	entry: [
 		'src/main.ts', //
+		'src/server.ts',
+		'src/routes.ts',
 		'!src/**/*.spec.ts',
 		'!src/**/*.spec-util.ts',
 	],

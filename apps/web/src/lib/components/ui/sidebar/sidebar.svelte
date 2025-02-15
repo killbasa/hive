@@ -2,7 +2,7 @@
 	import { SIDEBAR_WIDTH_MOBILE } from './constants.js';
 	import { useSidebar } from './context.svelte.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/components/utils';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 
@@ -36,9 +36,7 @@
 	</div>
 {:else if sidebar.isMobile}
 	<Sheet.Root
-		controlledOpen
-		open={sidebar.openMobile}
-		onOpenChange={sidebar.setOpenMobile}
+		bind:open={() => sidebar.openMobile, (v) => sidebar.setOpenMobile(v)}
 		{...restProps}
 	>
 		<Sheet.Content

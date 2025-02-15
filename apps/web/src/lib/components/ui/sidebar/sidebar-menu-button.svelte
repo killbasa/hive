@@ -31,7 +31,7 @@
 <script lang="ts">
 	import { useSidebar } from './context.svelte.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/components/utils';
 	import { mergeProps } from 'bits-ui';
 	import type { WithElementRef, WithoutChildrenOrChild } from 'bits-ui';
 	import type { ComponentProps, Snippet } from 'svelte';

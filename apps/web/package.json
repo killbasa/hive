@@ -17,6 +17,8 @@
 		"check": "pnpm sync && svelte-check --tsconfig ./tsconfig.json",
 		"lint": "eslint --fix",
 		"format": "prettier --write .",
+		"test": "vitest --coverage --run",
+		"test:watch": "vitest --watch",
 		"openapi": "openapi-typescript ../api/openapi.json -o ./src/api.d.ts",
 		"clean": "rm -rf dist node_modules .svelte-kit"
 	},
@@ -24,7 +26,7 @@
 		"@hive/common": "workspace:^",
 		"@tabler/icons-svelte": "^3.30.0",
 		"@tanstack/table-core": "^8.21.2",
-		"cron-parser": "^5.0.0",
+		"cron-schedule": "^5.0.4",
 		"openapi-fetch": "^0.13.4",
 		"zod": "^3.24.2"
 	},
@@ -33,15 +35,14 @@
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.17.2",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@tailwindcss/vite": "^4.0.6",
 		"@types/node": "^22.13.4",
-		"autoprefixer": "^10.4.20",
 		"bits-ui": "1.1.0",
 		"clsx": "^2.1.1",
-		"daisyui": "^4.12.23",
+		"daisyui": "5.0.0-beta.8",
 		"eslint": "^9.20.1",
 		"lucide-svelte": "^0.475.0",
 		"openapi-typescript": "^7.6.1",
-		"postcss": "^8.5.2",
 		"prettier": "^3.5.1",
 		"prettier-plugin-svelte": "^3.3.3",
 		"svelte": "^5.20.1",
@@ -51,7 +52,7 @@
 		"tailwindcss": "4.0.6",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "5.7.3",
-		"vite": "^6.1.0"
+		"vite": "6.1.0"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte}": [
@@ -66,7 +67,7 @@
 	},
 	"packageManager": "pnpm@10.4.0",
 	"volta": {
-		"node": "22.14.0",
+		"node": "22.13.1",
 		"npm": "11.0.0",
 		"pnpm": "10.4.0"
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
+	import { cn } from '$lib/components/utils';
 	import type { HTMLTdAttributes } from 'svelte/elements';
 	import type { WithElementRef } from 'bits-ui';
 
@@ -13,7 +13,10 @@
 
 <td
 	bind:this={ref}
-	class={cn('p-4 align-middle [&:has([role=checkbox])]:pr-0', className)}
+	class={cn(
+		'p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+		className,
+	)}
 	{...restProps}
 >
 	{@render children?.()}

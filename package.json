@@ -33,7 +33,7 @@
 		"lint-staged": "^15.4.3",
 		"prettier": "^3.5.1",
 		"typescript": "5.7.3",
-		"vitest": "^3.0.5"
+		"vitest": "3.0.5"
 	},
 	"lint-staged": {
 		"*.{js,cjs}": [
@@ -48,8 +48,19 @@
 	},
 	"packageManager": "pnpm@10.4.0",
 	"volta": {
-		"node": "22.14.0",
+		"node": "22.13.1",
 		"npm": "11.0.0",
 		"pnpm": "10.4.0"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@swc/core",
+			"argon2",
+			"better-sqlite3",
+			"esbuild",
+			"msgpackr-extract",
+			"protobufjs",
+			"vue-demi"
+		]
 	}
 }

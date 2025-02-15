@@ -70,9 +70,10 @@ export async function buildServer(): Promise<FastifyInstance> {
 	});
 	await server.register(FastifyWebsocket);
 
-	/**
-	 * Decorators
-	 */
+	return server;
+}
+
+export function decorate(server: FastifyInstance): void {
 	server.decorate('settings', new HiveSettings());
 	server.decorate('notifications', new HiveNotifier());
 
@@ -93,8 +94,6 @@ export async function buildServer(): Promise<FastifyInstance> {
 		downloader: new Queue('downloader', options),
 		scanner: new Queue('scanner', options),
 	});
-
-	return server;
 }
 
 export async function registerSwagger(server: FastifyInstance): Promise<void> {

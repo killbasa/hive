@@ -1,10 +1,10 @@
 import { server } from '../../server.js';
-import cron from 'cron-parser';
-import type { CronExpression } from 'cron-parser';
+import { parseCronExpression } from 'cron-schedule';
+import type { Cron } from 'cron-schedule';
 
-export function parseCron(data: string): CronExpression | null {
+export function parseCron(data: string): Cron | null {
 	try {
-		return cron.parseExpression(data);
+		return parseCronExpression(data);
 	} catch (err) {
 		server.log.error(err);
 		return null;

@@ -1,5 +1,7 @@
+ARG ALPINE_VERSION=3.20
+
 ## Base ##
-FROM node:22.14.0-alpine3.21 AS base
+FROM node:22.13.1-alpine${ALPINE_VERSION} AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -7,15 +9,15 @@ FROM node:22.14.0-alpine3.21 AS base
 # supervisor: run multiple processes in a container
 RUN apk update --no-cache && \
 	apk add --no-cache \
-		python3=3.12.8-r1 \
-		ffmpeg=6.1.2-r1 \
-		nginx=1.26.2-r4 \
+		python3=3.12.9-r0 \
+		ffmpeg=6.1.1-r8 \
+		nginx=1.26.2-r0 \
 		supervisor=4.2.5-r5
 
 ## Depdencies ##
-FROM alpine:3.20 AS dependencies
+FROM alpine:${ALPINE_VERSION} AS dependencies
 
-RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2024.11.18/yt-dlp \
+RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2025.01.26/yt-dlp \
 		-O /tmp/yt-dlp && \
 	chmod +x /tmp/yt-dlp
 
@@ -26,12 +28,14 @@ WORKDIR /temp
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+# ref: https://github.com/nodejs/corepack/issues/612#issuecomment-2631462297
+ENV COREPACK_INTEGRITY_KEYS="{\"npm\":[{\"expires\":\"2025-01-29T00:00:00.000Z\",\"keyid\":\"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA\",\"keytype\":\"ecdsa-sha2-nistp256\",\"scheme\":\"ecdsa-sha2-nistp256\",\"key\":\"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg==\"},{\"expires\":null,\"keyid\":\"SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U\",\"keytype\":\"ecdsa-sha2-nistp256\",\"scheme\":\"ecdsa-sha2-nistp256\",\"key\":\"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY6Ya7W++7aUPzvMTrezH6Ycx3c+HOKYCcNGybJZSCJq/fd7Qa8uuAKtdIkUQtQiEKERhAmE5lMMJhP8OkDOa2g==\"}]}"
 
 # If there's no sqlite pre-built binary, we need to build it
 RUN apk add --no-cache \
 	build-base=0.5-r3
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json .npmrc ./
 COPY apps/api ./apps/api/
 COPY packages ./packages/
 

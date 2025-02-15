@@ -1,12 +1,13 @@
 import { TypeBoxValidatorCompiler } from '@fastify/type-provider-typebox';
-import Fastify from 'fastify';
+import { fastify } from 'fastify';
 import { writeFile } from 'node:fs/promises';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
 const run = async (): Promise<void> => {
-	const { registerSwagger, routes } = await import('../dist/main.js');
+	const { registerSwagger } = await import('../dist/server.js');
+	const { routes } = await import('../dist/routes.js');
 
-	const server = Fastify({
+	const server = fastify({
 		disableRequestLogging: true,
 	})
 		.withTypeProvider<TypeBoxTypeProvider>()

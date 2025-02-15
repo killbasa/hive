@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config '../../../tailwind.config.ts';
+@plugin 'daisyui';
 
 @layer base {
 	:root {
@@ -63,13 +63,15 @@
 		--sidebar-border: 240 3.7% 15.9%;
 		--sidebar-ring: 217.2 91.2% 59.8%;
 	}
-}
 
-@layer base {
 	* {
 		@apply border-border;
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	.btn {
+		@apply !transform-none;
 	}
 }
