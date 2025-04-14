@@ -2,7 +2,6 @@ import { UserPatchBody } from './body.js';
 import { UserSchema } from './schema.js';
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema.js';
-import { config } from '../../lib/config.js';
 import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
 import { cookies } from '../auth/cookies.js';
 import { eq } from 'drizzle-orm';
@@ -87,7 +86,7 @@ export const userRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(config.COOKIE_NAME, cookie)
+					.clearCookie(server.config.COOKIE_NAME, cookie)
 					.code(204)
 					.send();
 			},

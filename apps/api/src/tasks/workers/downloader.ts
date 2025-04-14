@@ -1,4 +1,3 @@
-import { config } from '../../lib/config.js';
 import { server } from '../../server.js';
 import { handleDownloadVideoTask } from '../handlers/downloader.js';
 import { Worker } from 'bullmq';
@@ -25,9 +24,9 @@ export async function initDownloaderWorker(): Promise<void> {
 		},
 		{
 			connection: {
-				host: config.REDIS_HOST,
-				port: config.REDIS_PORT,
-				password: config.REDIS_PASSWORD,
+				host: server.config.REDIS_HOST,
+				port: server.config.REDIS_PORT,
+				password: server.config.REDIS_PASSWORD,
 			},
 			concurrency: 1,
 		},

@@ -1,4 +1,3 @@
-import { config } from './config.js';
 import { API_HOST } from './constants.js';
 import { getYtdlpGitTag, getYtdlpVersion } from './ytdlp/constants.js';
 import { server } from '../server.js';
@@ -20,7 +19,7 @@ export async function startupLog(): Promise<void> {
 	const updateString = tag === version ? '' : ` (latest: ${tag})`;
 
 	print(`env:           ${process.env.NODE_ENV}`);
-	print(`version:       ${config.VERSION}`);
+	print(`version:       ${server.config.VERSION}`);
 	print(`yt-dlp:        ${version}${updateString}`);
 	print(`proxy:         http://${API_HOST}:3001`);
 	print(`documentation: http://${API_HOST}:3001/reference`);

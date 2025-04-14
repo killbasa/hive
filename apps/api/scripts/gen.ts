@@ -26,6 +26,9 @@ const server = fastify({
 	.withTypeProvider<TypeBoxTypeProvider>()
 	.setValidatorCompiler(TypeBoxValidatorCompiler);
 
+server.decorate('config', {
+	VERSION: process.env.npm_package_version,
+});
 await registerSwagger(server);
 await server.register(routes);
 await server.ready();

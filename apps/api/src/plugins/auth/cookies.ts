@@ -1,9 +1,9 @@
-import { config } from '../../lib/config.js';
 import { isDev } from '../../lib/constants.js';
+import { server } from '../../server.js';
 import { Time } from '@hive/common';
 import type { CookieSerializeOptions } from '@fastify/cookie';
 
-const cookieDomain = new URL(config.AUTH_ORIGIN).hostname;
+const cookieDomain = new URL(server.config.AUTH_ORIGIN).hostname;
 
 export const cookies = {
 	create(options: { extendedExpiry: boolean } = { extendedExpiry: true }): CookieSerializeOptions {

@@ -1,4 +1,3 @@
-import { config } from '../../lib/config.js';
 import { scanAllChannels } from '../../plugins/videos/utils.js';
 import { server } from '../../server.js';
 import { downloadPendingVideos } from '../handlers/downloadPending.js';
@@ -40,9 +39,9 @@ export async function initInternalWorker(): Promise<void> {
 		},
 		{
 			connection: {
-				host: config.REDIS_HOST,
-				port: config.REDIS_PORT,
-				password: config.REDIS_PASSWORD,
+				host: server.config.REDIS_HOST,
+				port: server.config.REDIS_PORT,
+				password: server.config.REDIS_PASSWORD,
 			},
 		},
 	);

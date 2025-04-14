@@ -1,4 +1,3 @@
-import { config } from '../../lib/config.js';
 import { MessageResponse } from '../../lib/responses.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
 import { HiveMetrics } from '../../lib/otel/MetricsClient.js';
@@ -85,7 +84,7 @@ export const coreRoutes: HiveRoutes = {
 			},
 			async (_, reply): Promise<void> => {
 				await reply.status(200).send({
-					api: config.VERSION,
+					api: server.config.VERSION,
 					ytdlp: ytdlpVersion,
 				});
 			},

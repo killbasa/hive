@@ -1,9 +1,9 @@
-import { config } from './lib/config.js';
 import { isDev, isTesting } from './lib/constants.js';
 import { HiveMetrics } from './lib/otel/MetricsClient.js';
 import { authHandler } from './plugins/auth/handler.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
 import { HiveSettings } from './plugins/settings/service.js';
+import { loadConfig } from './lib/config.js';
 import FastifyCookie from '@fastify/cookie';
 import FastifyCors from '@fastify/cors';
 import FastifyHelmet from '@fastify/helmet';
@@ -44,6 +44,9 @@ export async function buildServer(): Promise<FastifyInstance> {
 		.withTypeProvider<TypeBoxTypeProvider>()
 		.setValidatorCompiler(TypeBoxValidatorCompiler);
 
+	const config = loadConfig();
+	server.decorate('config', config);
+
 	/**
 	 * Plugins
 	 */
@@ -78,15 +81,15 @@ export function decorate(server: FastifyInstance): void {
 	server.decorate('settings', new HiveSettings());
 	server.decorate('notifications', new HiveNotifier());
 
-	if (config.METRICS_ENABLED) {
+	if (server.config.METRICS_ENABLED) {
 		server.decorate('metrics', new HiveMetrics());
 	}
 
 	const options: QueueOptions = {
 		connection: {
-			host: config.REDIS_HOST,
-			port: config.REDIS_PORT,
-			password: config.REDIS_PASSWORD,
+			host: server.config.REDIS_HOST,
+			port: server.config.REDIS_PORT,
+			password: server.config.REDIS_PASSWORD,
 		},
 		defaultJobOptions: {
 			removeOnComplete: true,
@@ -129,7 +132,7 @@ export async function registerSwagger(server: FastifyInstance): Promise<void> {
 			openapi: '3.1.0',
 			info: {
 				title: 'Hive',
-				version: config.VERSION,
+				version: server.config.VERSION,
 				description: 'Hive API',
 			},
 			tags: [

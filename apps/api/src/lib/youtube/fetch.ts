@@ -1,4 +1,4 @@
-import { config } from '../config.js';
+import { server } from '../../server.js';
 import { isTesting } from '../constants.js';
 
 const YT_BASE_URL = 'https://www.googleapis.com/youtube';
@@ -16,7 +16,7 @@ export async function ytFetch<T>(
 	}
 
 	const url = new URL(`${YT_BASE_URL}/${YT_API_VERSION}${path}`);
-	url.searchParams.set('key', config.YT_API_KEY);
+	url.searchParams.set('key', server.config.YT_API_KEY);
 
 	if (options.resources) {
 		url.searchParams.set('part', options.resources.join(','));

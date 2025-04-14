@@ -3,7 +3,6 @@ import { credentialAuthRoutes } from './credentials/routes.js';
 import { apikeyAuthRoutes } from './apikey/routes.js';
 import { UserExistsBody } from './body.js';
 import { UserExistsSchema } from './schema.js';
-import { config } from '../../lib/config.js';
 import { EmptyResponse } from '../../lib/responses.js';
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema.js';
@@ -51,7 +50,7 @@ export const authRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(config.COOKIE_NAME, cookie)
+					.clearCookie(server.config.COOKIE_NAME, cookie)
 					.code(200)
 					.send();
 			},

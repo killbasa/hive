@@ -1,6 +1,5 @@
 import { decorate, registerSwagger, server } from './server.js';
 import { initDb } from './db/client.js';
-import { config } from './lib/config.js';
 import { API_HOST, DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
 import { setupGracefulShutdown, startupLog } from './lib/lifecycle.js';
 import { validateDirs } from './lib/utils.js';
@@ -20,7 +19,7 @@ const start = async (): Promise<void> => {
 		await server.settings.init();
 		await server.register(routes);
 
-		await server.listen({ host: API_HOST, port: config.PORT });
+		await server.listen({ host: API_HOST, port: server.config.PORT });
 
 		await initHandlers();
 
