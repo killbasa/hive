@@ -1,7 +1,7 @@
 {
 	"name": "@hive/common",
 	"version": "0.0.1",
-	"author": "killbasa <contact@shaneb.xyz>",
+	"author": "killbasa <git@killbasa.com>",
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
@@ -12,6 +12,9 @@
 			"require": "./src/index.ts"
 		}
 	},
+	"files": [
+		"src/"
+	],
 	"scripts": {
 		"check": "tsc",
 		"lint": "eslint --fix",

@@ -5,7 +5,7 @@ import (
 )
 
 func Client() *client.APIClient {
-	cfg := &client.Configuration{
+	clientCfg := &client.Configuration{
 		UserAgent: "hive-cli/0.0.1",
 		Debug:     false,
 		Servers: client.ServerConfigurations{
@@ -13,8 +13,12 @@ func Client() *client.APIClient {
 				URL: cfg.Server.URL,
 			},
 		},
+		DefaultHeader: map[string]string{
+			// TODO - use api key
+			"Cookie": "hive=" + cfg.Authentication.ApiKey,
+		},
 	}
 
-	return client.NewAPIClient(cfg)
+	return client.NewAPIClient(clientCfg)
 
 }

@@ -1,10 +1,10 @@
 {
 	"name": "@hive/eslint-config",
+	"version": "0.0.1",
 	"author": "killbasa <git@killbasa.com>",
-	"version": "3.1.3",
+	"license": "AGPL-3.0-or-later",
+	"private": true,
 	"type": "module",
-	"main": "dist/cjs/index.cjs",
-	"module": "dist/esm/index.js",
 	"exports": {
 		".": {
 			"import": {
@@ -40,9 +40,9 @@
 	},
 	"dependencies": {
 		"@eslint/js": "^9.24.0",
-		"@typescript-eslint/eslint-plugin": "^8.29.1",
-		"@typescript-eslint/parser": "^8.29.1",
-		"@typescript-eslint/utils": "^8.29.1",
+		"@typescript-eslint/eslint-plugin": "^8.30.1",
+		"@typescript-eslint/parser": "^8.30.1",
+		"@typescript-eslint/utils": "^8.30.1",
 		"eslint": "^9.24.0",
 		"eslint-import-resolver-typescript": "^4.3.2",
 		"eslint-plugin-import": "^2.30.0",
@@ -51,7 +51,7 @@
 		"globals": "^16.0.0",
 		"prettier": "^3.5.3",
 		"svelte-eslint-parser": "^1.1.2",
-		"typescript-eslint": "^8.29.1"
+		"typescript-eslint": "^8.30.1"
 	},
 	"devDependencies": {
 		"tsup": "^8.4.0",
@@ -64,15 +64,6 @@
 		"*.{js,ts,json}": [
 			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
 		]
-	},
-	"homepage": "https://github.com/killbasa/js-utils/tree/main/packages/eslint-config",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/killbasa/js-utils.git",
-		"directory": "packages/eslint-config"
-	},
-	"bugs": {
-		"url": "https://github.com/killbasa/js-utils/issues"
 	},
 	"packageManager": "pnpm@10.8.0",
 	"volta": {

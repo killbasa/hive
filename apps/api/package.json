@@ -1,7 +1,7 @@
 {
 	"name": "@hive/api",
 	"version": "0.0.1",
-	"author": "killbasa <contact@shaneb.xyz>",
+	"author": "killbasa <git@killbasa.com>",
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
@@ -61,7 +61,7 @@
 	"devDependencies": {
 		"@killbasa/ts-config": "^1.0.0",
 		"@scalar/types": "^0.1.7",
-		"@swc/core": "1.11.20",
+		"@swc/core": "1.11.21",
 		"@types/better-sqlite3": "^7.6.13",
 		"@types/ws": "^8.18.1",
 		"@vitest/coverage-v8": "3.1.1",

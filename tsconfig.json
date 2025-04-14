@@ -3,8 +3,8 @@
 	"compilerOptions": {
 		"module": "Node18",
 		"moduleResolution": "Node16",
+		"noEmit": true,
 		"erasableSyntaxOnly": true,
 		"types": ["vitest/globals"]
-	},
-	"exclude": ["data", "node_modules"]
+	}
 }

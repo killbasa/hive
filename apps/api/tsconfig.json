@@ -1,7 +1,6 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"noEmit": true,
 		"tsBuildInfoFile": "node_modules/.cache/hive/.tsbuildinfo"
 	},
 	"include": ["src"],

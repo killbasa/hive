@@ -1,3 +1,2 @@
 @import 'tailwindcss';
-@plugin "daisyui";
-@config '../../../tailwind.config.ts';
+@plugin 'daisyui';
