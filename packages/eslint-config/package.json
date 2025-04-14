@@ -1,0 +1,82 @@
+{
+	"name": "@hive/eslint-config",
+	"author": "killbasa <git@killbasa.com>",
+	"version": "3.1.3",
+	"type": "module",
+	"main": "dist/cjs/index.cjs",
+	"module": "dist/esm/index.js",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.cjs"
+			}
+		},
+		"./svelte": {
+			"import": {
+				"types": "./dist/esm/svelte.d.ts",
+				"default": "./dist/esm/svelte.js"
+			},
+			"require": {
+				"types": "./dist/cjs/svelte.d.ts",
+				"default": "./dist/cjs/svelte.cjs"
+			}
+		}
+	},
+	"files": [
+		"dist/"
+	],
+	"scripts": {
+		"build": "tsup && mv dist/cjs/index.d.cts dist/cjs/index.d.ts && mv dist/cjs/svelte.d.cts dist/cjs/svelte.d.ts",
+		"format": "prettier --write .",
+		"prepublish": "pnpm build"
+	},
+	"peerDependencies": {
+		"eslint": "^9"
+	},
+	"dependencies": {
+		"@eslint/js": "^9.24.0",
+		"@typescript-eslint/eslint-plugin": "^8.29.1",
+		"@typescript-eslint/parser": "^8.29.1",
+		"@typescript-eslint/utils": "^8.29.1",
+		"eslint": "^9.24.0",
+		"eslint-import-resolver-typescript": "^4.3.2",
+		"eslint-plugin-import": "^2.30.0",
+		"eslint-plugin-prettier": "^5.2.6",
+		"eslint-plugin-svelte": "^3.5.1",
+		"globals": "^16.0.0",
+		"prettier": "^3.5.3",
+		"svelte-eslint-parser": "^1.1.2",
+		"typescript-eslint": "^8.29.1"
+	},
+	"devDependencies": {
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.3"
+	},
+	"lint-staged": {
+		"*.{js,ts}": [
+			"eslint --fix"
+		],
+		"*.{js,ts,json}": [
+			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
+		]
+	},
+	"homepage": "https://github.com/killbasa/js-utils/tree/main/packages/eslint-config",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/killbasa/js-utils.git",
+		"directory": "packages/eslint-config"
+	},
+	"bugs": {
+		"url": "https://github.com/killbasa/js-utils/issues"
+	},
+	"packageManager": "pnpm@10.8.0",
+	"volta": {
+		"node": "23.11.0",
+		"pnpm": "10.8.0"
+	}
+}

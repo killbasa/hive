@@ -17,6 +17,7 @@ export const userRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get the user for the current request',
 					tags: ['Users'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: UserSchema,
 						404: EmptyResponse('User not found'),
@@ -46,6 +47,7 @@ export const userRoutes: HiveRoutes = {
 				schema: {
 					description: 'Update a user',
 					tags: ['Users'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: UserPatchBody,
 					response: {
 						204: EmptyResponse('User updated successfully'),

@@ -14,6 +14,7 @@ export const downloadsRoutes: HiveRoutes = {
 				schema: {
 					description: 'Start downloading the currently pending videos',
 					tags: ['Downloads'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: DownloadStartBody,
 					response: {
 						200: EmptyResponse('Download started successfully'),
@@ -35,6 +36,7 @@ export const downloadsRoutes: HiveRoutes = {
 				schema: {
 					description: 'Stop all downloads',
 					tags: ['Downloads'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						201: EmptyResponse('Downloads stopped successfully'),
 					},
@@ -65,6 +67,7 @@ export const downloadsRoutes: HiveRoutes = {
 				schema: {
 					description: 'Websocket for download updates',
 					tags: ['Websockets'],
+					security: [{ apikey: ['x-api-key'] }],
 				},
 			},
 			(socket) => {
@@ -85,6 +88,7 @@ export const downloadsRoutes: HiveRoutes = {
 			{
 				schema: {
 					tags: ['Downloads'],
+					security: [{ apikey: ['x-api-key'] }],
 				},
 			},
 			() => {

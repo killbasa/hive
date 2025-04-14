@@ -1,6 +1,7 @@
 import { config } from '../../lib/config.js';
 import { MessageResponse } from '../../lib/responses.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
+import { HiveMetrics } from '../../lib/otel/MetricsClient.js';
 import { Type } from '@fastify/type-provider-typebox';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
@@ -50,7 +51,7 @@ export const coreRoutes: HiveRoutes = {
 
 				await reply //
 					.status(200)
-					.header('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')
+					.header('Content-Type', HiveMetrics.contentType)
 					.send(metrics);
 			},
 		);
@@ -73,6 +74,7 @@ export const coreRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get the version numbers for Hive',
 					tags: ['Core'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: Type.Object({
 							api: Type.String(),

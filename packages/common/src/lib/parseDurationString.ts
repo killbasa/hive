@@ -1,4 +1,4 @@
-import { Time } from '../enums';
+import { Time } from '../enums.js';
 
 export function parseDurationString(value: string | undefined): number | null {
 	if (typeof value !== 'string') {

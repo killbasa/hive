@@ -9,7 +9,7 @@ export const referenceRoutes: HiveRoutes = {
 			{
 				schema: {
 					description: 'Get the OpenAPI JSON spec',
-					tags: ['Open API'],
+					tags: ['OpenAPI'],
 				},
 			},
 			async (_, reply): Promise<void> => {
@@ -26,7 +26,7 @@ export const referenceRoutes: HiveRoutes = {
 			{
 				schema: {
 					description: 'Get the OpenAPI YAML spec',
-					tags: ['Open API'],
+					tags: ['OpenAPI'],
 				},
 			},
 			async (_, reply): Promise<void> => {

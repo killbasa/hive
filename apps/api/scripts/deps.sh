@@ -18,7 +18,7 @@ echo "yt-dlp updated to $($ytdlp_path --version)"
 
 if [ "$(uname)" == "Darwin" ]; then
 	# ref: https://github.com/yt-dlp/FFmpeg-Builds/issues/67
-	echo "FFMpeg builds not available for Mac OS X"
+	echo "FFMpeg builds not available for MacOS"
 	exit 0
 fi
 

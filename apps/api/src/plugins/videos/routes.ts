@@ -17,6 +17,7 @@ export const videoRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get a list of videos',
 					tags: ['Videos'],
+					security: [{ apikey: ['x-api-key'] }],
 					querystring: VideoListGetQuery,
 					response: {
 						200: VideoListSchema,
@@ -81,6 +82,7 @@ export const videoRoutes: HiveRoutes = {
 				schema: {
 					description: 'Ignore videos',
 					tags: ['Videos'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: VideoIgnoreBody,
 					response: {
 						204: EmptyResponse('Videos IDs ignored'),
@@ -106,6 +108,7 @@ export const videoRoutes: HiveRoutes = {
 				schema: {
 					description: 'Scan all channels for new videos',
 					tags: ['Videos'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						201: EmptyResponse('Scan started successfully'),
 					},
@@ -124,6 +127,7 @@ export const videoRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get a video',
 					tags: ['Videos'],
+					security: [{ apikey: ['x-api-key'] }],
 					params: VideoGetQuery,
 					response: {
 						200: VideoSchema,
@@ -154,6 +158,7 @@ export const videoRoutes: HiveRoutes = {
 				schema: {
 					description: 'Update a video',
 					tags: ['Videos'],
+					security: [{ apikey: ['x-api-key'] }],
 					params: VideoPatchQuery,
 					body: VideoPatchBody,
 					response: {

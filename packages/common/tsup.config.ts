@@ -15,4 +15,5 @@ export default defineConfig({
 	target: 'esnext',
 	treeshake: true,
 	tsconfig: './tsconfig.json',
+	outDir: 'dist',
 });

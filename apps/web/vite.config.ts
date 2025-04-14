@@ -24,5 +24,6 @@ export default defineConfig({
 			exclude: [...(configDefaults.coverage.exclude ?? []), './src/lib/components/**'],
 		},
 		clearMocks: true,
+		mockReset: true,
 	},
 });

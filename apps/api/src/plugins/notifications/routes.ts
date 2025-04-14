@@ -9,6 +9,7 @@ export const notificationRoutes: HiveRoutes = {
 				schema: {
 					description: 'Websocket for server notifications',
 					tags: ['Websockets'],
+					security: [{ apikey: ['x-api-key'] }],
 				},
 			},
 			(socket) => {

@@ -5,9 +5,7 @@
 	},
 	"include": [
 		"src",
-		".lintstagedrc.js",
 		"eslint.config.js",
-		"postcss.config.cjs",
 		"svelte.config.js",
 		"tailwind.config.ts",
 		"vite.config.ts"

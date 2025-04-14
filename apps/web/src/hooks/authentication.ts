@@ -2,8 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit';
 
 export const authentication: Handle = async ({ event, resolve }) => {
-	const { cookies } = event;
-	const path = new URL(event.request.url).pathname;
+	const { cookies, request } = event;
+	const path = new URL(request.url).pathname;
 
 	const cookie = cookies.get('hive');
 
@@ -15,13 +15,9 @@ export const authentication: Handle = async ({ event, resolve }) => {
 		redirect(307, '/login');
 	}
 
-	if (path === '/logout') {
-		return resolve(event);
-	}
-
-	if (path === '/signup' || path === '/login') {
+	if (path === '/login') {
 		redirect(307, '/');
 	}
 
-	return await resolve(event);
+	return resolve(event);
 };

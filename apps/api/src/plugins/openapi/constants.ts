@@ -1,6 +1,8 @@
 import { isDev } from '../../lib/constants.js';
 import { resolve } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
+import type { z } from 'zod';
+import type { apiReferenceConfigurationSchema } from '@scalar/types/api-reference';
 
 export const ScalarHTML = getScalarHTML();
 export const ScalarJS = getScalarJS();
@@ -21,6 +23,13 @@ export const ScalarContentSecurityPolicies: string = [
 ].join('; ');
 
 function getScalarHTML(): string {
+	const config: Partial<z.infer<typeof apiReferenceConfigurationSchema>> = {
+		spec: {
+			url: '/spec.json',
+		},
+		isEditable: false,
+	};
+
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -34,7 +43,11 @@ function getScalarHTML(): string {
 		</style>
 	</head>
 		<body>
-			<script id="api-reference" data-url="/spec.json"></script>
+			<script
+				id="api-reference"
+				type="application/json"
+				data-configuration="${JSON.stringify(config).split('"').join('&quot;')}">
+			</script>
 			<script src="/scalar.js"></script>
 		</body>
 	</html>

@@ -93,6 +93,13 @@
           "Core"
         ],
         "description": "Get the version numbers for Hive",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -122,7 +129,7 @@
     "/spec.json": {
       "get": {
         "tags": [
-          "Open API"
+          "OpenAPI"
         ],
         "description": "Get the OpenAPI JSON spec",
         "responses": {
@@ -135,7 +142,7 @@
     "/spec.yaml": {
       "get": {
         "tags": [
-          "Open API"
+          "OpenAPI"
         ],
         "description": "Get the OpenAPI YAML spec",
         "responses": {
@@ -324,12 +331,66 @@
         "responses": {}
       }
     },
+    "/auth/exists": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Check if a user exists",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "minLength": 3,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "exists"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/verify": {
       "get": {
         "tags": [
           "Auth"
         ],
         "description": "Verify the user is authenticated",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "User is authenticated"
@@ -343,6 +404,13 @@
           "Auth"
         ],
         "description": "Logout the user",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Logged out successfully"
@@ -356,6 +424,13 @@
           "Users"
         ],
         "description": "Get the user for the current request",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -409,6 +484,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "204": {
             "description": "User updated successfully"
@@ -441,6 +523,13 @@
           "Settings"
         ],
         "description": "Get the settings",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -557,6 +646,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "204": {
             "description": "Settings updated successfully"
@@ -579,6 +675,13 @@
             "in": "query",
             "name": "page",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
           }
         ],
         "responses": {
@@ -659,6 +762,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "201": {
             "description": "Channel added successfully"
@@ -718,6 +828,13 @@
             "in": "path",
             "name": "channelId",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
           }
         ],
         "responses": {
@@ -780,6 +897,13 @@
             "required": true
           }
         ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "201": {
             "description": "Scan started successfully"
@@ -801,6 +925,13 @@
             "in": "path",
             "name": "channelId",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
           }
         ],
         "responses": {
@@ -989,6 +1120,13 @@
             "in": "query",
             "name": "inProgress",
             "required": false
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
           }
         ],
         "responses": {
@@ -1206,6 +1344,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "204": {
             "description": "Videos IDs ignored"
@@ -1219,6 +1364,13 @@
           "Videos"
         ],
         "description": "Scan all channels for new videos",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "201": {
             "description": "Scan started successfully"
@@ -1240,6 +1392,13 @@
             "in": "path",
             "name": "videoId",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
           }
         ],
         "responses": {
@@ -1465,6 +1624,13 @@
             "required": true
           }
         ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -1665,6 +1831,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Download started successfully"
@@ -1678,6 +1851,13 @@
           "Downloads"
         ],
         "description": "Stop all downloads",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "201": {
             "description": "Downloads stopped successfully"
@@ -1691,6 +1871,13 @@
           "Websockets"
         ],
         "description": "Websocket for download updates",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response"
@@ -1702,6 +1889,13 @@
       "get": {
         "tags": [
           "Downloads"
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -1716,6 +1910,13 @@
           "Websockets"
         ],
         "description": "Websocket for server notifications",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response"
@@ -1730,8 +1931,8 @@
       "description": "End-points related to the server itself"
     },
     {
-      "name": "Open API",
-      "description": "Open API related endpoints"
+      "name": "OpenAPI",
+      "description": "OpenAPI related endpoints"
     },
     {
       "name": "Auth",

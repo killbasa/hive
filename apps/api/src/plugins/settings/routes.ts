@@ -14,6 +14,7 @@ export const settingsRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get the settings',
 					tags: ['Settings'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: SettingsSchema,
 					},
@@ -32,6 +33,7 @@ export const settingsRoutes: HiveRoutes = {
 				schema: {
 					description: 'Update the settings',
 					tags: ['Settings'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: SettingsPatchBody,
 					response: {
 						204: EmptyResponse('Settings updated successfully'),

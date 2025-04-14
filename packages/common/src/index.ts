@@ -1,4 +1,4 @@
-export * from './enums';
-export * from './lib';
-export * from './types/downloads';
-export type * from './types/generic';
+export * from './enums.js';
+export * from './lib/index.js';
+export * from './types/downloads.js';
+export type * from './types/generic.js';

@@ -10,7 +10,7 @@ const config = {
 			out: 'dist',
 		}),
 		alias: {
-			$components: resolve('./src/lib/components'),
+			$components: resolve('./src/components'),
 			$hooks: resolve('./src/hooks'),
 			$api: resolve('./src/api.d.ts'),
 		},

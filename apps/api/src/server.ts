@@ -1,4 +1,4 @@
-import { RedisConnectionOptions, config } from './lib/config.js';
+import { config } from './lib/config.js';
 import { isDev, isTesting } from './lib/constants.js';
 import { HiveMetrics } from './lib/otel/MetricsClient.js';
 import { authHandler } from './plugins/auth/handler.js';
@@ -61,6 +61,7 @@ export async function buildServer(): Promise<FastifyInstance> {
 	await server.register(FastifyCors, {
 		origin: config.AUTH_ORIGIN,
 		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 	});
 
 	await server.register(FastifyHelmet, {
@@ -82,7 +83,11 @@ export function decorate(server: FastifyInstance): void {
 	}
 
 	const options: QueueOptions = {
-		connection: RedisConnectionOptions,
+		connection: {
+			host: config.REDIS_HOST,
+			port: config.REDIS_PORT,
+			password: config.REDIS_PASSWORD,
+		},
 		defaultJobOptions: {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -129,7 +134,7 @@ export async function registerSwagger(server: FastifyInstance): Promise<void> {
 			},
 			tags: [
 				{ name: 'Core', description: 'End-points related to the server itself' },
-				{ name: 'Open API', description: 'Open API related endpoints' },
+				{ name: 'OpenAPI', description: 'OpenAPI related endpoints' },
 				{ name: 'Auth', description: 'Authentication related end-points' },
 				{ name: 'Users', description: 'User related end-points' },
 				{ name: 'Settings', description: 'Settings related end-points' },

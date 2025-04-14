@@ -1,7 +1,5 @@
-ARG ALPINE_VERSION=3.20
-
 ## Base ##
-FROM node:22.13.1-alpine${ALPINE_VERSION} AS base
+FROM node:23.11.0-alpine3.21 AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
@@ -9,13 +7,13 @@ FROM node:22.13.1-alpine${ALPINE_VERSION} AS base
 # supervisor: run multiple processes in a container
 RUN apk update --no-cache && \
 	apk add --no-cache \
-		python3=3.12.9-r0 \
-		ffmpeg=6.1.1-r8 \
-		nginx=1.26.2-r0 \
+		python3=3.12.10-r0 \
+		ffmpeg=6.1.2-r2 \
+		nginx=1.26.3-r4 \
 		supervisor=4.2.5-r5
 
 ## Depdencies ##
-FROM alpine:${ALPINE_VERSION} AS dependencies
+FROM alpine:2436f2b3b7d2 AS dependencies
 
 RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2025.01.26/yt-dlp \
 		-O /tmp/yt-dlp && \
@@ -41,7 +39,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@10.4.0 && \
+	corepack use pnpm@10.8.0 && \
 	pnpm install && \
 	pnpm --filter @hive/common run build && \
 	pnpm --filter @hive/api run build:prod && \

@@ -23,11 +23,18 @@
 	],
 	"settings": {
 		"files.exclude": {
-			"apps": true,
-			"packages": true,
-			"cli": true,
+			"./apps": true,
+			"./packages": true,
+			"./cli": true,
 			"**/coverage": true,
+			"**/dist": false,
 			"**/node_modules": false,
+		},
+		"search.exclude": {
+			"./cli/client": true,
+			"**/coverage": true,
+			"**/dist": true,
+			"**/node_modules": true,
 		},
 		"typescript.tsdk": "./node_modules/typescript/lib",
 		"typescript.referencesCodeLens.enabled": true,

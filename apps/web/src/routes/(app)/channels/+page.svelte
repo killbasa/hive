@@ -1,11 +1,10 @@
 <script lang="ts">
+	import Card from '$components/Card.svelte';
 	import TextInput from '$components/TextInput.svelte';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
+	import Pagination from '$components/navigation/Pagination.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import Paginator from '$components/navigation/Paginator.svelte';
-	import Button from '$components/ui/button/button.svelte';
 	import type { PageData } from './$types';
 	import { invalidate } from '$app/navigation';
 
@@ -52,50 +51,49 @@
 </svelte:head>
 
 <section>
-	<Card.Root title="Channels">
-		<Card.Content>
-			<div class="flex gap-2">
-				<Button onclick={toggleModal}>Add</Button>
-				<Button onclick={refresh}>Refresh</Button>
-			</div>
-			<table class="table">
-				<thead>
+	<Card title="Channels">
+		<div class="flex gap-2">
+			<button class="btn btn-success" onclick={toggleModal}>Add</button>
+			<button class="btn btn-primary" onclick={refresh}>Refresh</button>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each data.channels as channel, i (i)}
 					<tr>
-						<th>Name</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each data.channels as channel, i (i)}
-						<tr>
-							<td>
-								<div class="flex items-center gap-3">
-									<ChannelAvatar channelId={channel.id} />
-									<div>
-										<a href="/channels/{channel.id}">
-											<div class="font-bold">{channel.name}</div>
-										</a>
-									</div>
+						<td>
+							<div class="flex items-center gap-3">
+								<ChannelAvatar channelId={channel.id} />
+								<div>
+									<a href="/channels/{channel.id}">
+										<div class="font-bold">{channel.name}</div>
+									</a>
 								</div>
-							</td>
-							<td>
-								<Button
-									role="button"
-									target="_blank"
-									href="https://www.youtube.com/{channel.customUrl}"
-								>
-									Open in YouTube
-								</Button>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</Card.Content>
-		<Card.Footer>
-			<Paginator perPage={24} total={data.total} />
-		</Card.Footer>
-	</Card.Root>
+							</div>
+						</td>
+						<td>
+							<a
+								role="button"
+								class="btn btn-primary"
+								target="_blank"
+								href="https://www.youtube.com/{channel.customUrl}"
+							>
+								Open in YouTube
+							</a>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+		{#snippet footer()}
+			<Pagination count={data.channels.length} total={data.total} />
+		{/snippet}
+	</Card>
 	<dialog id="AddModal" class="modal" bind:this={modal}>
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">Add a channel</h3>

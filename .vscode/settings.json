@@ -1,4 +1,10 @@
 {
+	"search.exclude": {
+		"cli/client": true,
+		"**/coverage": true,
+		"**/dist": true,
+		"**/node_modules": true
+	},
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"typescript.referencesCodeLens.enabled": true,
 	"eslint.format.enable": true,
@@ -15,6 +21,7 @@
 		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
 	},
 	"files.associations": {
+		"tailwind.css": "tailwindcss",
 		"*.css": "css"
 	},
 	"gopls": {

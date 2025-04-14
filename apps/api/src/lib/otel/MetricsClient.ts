@@ -20,7 +20,7 @@ export class HiveMetrics {
 		this.serializer = new PrometheusSerializer();
 
 		this.provider = new metrics.MeterProvider({
-			resource: new resources.Resource({
+			resource: resources.resourceFromAttributes({
 				[ATTR_SERVICE_NAME]: 'hive',
 				[ATTR_SERVICE_VERSION]: config.VERSION,
 			}),
@@ -43,4 +43,6 @@ export class HiveMetrics {
 		const data = await this.exporter.collect();
 		return this.serializer.serialize(data.resourceMetrics);
 	}
+
+	public static readonly contentType = 'text/plain; version=0.0.4; charset=utf-8';
 }

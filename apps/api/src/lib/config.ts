@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
-import type { ConnectionOptions } from 'bullmq';
 
 if (existsSync(resolve('.env'))) {
 	loadEnvFile();
@@ -35,9 +34,3 @@ const obj = {
 } satisfies Record<keyof z.infer<typeof ConfigSchema>, unknown>;
 
 export const config = ConfigSchema.parse(obj);
-
-export const RedisConnectionOptions: ConnectionOptions = {
-	host: config.REDIS_HOST,
-	port: config.REDIS_PORT,
-	password: config.REDIS_PASSWORD,
-};
