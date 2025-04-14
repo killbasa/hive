@@ -6,6 +6,11 @@ import { rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
+if (process.env.CI) {
+	console.log('Skipping OpenAPI generation in CI');
+	process.exit(0);
+}
+
 const { registerSwagger } = await import(
 	// @ts-ignore - file might not exist
 	'../dist/server.js'
