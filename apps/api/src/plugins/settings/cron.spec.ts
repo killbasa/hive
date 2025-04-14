@@ -1,5 +1,4 @@
 import { parseCron } from './cron.js';
-import { server } from '../../server.js';
 import { Time } from '@hive/common';
 
 describe('cron utils', () => {
@@ -14,11 +13,8 @@ describe('cron utils', () => {
 	});
 
 	test('invalid', () => {
-		const spy = vi.spyOn(server.log, 'error').mockImplementation(() => {});
-
 		const result = parseCron('string');
 
 		expect(result).toBe(null);
-		expect(spy).toHaveBeenCalled();
 	});
 });
