@@ -185,7 +185,7 @@
 				<div class="flex items-center gap-3">
 					<div class="w-96">
 						<img
-							src="{config.apiUrl}/assets/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
+							src="{config.assetsPath}/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
 							alt="Video thumbnail"
 						/>
 					</div>
@@ -216,7 +216,7 @@
 				<div class="avatar">
 					<div class="mask mask-circle h-12 w-12">
 						<img
-							src="{config.apiUrl}/assets/{scanInfo.channelId}/assets/avatar.jpg"
+							src="{config.assetsPath}/{scanInfo.channelId}/assets/avatar.jpg"
 							alt="Channel avatar"
 						/>
 					</div>
@@ -305,7 +305,7 @@
 							<div class="flex items-center gap-3">
 								<div class="w-48">
 									<img
-										src="{config.apiUrl}/assets/{video.channelId}/videos/{video.id}/thumbnail.png"
+										src="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
 										alt="Video thumbnail"
 										loading="lazy"
 									/>

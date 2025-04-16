@@ -9,7 +9,7 @@
 				<li class="float-right link-hover">Source code</li>
 			</a>
 			<li>•</li>
-			<a href="{config.apiUrl}/reference" target="_blank">
+			<a href="{config.apiPath}/reference" target="_blank">
 				<li class="float-right link-hover">API Reference</li>
 			</a>
 		</ul>

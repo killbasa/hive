@@ -33,7 +33,7 @@
 	"scripts": {
 		"build": "tsup && mv dist/cjs/index.d.cts dist/cjs/index.d.ts && mv dist/cjs/svelte.d.cts dist/cjs/svelte.d.ts",
 		"format": "prettier --write .",
-		"prepublish": "pnpm build"
+		"clean": "rm -rf ./dist ./node_modules"
 	},
 	"peerDependencies": {
 		"eslint": "^9"

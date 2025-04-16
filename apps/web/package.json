@@ -5,6 +5,12 @@
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
+	"exports": {
+		"./handler": {
+			"import": "./dist/handler.js",
+			"require": "./dist/handler.js"
+		}
+	},
 	"files": [
 		"dist",
 		"static"
@@ -20,14 +26,13 @@
 		"test": "vitest --coverage --run",
 		"test:watch": "vitest --watch",
 		"openapi": "openapi-typescript ../api/openapi.json -o ./src/api.d.ts",
-		"clean": "rm -rf dist node_modules .svelte-kit"
+		"clean": "rm -rf ./.svelte-kit ./dist ./node_modules"
 	},
 	"dependencies": {
 		"@hive/common": "workspace:^",
 		"@tabler/icons-svelte": "^3.31.0",
 		"cron-schedule": "^5.0.4",
-		"openapi-fetch": "^0.13.5",
-		"zod": "^3.24.2"
+		"openapi-fetch": "^0.13.5"
 	},
 	"devDependencies": {
 		"@hive/eslint-config": "workspace:^",

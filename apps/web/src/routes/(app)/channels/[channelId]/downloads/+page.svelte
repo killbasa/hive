@@ -46,7 +46,7 @@
 						<div class="flex items-center gap-3">
 							<div class="w-48">
 								<img
-									src="{config.apiUrl}/assets/{video.channelId}/videos/{video.id}/thumbnail.png"
+									src="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
 									alt="Video thumbnail"
 									loading="lazy"
 								/>

@@ -4,6 +4,7 @@
 	import type { FormEventHandler } from 'svelte/elements';
 	import { goto } from '$app/navigation';
 	import { debounce } from '@hive/common';
+	import { base } from '$app/paths';
 
 	let username = $state('');
 	let exists = $state<boolean>();
@@ -23,7 +24,7 @@
 			return;
 		}
 
-		const response = await client.POST('/auth/exists', {
+		const response = await client.POST('/users/exists', {
 			body: {
 				username,
 			},
@@ -48,7 +49,7 @@
 		});
 
 		if (response.response.ok) {
-			await goto('/');
+			await goto(`${base}/`);
 		} else {
 			toast.error(response.error?.message ?? 'An error occurred');
 		}
@@ -71,7 +72,7 @@
 
 		if (response.ok) {
 			toast.success('Account created');
-			await goto('/login');
+			await goto(`${base}/login`);
 		} else if (response.status === 403) {
 			toast.error('User registration is disabled');
 		} else if (response.status === 409) {

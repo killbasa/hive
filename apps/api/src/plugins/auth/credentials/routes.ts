@@ -52,7 +52,7 @@ export const credentialAuthRoutes: HiveRoutes = {
 				});
 
 				await reply //
-					.setCookie(server.config.COOKIE_NAME, token, cookie)
+					.setCookie(server.config.auth.cookie, token, cookie)
 					.code(200)
 					.send();
 			},

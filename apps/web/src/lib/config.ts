@@ -1,9 +1,17 @@
-import { z } from 'zod';
+import { building } from '$app/environment';
 
-const ConfigSchema = z.object({
-	apiUrl: z.string().default('http://localhost:3001'),
-});
+function getConfig() {
+	if (building) {
+		return {
+			apiPath: '/api',
+			assetsPath: '/assets',
+		};
+	}
 
-export const config = ConfigSchema.parse({
-	apiUrl: import.meta.env.VITE_API_URL,
-});
+	return {
+		apiPath: 'http://localhost:3001/api',
+		assetsPath: 'http://localhost:3001/assets',
+	};
+}
+
+export const config = getConfig();

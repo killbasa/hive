@@ -12,7 +12,7 @@ const serverOptions: CommonServerOptions = {
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	optimizeDeps: {
-		entries: ['@tabler/icons-svelte', 'cron-scheduler', 'openapi-fetch', 'zod'],
+		entries: ['@tabler/icons-svelte', 'cron-scheduler', 'openapi-fetch'],
 	},
 	server: serverOptions,
 	preview: serverOptions,

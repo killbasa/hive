@@ -1,6 +1,7 @@
 import { MessageResponse } from '../../lib/responses.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
 import { HiveMetrics } from '../../lib/otel/MetricsClient.js';
+import { isDev } from '../../lib/constants.js';
 import { Type } from '@fastify/type-provider-typebox';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
@@ -55,11 +56,31 @@ export const coreRoutes: HiveRoutes = {
 			},
 		);
 
+		if (isDev) {
+			server.post(
+				'/csp', //
+				{ schema: { hide: true } },
+				async (request, reply): Promise<void> => {
+					server.log.info(request.body);
+
+					await reply.status(200).send();
+				},
+			);
+		}
+
 		server.get(
 			'/favicon.ico', //
 			{ schema: { hide: true } },
 			async (_, reply): Promise<void> => {
 				await reply.code(404).send();
+			},
+		);
+
+		server.get(
+			'/site.webmanifest', //
+			{ schema: { hide: true } },
+			async (_, reply): Promise<void> => {
+				await reply.redirect('/ui/site.webmanifest');
 			},
 		);
 
@@ -84,7 +105,7 @@ export const coreRoutes: HiveRoutes = {
 			},
 			async (_, reply): Promise<void> => {
 				await reply.status(200).send({
-					api: server.config.VERSION,
+					api: server.config.server.version,
 					ytdlp: ytdlpVersion,
 				});
 			},

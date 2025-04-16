@@ -3,7 +3,7 @@ import { server } from '../../server.js';
 import { Time } from '@hive/common';
 import type { CookieSerializeOptions } from '@fastify/cookie';
 
-const cookieDomain = new URL(server.config.AUTH_ORIGIN).hostname;
+const cookieDomain = new URL(server.config.auth.origin).hostname;
 
 export const cookies = {
 	create(options: { extendedExpiry: boolean } = { extendedExpiry: true }): CookieSerializeOptions {

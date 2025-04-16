@@ -19,13 +19,13 @@ export const ScalarContentSecurityPolicies: string = [
 	"font-src 'self'",
 	"connect-src 'self'",
 	"img-src 'self'",
-	...(isDev ? ['report-uri http://localhost:3001/csp'] : []),
+	...(isDev ? ['report-uri http://localhost:3001/api/csp'] : []),
 ].join('; ');
 
 function getScalarHTML(): string {
 	const config: Partial<z.infer<typeof apiReferenceConfigurationSchema>> = {
 		spec: {
-			url: '/spec.json',
+			url: '/api/spec.json',
 		},
 		isEditable: false,
 	};
@@ -48,7 +48,7 @@ function getScalarHTML(): string {
 				type="application/json"
 				data-configuration="${JSON.stringify(config).split('"').join('&quot;')}">
 			</script>
-			<script src="/scalar.js"></script>
+			<script src="/api/scalar.js"></script>
 		</body>
 	</html>
   `;
@@ -66,5 +66,5 @@ function getScalarJS(): string {
 	}
 
 	const file = readFileSync(filePath, 'utf8');
-	return file.replaceAll('https://fonts.scalar.com', '');
+	return file.replaceAll('https://fonts.scalar.com', '/api');
 }

@@ -8,6 +8,7 @@
 	import type { EventHandler } from 'svelte/elements';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	const video = getVideoContext();
 
@@ -16,7 +17,7 @@
 	let ready = $state(false);
 
 	let currentTime = $state(0);
-	let isWatchPage = $derived(page.url.pathname.startsWith('/watch'));
+	let isWatchPage = $derived(page.url.pathname.startsWith(`${base}/watch`));
 
 	const onVolumeChange: EventHandler<Event, HTMLVideoElement> = () => {
 		if (!element) return;
@@ -135,7 +136,7 @@
 	{#if $video}
 		{#if !isWatchPage}
 			<div class="p-1 bg-slate-800 justify-end flex gap-1">
-				<a href="/watch/{$video.id}" title="Expand video">
+				<a href="{base}/watch/{$video.id}" title="Expand video">
 					<IconWindowMaximize class="text-slate-50" />
 				</a>
 				<button onclick={closeVideo} title="Close video">
@@ -156,7 +157,7 @@
 	{#key $video.id}
 		<video
 			id={Date.now().toString()}
-			poster="{config.apiUrl}/assets/{$video.channelId}/videos/{$video.id}/thumbnail.png"
+			poster="{config.assetsPath}/{$video.channelId}/videos/{$video.id}/thumbnail.png"
 			onvolumechange={onVolumeChange}
 			onloadstart={loadPlayer}
 			ontimeupdate={onTimeUpdate}
@@ -167,7 +168,7 @@
 			bind:this={element}
 		>
 			<source
-				src="{config.apiUrl}/assets/{$video.channelId}/videos/{$video.id}/video.mp4"
+				src="{config.assetsPath}/{$video.channelId}/videos/{$video.id}/video.mp4"
 				type="video/mp4"
 			/>
 			<track kind="captions" />

@@ -331,7 +331,47 @@
         "responses": {}
       }
     },
-    "/auth/exists": {
+    "/auth/verify": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Verify the user is authenticated",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is authenticated"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Logout the user",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          }
+        }
+      }
+    },
+    "/users/exists": {
       "post": {
         "tags": [
           "Auth"
@@ -374,46 +414,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/auth/verify": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "Verify the user is authenticated",
-        "security": [
-          {
-            "apikey": [
-              "x-api-key"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User is authenticated"
-          }
-        }
-      }
-    },
-    "/auth/logout": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "Logout the user",
-        "security": [
-          {
-            "apikey": [
-              "x-api-key"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Logged out successfully"
           }
         }
       }

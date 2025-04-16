@@ -1,5 +1,5 @@
-import { UserPatchBody } from './body.js';
-import { UserSchema } from './schema.js';
+import { UserExistsBody, UserPatchBody } from './body.js';
+import { UserExistsSchema, UserSchema } from './schema.js';
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema.js';
 import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
@@ -86,9 +86,38 @@ export const userRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(server.config.COOKIE_NAME, cookie)
+					.clearCookie(server.config.auth.cookie, cookie)
 					.code(204)
 					.send();
+			},
+		);
+
+		done();
+	},
+	public: (server, _, done) => {
+		server.post(
+			'/exists', //
+			{
+				schema: {
+					description: 'Check if a user exists',
+					tags: ['Auth'],
+					body: UserExistsBody,
+					response: {
+						200: UserExistsSchema,
+					},
+				},
+			},
+			async (request, reply): Promise<void> => {
+				const { body } = request;
+
+				const user = await db.query.users.findFirst({
+					where: eq(users.name, body.username),
+					columns: { name: true },
+				});
+
+				await reply.status(200).send({
+					exists: user !== undefined,
+				});
 			},
 		);
 

@@ -54,15 +54,16 @@ export async function buildServer(): Promise<FastifyInstance> {
 
 	await server.register(FastifyCookie);
 	await server.register(FastifyJwt, {
-		secret: config.AUTH_SECRET,
+		secret: config.auth.secret,
 		cookie: {
-			cookieName: config.COOKIE_NAME,
+			cookieName: config.auth.cookie,
 			signed: false,
 		},
 	});
 
 	await server.register(FastifyCors, {
-		origin: config.AUTH_ORIGIN,
+		// TODO - Allow more
+		origin: config.auth.cookie,
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 	});
@@ -74,6 +75,19 @@ export async function buildServer(): Promise<FastifyInstance> {
 	});
 	await server.register(FastifyWebsocket);
 
+	/**
+	 * Parsers
+	 */
+	if (isDev) {
+		server.addContentTypeParser<string>(
+			'application/csp-report', //
+			{ parseAs: 'string' },
+			(_, payload, done) => {
+				done(null, JSON.parse(payload));
+			},
+		);
+	}
+
 	return server;
 }
 
@@ -81,15 +95,15 @@ export function decorate(server: FastifyInstance): void {
 	server.decorate('settings', new HiveSettings());
 	server.decorate('notifications', new HiveNotifier());
 
-	if (server.config.METRICS_ENABLED) {
+	if (server.config.metrics.enabled) {
 		server.decorate('metrics', new HiveMetrics());
 	}
 
 	const options: QueueOptions = {
 		connection: {
-			host: server.config.REDIS_HOST,
-			port: server.config.REDIS_PORT,
-			password: server.config.REDIS_PASSWORD,
+			host: server.config.redis.host,
+			port: server.config.redis.port,
+			password: server.config.redis.password,
 		},
 		defaultJobOptions: {
 			removeOnComplete: true,
@@ -132,7 +146,7 @@ export async function registerSwagger(server: FastifyInstance): Promise<void> {
 			openapi: '3.1.0',
 			info: {
 				title: 'Hive',
-				version: server.config.VERSION,
+				version: server.config.server.version,
 				description: 'Hive API',
 			},
 			tags: [

@@ -16,7 +16,7 @@ export async function ytFetch<T>(
 	}
 
 	const url = new URL(`${YT_BASE_URL}/${YT_API_VERSION}${path}`);
-	url.searchParams.set('key', server.config.YT_API_KEY);
+	url.searchParams.set('key', server.config.youtube.apikey);
 
 	if (options.resources) {
 		url.searchParams.set('part', options.resources.join(','));

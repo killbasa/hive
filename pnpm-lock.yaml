@@ -66,6 +66,9 @@ importers:
       '@hive/common':
         specifier: workspace:^
         version: link:../../packages/common
+      '@hive/web':
+        specifier: workspace:^
+        version: link:../web
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -91,8 +94,8 @@ importers:
         specifier: ^11.9.1
         version: 11.9.1
       bullmq:
-        specifier: ^5.48.1
-        version: 5.48.1
+        specifier: ^5.49.0
+        version: 5.49.0
       cron-schedule:
         specifier: ^5.0.4
         version: 5.0.4
@@ -169,9 +172,6 @@ importers:
       openapi-fetch:
         specifier: ^0.13.5
         version: 0.13.5
-      zod:
-        specifier: ^3.24.2
-        version: 3.24.2
     devDependencies:
       '@hive/eslint-config':
         specifier: workspace:^
@@ -2642,8 +2642,8 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
-  bullmq@5.48.1:
-    resolution: {integrity: sha512-WA/NlPwmxgbDsL8KGIkQvGlRkBdVAyRiypP+Witm6Tyd2PwnBQ8K62ifnlA16rF59vpnEKwO+rmh/ZM7gKmDqg==}
+  bullmq@5.49.0:
+    resolution: {integrity: sha512-qwNOgUfD3kHI33bU2HOsn6YKEoSdUfHTledQUy95V8HogVdgGg/HS3+TQh7Y7YH19h5yK2Oo/FFEnzyXJhgy3w==}
 
   bundle-require@5.1.0:
     resolution: {integrity: sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA==}
@@ -7753,7 +7753,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bullmq@5.48.1:
+  bullmq@5.49.0:
     dependencies:
       cron-parser: 4.9.0
       ioredis: 5.6.1

@@ -11,7 +11,7 @@ function print(msg: string): void {
 	server.log.info(`${padding}${msg}`);
 }
 
-export async function startupLog(): Promise<void> {
+export async function startupLog(flags: string[]): Promise<void> {
 	server.log.info('');
 
 	const version = getYtdlpVersion();
@@ -19,11 +19,15 @@ export async function startupLog(): Promise<void> {
 	const updateString = tag === version ? '' : ` (latest: ${tag})`;
 
 	print(`env:           ${process.env.NODE_ENV}`);
-	print(`version:       ${server.config.VERSION}`);
+	print(`version:       ${server.config.server.version}`);
 	print(`yt-dlp:        ${version}${updateString}`);
 	print(`proxy:         http://${API_HOST}:3001`);
-	print(`documentation: http://${API_HOST}:3001/reference`);
-	print(`metrics:       http://${API_HOST}:3001/metrics`);
+	print(`documentation: http://${API_HOST}:3001/api/reference`);
+	print(`metrics:       http://${API_HOST}:3001/api/metrics`);
+
+	if (flags.includes('--ui')) {
+		print(`ui:            http://localhost:3001/ui`);
+	}
 
 	server.log.info('');
 

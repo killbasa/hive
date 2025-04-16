@@ -1,12 +1,7 @@
 import { cookies } from './cookies.js';
 import { credentialAuthRoutes } from './credentials/routes.js';
 import { apikeyAuthRoutes } from './apikey/routes.js';
-import { UserExistsBody } from './body.js';
-import { UserExistsSchema } from './schema.js';
 import { EmptyResponse } from '../../lib/responses.js';
-import { db } from '../../db/client.js';
-import { users } from '../../db/schema.js';
-import { eq } from 'drizzle-orm';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const authRoutes: HiveRoutes = {
@@ -50,38 +45,9 @@ export const authRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(server.config.COOKIE_NAME, cookie)
+					.clearCookie(server.config.auth.cookie, cookie)
 					.code(200)
 					.send();
-			},
-		);
-
-		done();
-	},
-	public: (server, _, done) => {
-		server.post(
-			'/exists', //
-			{
-				schema: {
-					description: 'Check if a user exists',
-					tags: ['Auth'],
-					body: UserExistsBody,
-					response: {
-						200: UserExistsSchema,
-					},
-				},
-			},
-			async (request, reply): Promise<void> => {
-				const { body } = request;
-
-				const user = await db.query.users.findFirst({
-					where: eq(users.name, body.username),
-					columns: { name: true },
-				});
-
-				await reply.status(200).send({
-					exists: user !== undefined,
-				});
 			},
 		);
 

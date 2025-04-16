@@ -5,11 +5,12 @@ import { setupGracefulShutdown, startupLog } from './lib/lifecycle.js';
 import { validateDirs } from './lib/utils.js';
 import { initHandlers, initWorkers } from './tasks/loader.js';
 import { routes } from './routes.js';
+import { uiPlugin } from './plugins/ui/routes.js';
 import { ZodError } from 'zod';
 
 await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
 
-const start = async (): Promise<void> => {
+const start = async (flags: string[]): Promise<void> => {
 	try {
 		decorate(server);
 		initDb();
@@ -17,14 +18,22 @@ const start = async (): Promise<void> => {
 		await initWorkers();
 
 		await server.settings.init();
-		await server.register(routes);
 
-		await server.listen({ host: API_HOST, port: server.config.PORT });
+		await server.register(routes, { prefix: 'api' });
+
+		if (flags.includes('--ui')) {
+			server.register(uiPlugin, { prefix: 'ui' });
+		}
+
+		await server.listen({
+			host: API_HOST,
+			port: server.config.server.port,
+		});
 
 		await initHandlers();
 
 		setupGracefulShutdown();
-		await startupLog();
+		await startupLog(flags);
 	} catch (err: unknown) {
 		if (err instanceof ZodError) {
 			server.log.error(err.errors);
@@ -36,6 +45,6 @@ const start = async (): Promise<void> => {
 	}
 };
 
-await start();
+await start(process.argv);
 
 export { registerSwagger, routes };

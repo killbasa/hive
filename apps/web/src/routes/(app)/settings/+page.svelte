@@ -9,6 +9,7 @@
 	import type { FormEventHandler } from 'svelte/elements';
 	import type { PageData } from './$types';
 	import { goto, invalidate } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	type CronStore = {
 		checkSubscriptions: string | null;
@@ -51,7 +52,7 @@
 			headers: { 'Content-Type': null },
 		});
 
-		await goto('/login');
+		await goto(`${base}/login`);
 	}
 
 	const handleAccountUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -65,7 +66,7 @@
 		});
 
 		if (response.response.ok) {
-			await goto('/login');
+			await goto(`${base}/login`);
 		} else {
 			toast.error(response.error?.message ?? 'An error occurred');
 		}

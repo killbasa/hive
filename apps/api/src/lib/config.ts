@@ -4,17 +4,31 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
 
+type Unvalidated<T> = {
+	[K in keyof T]: T[K] extends object ? Unvalidated<T[K]> : unknown;
+};
+
 const ConfigSchema = z.object({
-	VERSION: z.string(),
-	PORT: z.coerce.number(),
-	AUTH_SECRET: z.string(),
-	AUTH_ORIGIN: z.string(),
-	COOKIE_NAME: z.string(),
-	REDIS_HOST: z.string().default('localhost'),
-	REDIS_PORT: z.coerce.number().default(6379),
-	REDIS_PASSWORD: z.string().default('password'),
-	YT_API_KEY: z.string(),
-	METRICS_ENABLED: z.coerce.boolean().default(false),
+	server: z.object({
+		version: z.string(),
+		port: z.coerce.number(),
+	}),
+	auth: z.object({
+		secret: z.string(),
+		origin: z.string(),
+		cookie: z.string(),
+	}),
+	redis: z.object({
+		host: z.string().default('localhost'),
+		port: z.coerce.number().default(6379),
+		password: z.string().default('password'),
+	}),
+	youtube: z.object({
+		apikey: z.string(),
+	}),
+	metrics: z.object({
+		enabled: z.coerce.boolean().default(false),
+	}),
 });
 
 export type HiveConfig = z.infer<typeof ConfigSchema>;
@@ -22,16 +36,26 @@ export type HiveConfig = z.infer<typeof ConfigSchema>;
 export function loadConfig(): HiveConfig {
 	if (isTesting) {
 		return {
-			VERSION: '',
-			PORT: 0,
-			AUTH_SECRET: '',
-			AUTH_ORIGIN: '',
-			COOKIE_NAME: '',
-			REDIS_HOST: '',
-			REDIS_PORT: 0,
-			REDIS_PASSWORD: '',
-			YT_API_KEY: '',
-			METRICS_ENABLED: false,
+			server: {
+				version: '0.0.1',
+				port: 0,
+			},
+			auth: {
+				secret: 'secret',
+				origin: 'http://localhost',
+				cookie: 'hive',
+			},
+			redis: {
+				host: 'redis_host',
+				port: 6379,
+				password: 'redis_password',
+			},
+			youtube: {
+				apikey: 'apikey',
+			},
+			metrics: {
+				enabled: false,
+			},
 		};
 	}
 
@@ -40,17 +64,27 @@ export function loadConfig(): HiveConfig {
 	}
 
 	const obj = {
-		VERSION: process.env.npm_package_version,
-		PORT: 3002,
-		AUTH_SECRET: process.env.AUTH_SECRET,
-		AUTH_ORIGIN: process.env.AUTH_ORIGIN,
-		COOKIE_NAME: 'hive',
-		REDIS_HOST: process.env.REDIS_HOST,
-		REDIS_PORT: process.env.REDIS_PORT,
-		REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-		YT_API_KEY: process.env.YT_API_KEY,
-		METRICS_ENABLED: process.env.METRICS_ENABLED,
-	} satisfies Record<keyof z.infer<typeof ConfigSchema>, unknown>;
+		server: {
+			version: process.env.npm_package_version,
+			port: 3002,
+		},
+		auth: {
+			secret: process.env.AUTH_SECRET,
+			origin: process.env.AUTH_ORIGIN,
+			cookie: 'hive',
+		},
+		redis: {
+			host: process.env.REDIS_HOST,
+			port: process.env.REDIS_PORT,
+			password: process.env.REDIS_PASSWORD,
+		},
+		youtube: {
+			apikey: process.env.YT_API_KEY,
+		},
+		metrics: {
+			enabled: process.env.METRICS_ENABLED,
+		},
+	} satisfies Unvalidated<HiveConfig>;
 
 	return ConfigSchema.parse(obj);
 }

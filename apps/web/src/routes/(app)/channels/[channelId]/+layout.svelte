@@ -7,6 +7,7 @@
 	import { humanFileSize } from '$lib/utils';
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
+	import { base } from '$app/paths';
 
 	let {
 		data,
@@ -16,7 +17,7 @@
 		children: Snippet;
 	} = $props();
 
-	const channelUrl = `${config.apiUrl}/assets/${data.channel.id}`;
+	const channelUrl = `${config.assetsPath}/${data.channel.id}`;
 	const navStyle = 'text-xl link-primary';
 
 	async function scan() {
@@ -52,19 +53,19 @@
 			<button class="btn btn-success" onclick={scan}>Scan channel</button>
 		</div>
 		<ul class="flex flex-row mx-auto gap-4">
-			<a href="/channels/{data.channel.id}" class={navStyle}>
+			<a href="{base}/channels/{data.channel.id}" class={navStyle}>
 				<li>Videos</li>
 			</a>
-			<a href="/channels/{data.channel.id}/streams" class={navStyle}>
+			<a href="{base}/channels/{data.channel.id}/streams" class={navStyle}>
 				<li>Streams</li>
 			</a>
-			<a href="/channels/{data.channel.id}/shorts" class={navStyle}>
+			<a href="{base}/channels/{data.channel.id}/shorts" class={navStyle}>
 				<li>Shorts</li>
 			</a>
-			<a href="/channels/{data.channel.id}/about" class={navStyle}>
+			<a href="{base}/channels/{data.channel.id}/about" class={navStyle}>
 				<li>About</li>
 			</a>
-			<a href="/channels/{data.channel.id}/downloads" class={navStyle}>
+			<a href="{base}/channels/{data.channel.id}/downloads" class={navStyle}>
 				<li>Downloads</li>
 			</a>
 		</ul>

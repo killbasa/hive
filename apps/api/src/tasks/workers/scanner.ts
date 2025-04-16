@@ -28,9 +28,9 @@ export async function initScannerWorker(): Promise<void> {
 		},
 		{
 			connection: {
-				host: server.config.REDIS_HOST,
-				port: server.config.REDIS_PORT,
-				password: server.config.REDIS_PASSWORD,
+				host: server.config.redis.host,
+				port: server.config.redis.port,
+				password: server.config.redis.password,
 			},
 			concurrency: 1,
 		},

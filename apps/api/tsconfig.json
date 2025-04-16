@@ -1,8 +1,8 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"tsBuildInfoFile": "node_modules/.cache/hive/.tsbuildinfo"
+		"rootDir": "./"
 	},
 	"include": ["src"],
-	"exclude": ["bin", "dist", "node_modules"]
+	"exclude": ["bin", "dist", "node_modules", "../web"]
 }

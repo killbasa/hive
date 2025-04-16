@@ -5,6 +5,7 @@
 		"moduleResolution": "Node16",
 		"noEmit": true,
 		"erasableSyntaxOnly": true,
+		"incremental": false,
 		"types": ["vitest/globals"]
 	}
 }

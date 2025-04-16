@@ -1,5 +1,4 @@
 import { ScalarContentSecurityPolicies, ScalarFonts, ScalarHTML, ScalarJS } from './constants.js';
-import { isDev } from '../../lib/constants.js';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const referenceRoutes: HiveRoutes = {
@@ -96,26 +95,6 @@ export const referenceRoutes: HiveRoutes = {
 					.send(ScalarHTML);
 			},
 		);
-
-		if (isDev) {
-			server.addContentTypeParser<string>(
-				'application/csp-report', //
-				{ parseAs: 'string' },
-				(_, payload, done) => {
-					done(null, JSON.parse(payload));
-				},
-			);
-
-			server.post(
-				'/csp', //
-				{ schema: { hide: true } },
-				async (request, reply): Promise<void> => {
-					server.log.info(request.body);
-
-					await reply.status(200).send();
-				},
-			);
-		}
 
 		done();
 	},

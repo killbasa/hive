@@ -3,10 +3,10 @@ import type { Awaitable } from '@hive/common';
 
 export class HiveWebSocket extends WebSocket {
 	public constructor(path: string) {
-		const api = new URL(config.apiUrl);
+		const api = new URL(window.location.href);
 		api.protocol = 'ws';
 
-		const url = new URL(path, api);
+		const url = new URL(`${config.apiPath}${path}`, api);
 		super(url);
 	}
 

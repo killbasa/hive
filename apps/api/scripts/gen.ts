@@ -5,6 +5,8 @@ import { fastify } from 'fastify';
 import { rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import type { DeepPartial } from '@hive/common';
+import type { HiveConfig } from '../src/lib/config.js';
 
 if (process.env.CI) {
 	console.log('Skipping OpenAPI generation in CI');
@@ -26,9 +28,13 @@ const server = fastify({
 	.withTypeProvider<TypeBoxTypeProvider>()
 	.setValidatorCompiler(TypeBoxValidatorCompiler);
 
-server.decorate('config', {
-	VERSION: process.env.npm_package_version,
-});
+const cfg = {
+	server: {
+		version: process.env.npm_package_version,
+	},
+} as DeepPartial<HiveConfig>;
+
+server.decorate('config', cfg as HiveConfig);
 await registerSwagger(server);
 await server.register(routes);
 await server.ready();

@@ -8,6 +8,7 @@ const config = {
 	kit: {
 		adapter: adapter({
 			out: 'dist',
+			precompress: false,
 		}),
 		alias: {
 			$components: resolve('./src/components'),
@@ -17,6 +18,24 @@ const config = {
 		output: {
 			preloadStrategy: 'modulepreload',
 			bundleStrategy: 'single',
+		},
+		paths: {
+			relative: true,
+			base: '/ui',
+		},
+		typescript: {
+			config: (cfg) => {
+				cfg.include = [
+					...cfg.include,
+					'../src',
+					'../eslint.config.js',
+					'../svelte.config.js',
+					'../tailwind.config.ts',
+					'../vite.config.ts',
+				];
+
+				return cfg;
+			},
 		},
 	},
 };

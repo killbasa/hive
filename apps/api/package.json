@@ -12,7 +12,7 @@
 		"static"
 	],
 	"scripts": {
-		"build": "pnpm check && NODE_ENV=development tsup && pnpm openapi",
+		"build": "NODE_ENV=development tsup && pnpm openapi",
 		"build:prod": "pnpm check && tsup",
 		"start": "node --enable-source-maps dist/main.js",
 		"check": "tsc",
@@ -30,7 +30,7 @@
 		"reset:videos": "tsx scripts/reset-videos.ts",
 		"reset:users": "tsx scripts/reset-users.ts",
 		"openapi": "tsx scripts/gen.ts",
-		"clean": "rm -rf dist node_modules"
+		"clean": "rm -rf ./dist ./node_modules"
 	},
 	"dependencies": {
 		"@fastify/cookie": "^11.0.2",
@@ -41,6 +41,7 @@
 		"@fastify/type-provider-typebox": "^5.1.0",
 		"@fastify/websocket": "^11.0.2",
 		"@hive/common": "workspace:^",
+		"@hive/web": "workspace:^",
 		"@opentelemetry/api": "^1.9.0",
 		"@opentelemetry/exporter-prometheus": "^0.200.0",
 		"@opentelemetry/sdk-node": "^0.200.0",
@@ -49,7 +50,7 @@
 		"@sinclair/typebox": "^0.34.33",
 		"argon2": "^0.41.1",
 		"better-sqlite3": "^11.9.1",
-		"bullmq": "^5.48.1",
+		"bullmq": "^5.49.0",
 		"cron-schedule": "^5.0.4",
 		"drizzle-orm": "^0.42.0",
 		"fast-xml-parser": "^5.2.0",

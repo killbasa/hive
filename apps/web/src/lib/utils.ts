@@ -48,7 +48,7 @@ export function formatTimestamps(videoId: string, text: string): string {
 
 			text = text.replace(
 				new RegExp(`^${timestamp}$`, 'g'), //
-				`<a href="/watch/${videoId}?t=${seconds}" class="link link-primary">${timestamp}</a>`,
+				`<a href="/ui/watch/${videoId}?t=${seconds}" class="link link-primary">${timestamp}</a>`,
 			);
 		}
 	}

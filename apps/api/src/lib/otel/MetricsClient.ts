@@ -22,7 +22,7 @@ export class HiveMetrics {
 		this.provider = new metrics.MeterProvider({
 			resource: resources.resourceFromAttributes({
 				[ATTR_SERVICE_NAME]: 'hive',
-				[ATTR_SERVICE_VERSION]: server.config.VERSION,
+				[ATTR_SERVICE_VERSION]: server.config.server.version,
 			}),
 			readers: [this.exporter],
 		});
