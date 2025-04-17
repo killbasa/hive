@@ -12,7 +12,7 @@ import type { SQLWrapper } from 'drizzle-orm';
 export const videoRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Get a list of videos',

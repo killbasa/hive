@@ -82,7 +82,7 @@ export const referenceRoutes: HiveRoutes = {
 		);
 
 		server.get(
-			'/reference', //
+			'/', //
 			{
 				schema: { hide: true },
 			},

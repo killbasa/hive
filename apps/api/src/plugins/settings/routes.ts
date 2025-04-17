@@ -9,7 +9,7 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const settingsRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Get the settings',
@@ -28,7 +28,7 @@ export const settingsRoutes: HiveRoutes = {
 		);
 
 		server.patch(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Update the settings',

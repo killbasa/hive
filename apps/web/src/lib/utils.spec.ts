@@ -28,21 +28,21 @@ describe('utils', async () => {
 		it('should format hh:mm:ss', async () => {
 			const result = formatTimestamps('test-id', '4:01:33');
 			expect(result).toBe(
-				'<a href="/watch/test-id?t=14493" class="link link-primary">4:01:33</a>',
+				'<a href="/ui/watch/test-id?t=14493" class="link link-primary">4:01:33</a>',
 			);
 		});
 
 		it('should format m:ss', async () => {
 			const result = formatTimestamps('test-id', '0:41');
 			expect(result).toBe(
-				'<a href="/watch/test-id?t=41" class="link link-primary">0:41</a>', //
+				'<a href="/ui/watch/test-id?t=41" class="link link-primary">0:41</a>', //
 			);
 		});
 
 		it('should format mm:ss', async () => {
 			const result = formatTimestamps('test-id', '13:41');
 			expect(result).toBe(
-				'<a href="/watch/test-id?t=821" class="link link-primary">13:41</a>',
+				'<a href="/ui/watch/test-id?t=821" class="link link-primary">13:41</a>',
 			);
 		});
 

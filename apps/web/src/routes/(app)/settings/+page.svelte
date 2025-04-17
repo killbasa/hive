@@ -58,7 +58,7 @@
 	const handleAccountUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault();
 
-		const response = await client.PATCH('/users', {
+		const response = await client.PATCH('/users/me', {
 			body: {
 				newPassword: auth.password,
 				oldPassword: auth.oldPassword,
@@ -75,7 +75,7 @@
 	const handleScheduleUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault();
 
-		const { response } = await client.PATCH('/settings', {
+		const { response } = await client.PATCH('/settings/', {
 			body: {
 				cronCheckSubscriptions: schedule.checkSubscriptions,
 				cronDownloadPending: schedule.downloadPending,

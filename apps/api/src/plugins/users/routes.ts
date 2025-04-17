@@ -11,7 +11,7 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const userRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/me', //
 			{
 				schema: {
 					description: 'Get the user for the current request',
@@ -41,7 +41,7 @@ export const userRoutes: HiveRoutes = {
 		);
 
 		server.patch(
-			'', //
+			'/me', //
 			{
 				schema: {
 					description: 'Update a user',

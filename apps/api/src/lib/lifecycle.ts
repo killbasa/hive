@@ -11,7 +11,7 @@ function print(msg: string): void {
 	server.log.info(`${padding}${msg}`);
 }
 
-export async function startupLog(flags: string[]): Promise<void> {
+export async function startupLog(): Promise<void> {
 	server.log.info('');
 
 	const version = getYtdlpVersion();
@@ -25,7 +25,7 @@ export async function startupLog(flags: string[]): Promise<void> {
 	print(`documentation: http://${API_HOST}:3001/api/reference`);
 	print(`metrics:       http://${API_HOST}:3001/api/metrics`);
 
-	if (flags.includes('--ui')) {
+	if (server.config.server.ui) {
 		print(`ui:            http://localhost:3001/ui`);
 	}
 

@@ -6,6 +6,33 @@ import { Type } from '@fastify/type-provider-typebox';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const coreRoutes: HiveRoutes = {
+	authenticated: (server, _, done) => {
+		const ytdlpVersion = getYtdlpVersion();
+		server.get(
+			'/version',
+			{
+				schema: {
+					description: 'Get the version numbers for Hive',
+					tags: ['Core'],
+					security: [{ apikey: ['x-api-key'] }],
+					response: {
+						200: Type.Object({
+							api: Type.String(),
+							ytdlp: Type.String(),
+						}),
+					},
+				},
+			},
+			async (_, reply): Promise<void> => {
+				await reply.status(200).send({
+					api: server.config.server.version,
+					ytdlp: ytdlpVersion,
+				});
+			},
+		);
+
+		done();
+	},
 	public: (server, _, done) => {
 		server.get(
 			'/heartbeat',
@@ -81,33 +108,6 @@ export const coreRoutes: HiveRoutes = {
 			{ schema: { hide: true } },
 			async (_, reply): Promise<void> => {
 				await reply.redirect('/ui/site.webmanifest');
-			},
-		);
-
-		done();
-	},
-	authenticated: (server, _, done) => {
-		const ytdlpVersion = getYtdlpVersion();
-		server.get(
-			'/version',
-			{
-				schema: {
-					description: 'Get the version numbers for Hive',
-					tags: ['Core'],
-					security: [{ apikey: ['x-api-key'] }],
-					response: {
-						200: Type.Object({
-							api: Type.String(),
-							ytdlp: Type.String(),
-						}),
-					},
-				},
-			},
-			async (_, reply): Promise<void> => {
-				await reply.status(200).send({
-					api: server.config.server.version,
-					ytdlp: ytdlpVersion,
-				});
 			},
 		);
 

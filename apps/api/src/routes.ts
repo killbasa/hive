@@ -11,7 +11,7 @@ import type { FastifyPluginAsync } from 'fastify';
 
 export const routes: FastifyPluginAsync = async (server) => {
 	await server.routes(coreRoutes);
-	await server.routes(referenceRoutes);
+	await server.routes(referenceRoutes, { prefix: 'reference' });
 	await server.routes(authRoutes, { prefix: 'auth' });
 	await server.routes(userRoutes, { prefix: 'users' });
 

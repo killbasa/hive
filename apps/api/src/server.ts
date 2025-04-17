@@ -28,6 +28,7 @@ export async function buildServer(): Promise<FastifyInstance> {
 	}
 
 	const server = Fastify({
+		ignoreTrailingSlash: true,
 		disableRequestLogging: !isDev,
 		logger: {
 			level,

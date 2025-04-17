@@ -6,8 +6,8 @@ export const load: PageLoad = async ({ fetch, depends }) => {
 
 	const [version, user, settings] = await Promise.all([
 		client.GET('/version', { fetch }),
-		client.GET('/users', { fetch }),
-		client.GET('/settings', { fetch }),
+		client.GET('/users/me', { fetch }),
+		client.GET('/settings/', { fetch }),
 	]);
 
 	return {

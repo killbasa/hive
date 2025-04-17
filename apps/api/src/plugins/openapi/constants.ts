@@ -25,7 +25,7 @@ export const ScalarContentSecurityPolicies: string = [
 function getScalarHTML(): string {
 	const config: Partial<z.infer<typeof apiReferenceConfigurationSchema>> = {
 		spec: {
-			url: '/api/spec.json',
+			url: '/api/reference/spec.json',
 		},
 		isEditable: false,
 	};
@@ -48,7 +48,7 @@ function getScalarHTML(): string {
 				type="application/json"
 				data-configuration="${JSON.stringify(config).split('"').join('&quot;')}">
 			</script>
-			<script src="/api/scalar.js"></script>
+			<script src="/api/reference/scalar.js"></script>
 		</body>
 	</html>
   `;
@@ -66,5 +66,5 @@ function getScalarJS(): string {
 	}
 
 	const file = readFileSync(filePath, 'utf8');
-	return file.replaceAll('https://fonts.scalar.com', '/api');
+	return file.replaceAll('https://fonts.scalar.com', '/api/reference');
 }

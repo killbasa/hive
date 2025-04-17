@@ -126,7 +126,7 @@
         }
       }
     },
-    "/spec.json": {
+    "/reference/spec.json": {
       "get": {
         "tags": [
           "OpenAPI"
@@ -139,7 +139,7 @@
         }
       }
     },
-    "/spec.yaml": {
+    "/reference/spec.yaml": {
       "get": {
         "tags": [
           "OpenAPI"
@@ -418,7 +418,7 @@
         }
       }
     },
-    "/users": {
+    "/users/me": {
       "get": {
         "tags": [
           "Users"
@@ -517,7 +517,7 @@
         }
       }
     },
-    "/settings": {
+    "/settings/": {
       "get": {
         "tags": [
           "Settings"
@@ -660,7 +660,7 @@
         }
       }
     },
-    "/channels": {
+    "/channels/": {
       "get": {
         "tags": [
           "Channels"
@@ -971,7 +971,7 @@
         }
       }
     },
-    "/videos": {
+    "/videos/": {
       "get": {
         "tags": [
           "Videos"
@@ -1904,7 +1904,7 @@
         }
       }
     },
-    "/notifications": {
+    "/notifications/": {
       "get": {
         "tags": [
           "Websockets"

@@ -18,7 +18,7 @@ describe('authentication hook', async () => {
 		const arg = {
 			event: {
 				cookies: { get: () => undefined },
-				request: { url: 'https://localhost/login' },
+				request: { url: 'https://localhost/ui/login' },
 			},
 			resolve: vi.fn(),
 		} satisfies DeepPartial<Parameters<typeof authentication>[0]>;
@@ -32,35 +32,35 @@ describe('authentication hook', async () => {
 		const arg = {
 			event: {
 				cookies: { get: () => undefined },
-				request: { url: 'https://localhost/channels' },
+				request: { url: 'https://localhost/ui/channels' },
 			},
 			resolve: vi.fn(),
 		} satisfies DeepPartial<Parameters<typeof authentication>[0]>;
 
 		await authentication(arg as never);
 
-		expect(mocks.redirect).toHaveBeenCalledWith(307, '/login');
+		expect(mocks.redirect).toHaveBeenCalledWith(307, '/ui/login');
 	});
 
 	it('should redirect for authenticated to login page', async () => {
 		const arg = {
 			event: {
 				cookies: { get: () => 'cookie' },
-				request: { url: 'https://localhost/login' },
+				request: { url: 'https://localhost/ui/login' },
 			},
 			resolve: vi.fn(),
 		} satisfies DeepPartial<Parameters<typeof authentication>[0]>;
 
 		await authentication(arg as never);
 
-		expect(mocks.redirect).toHaveBeenCalledWith(307, '/');
+		expect(mocks.redirect).toHaveBeenCalledWith(307, '/ui/');
 	});
 
 	it('should resolve all other requests', async () => {
 		const arg = {
 			event: {
 				cookies: { get: () => 'cookie' },
-				request: { url: 'https://localhost/channels' },
+				request: { url: 'https://localhost/ui/channels' },
 			},
 			resolve: vi.fn(),
 		} satisfies DeepPartial<Parameters<typeof authentication>[0]>;

@@ -4,7 +4,6 @@
 	import { getVideoContext } from '$lib/stores/video';
 	import { Time, throttle, debounce } from '@hive/common';
 	import { onMount } from 'svelte';
-	import { IconX, IconWindowMaximize } from '@tabler/icons-svelte';
 	import type { EventHandler } from 'svelte/elements';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
@@ -136,12 +135,8 @@
 	{#if $video}
 		{#if !isWatchPage}
 			<div class="p-1 bg-slate-800 justify-end flex gap-1">
-				<a href="{base}/watch/{$video.id}" title="Expand video">
-					<IconWindowMaximize class="text-slate-50" />
-				</a>
-				<button onclick={closeVideo} title="Close video">
-					<IconX class="text-slate-50" />
-				</button>
+				<a href="{base}/watch/{$video.id}" title="Expand video">Max</a>
+				<button onclick={closeVideo} title="Close video">X</button>
 			</div>
 			<progress
 				class="progress-primary h-2"

@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@hive/adapter-fastify';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { resolve } from 'node:path';
 
@@ -8,7 +8,6 @@ const config = {
 	kit: {
 		adapter: adapter({
 			out: 'dist',
-			precompress: false,
 		}),
 		alias: {
 			$components: resolve('./src/components'),

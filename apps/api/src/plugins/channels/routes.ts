@@ -15,7 +15,7 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const channelRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Get a list of channels',
@@ -49,7 +49,7 @@ export const channelRoutes: HiveRoutes = {
 		);
 
 		server.put(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Add a channel',

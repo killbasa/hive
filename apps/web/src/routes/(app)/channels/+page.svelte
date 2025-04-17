@@ -19,7 +19,7 @@
 	let modal: HTMLDialogElement;
 
 	async function addChannel() {
-		const { response, error } = await client.PUT('/channels', {
+		const { response, error } = await client.PUT('/channels/', {
 			body: {
 				id: channelId,
 			},

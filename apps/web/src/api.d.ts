@@ -129,7 +129,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/spec.json": {
+    "/reference/spec.json": {
         parameters: {
             query?: never;
             header?: never;
@@ -163,7 +163,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/spec.yaml": {
+    "/reference/spec.yaml": {
         parameters: {
             query?: never;
             header?: never;
@@ -508,7 +508,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users": {
+    "/users/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -589,7 +589,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/settings": {
+    "/settings/": {
         parameters: {
             query?: never;
             header?: never;
@@ -657,7 +657,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/channels": {
+    "/channels/": {
         parameters: {
             query?: never;
             header?: never;
@@ -887,7 +887,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/videos": {
+    "/videos/": {
         parameters: {
             query?: never;
             header?: never;
@@ -1266,7 +1266,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications": {
+    "/notifications/": {
         parameters: {
             query?: never;
             header?: never;
