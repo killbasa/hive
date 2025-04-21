@@ -64,7 +64,7 @@ export async function buildServer(): Promise<FastifyInstance> {
 
 	await server.register(FastifyCors, {
 		// TODO - Allow more
-		origin: config.auth.cookie,
+		origin: config.auth.origin,
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 	});

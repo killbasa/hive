@@ -10,7 +10,7 @@ import (
 var (
 	RootCmd = &cobra.Command{
 		Use:     "hive",
-		Version: "0.0.1",
+		Version: "0.1.0",
 		Short:   "A CLI for interacting with Hive",
 	}
 )

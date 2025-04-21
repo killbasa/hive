@@ -38,7 +38,7 @@ export function loadConfig(): HiveConfig {
 	if (isTesting) {
 		return {
 			server: {
-				version: '0.0.1',
+				version: '0.1.0',
 				port: 0,
 				ui: false,
 			},

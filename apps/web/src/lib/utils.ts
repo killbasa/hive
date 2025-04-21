@@ -22,17 +22,17 @@ export function humanFileSize(sizeBytes: number | bigint | string): string {
 
 export function formatLinks(text: string): string {
 	text = text.replaceAll(
-		/^(?:https|http):\/\/\S+$/g,
+		/(?:https|http):\/\/[^ \n\r\t\f)]+/gm,
 		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
 	);
 
 	text = text.replaceAll(
-		/^#(\w+)$/g,
+		/#(\w+)/gm,
 		'<a href="https://www.youtube.com/hashtag/$1" target="_blank" class="link link-primary">$&</a>',
 	);
 
 	text = text.replaceAll(
-		/^@(\w+)$/g,
+		/@(\w+)/gm,
 		'<a href="https://www.youtube.com/@$1" target="_blank" class="link link-primary">$&</a>',
 	);
 

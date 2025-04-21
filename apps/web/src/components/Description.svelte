@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { formatLinks, formatTimestamps } from '$lib/utils';
-	import { onMount } from 'svelte';
 
 	let {
 		text,
@@ -10,16 +9,14 @@
 		videoId?: string;
 	} = $props();
 
-	let description: HTMLParagraphElement;
-
-	onMount(() => {
+	let description = $derived.by<string>(() => {
 		let formattedText = formatLinks(text);
 		if (videoId) {
 			formattedText = formatTimestamps(videoId, formattedText);
 		}
 
-		description.innerHTML = formattedText;
+		return formattedText;
 	});
 </script>
 
-<p class="whitespace-pre-wrap" bind:this={description}></p>
+<p class="whitespace-pre-wrap">{@html description}</p>

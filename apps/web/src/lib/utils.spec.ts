@@ -22,6 +22,21 @@ describe('utils', async () => {
 				'<a href="https://www.youtube.com/@FuriFerntail" target="_blank" class="link link-primary">@FuriFerntail</a>',
 			);
 		});
+
+		it('should not replace other text', async () => {
+			const input = `Multiline test
+https://google.com
+#FuriFuriFuri
+@FuriFerntail`;
+
+			const output = `Multiline test
+<a href="https://google.com" target="_blank" class="link link-primary">https://google.com</a>
+<a href="https://www.youtube.com/hashtag/FuriFuriFuri" target="_blank" class="link link-primary">#FuriFuriFuri</a>
+<a href="https://www.youtube.com/@FuriFerntail" target="_blank" class="link link-primary">@FuriFerntail</a>`;
+
+			const result = formatLinks(input);
+			expect(result).toBe(output);
+		});
 	});
 
 	describe('formatTimestamps', () => {

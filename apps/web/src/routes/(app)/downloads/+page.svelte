@@ -37,13 +37,13 @@
 	} = $props();
 
 	let ws: HiveWebSocket;
-	let allChecked = $state(false);
+	let allChecked: boolean = $state(false);
 
 	let downloadInfo: DownloadInfo | null = $state(null);
 	let scanInfo: ScanInfo | null = $state(null);
 
 	let selectedVideos: string[] = $state([]);
-	let disabled = $derived(selectedVideos.length === 0);
+	let disabled: boolean = $derived(selectedVideos.length === 0);
 
 	function selectVideo(videoId: string): void {
 		if (selectedVideos.includes(videoId)) {
@@ -75,7 +75,7 @@
 		}
 	}
 
-	async function scan() {
+	async function scan(): Promise<void> {
 		const { response } = await client.POST('/videos/scan', {
 			headers: { 'Content-Type': null },
 		});
@@ -87,13 +87,13 @@
 		}
 	}
 
-	async function stop() {
+	async function stop(): Promise<void> {
 		await client.POST('/downloads/stop', {
 			headers: { 'Content-Type': null },
 		});
 	}
 
-	async function ignore() {
+	async function ignore(): Promise<void> {
 		const response = await client.POST('/videos/ignore', {
 			body: {
 				videoIds: selectedVideos,
@@ -175,7 +175,14 @@
 </script>
 
 <svelte:head>
-	<title>Downloads</title>
+	{#if scanInfo}
+		<title
+			>Downloads [v: {scanInfo.videoPos}/{scanInfo.videoTotal}, c:{scanInfo.channelPos -
+				1}/{scanInfo.channelTotal}]</title
+		>
+	{:else}
+		<title>Downloads</title>
+	{/if}
 </svelte:head>
 
 <section class="flex flex-col gap-4">
@@ -229,10 +236,10 @@
 					{scanInfo.channelId}
 				</a>
 				<div>
-					<span>{scanInfo.channelPos} / {scanInfo.channelTotal}</span>
+					<span>{scanInfo.channelPos - 1} / {scanInfo.channelTotal}</span>
 					<progress
 						class="progress progress-success"
-						value={scanInfo.channelPos}
+						value={scanInfo.channelPos - 1}
 						max={scanInfo.channelTotal}
 					></progress>
 				</div>

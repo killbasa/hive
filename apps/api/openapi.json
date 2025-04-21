@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Hive",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Hive API"
   },
   "components": {

@@ -6,7 +6,7 @@ import (
 
 func Client() *client.APIClient {
 	clientCfg := &client.Configuration{
-		UserAgent: "hive-cli/0.0.1",
+		UserAgent: "hive-cli/" + RootCmd.Version,
 		Debug:     false,
 		Servers: client.ServerConfigurations{
 			{

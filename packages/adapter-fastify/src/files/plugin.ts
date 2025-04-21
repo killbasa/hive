@@ -50,7 +50,6 @@ export default fp<FastifyAdapterPluginOptions>(async (fastify, options) => {
 
 			// Server routes
 			instance.addHook('onRequest', async (req, res) => {
-				console.log(req.raw.url, req.routeOptions);
 				if (req.routeOptions.url) {
 					return;
 				}

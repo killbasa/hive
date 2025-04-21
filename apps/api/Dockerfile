@@ -8,14 +8,14 @@ FROM node:23.11.0-alpine3.21 AS base
 RUN apk update --no-cache && \
 	apk add --no-cache \
 		python3=3.12.10-r0 \
-		ffmpeg=6.1.2-r2 \
-		nginx=1.26.3-r4 \
+		ffmpeg=6.1.2-r1 \
+		nginx=1.26.3-r0 \
 		supervisor=4.2.5-r5
 
 ## Depdencies ##
-FROM alpine:2436f2b3b7d2 AS dependencies
+FROM alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS dependencies
 
-RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2025.01.26/yt-dlp \
+RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2025.03.31/yt-dlp \
 		-O /tmp/yt-dlp && \
 	chmod +x /tmp/yt-dlp
 
@@ -26,8 +26,6 @@ WORKDIR /temp
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-# ref: https://github.com/nodejs/corepack/issues/612#issuecomment-2631462297
-ENV COREPACK_INTEGRITY_KEYS="{\"npm\":[{\"expires\":\"2025-01-29T00:00:00.000Z\",\"keyid\":\"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA\",\"keytype\":\"ecdsa-sha2-nistp256\",\"scheme\":\"ecdsa-sha2-nistp256\",\"key\":\"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg==\"},{\"expires\":null,\"keyid\":\"SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U\",\"keytype\":\"ecdsa-sha2-nistp256\",\"scheme\":\"ecdsa-sha2-nistp256\",\"key\":\"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY6Ya7W++7aUPzvMTrezH6Ycx3c+HOKYCcNGybJZSCJq/fd7Qa8uuAKtdIkUQtQiEKERhAmE5lMMJhP8OkDOa2g==\"}]}"
 
 # If there's no sqlite pre-built binary, we need to build it
 RUN apk add --no-cache \
@@ -35,13 +33,14 @@ RUN apk add --no-cache \
 
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.json .npmrc ./
 COPY apps/api ./apps/api/
+COPY apps/web ./apps/web/
 COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@10.8.1 && \
+	corepack use pnpm@10.9.0 && \
 	pnpm install && \
-	pnpm --filter @hive/common run build && \
+	pnpm --recursive run build && \
 	pnpm --filter @hive/api run build:prod && \
 	mkdir output && \
 	pnpm --filter @hive/api deploy --prod output
