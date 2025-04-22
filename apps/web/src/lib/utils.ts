@@ -23,17 +23,17 @@ export function humanFileSize(sizeBytes: number | bigint | string): string {
 // TODO - This doesn't handle parenthesis
 export function formatLinks(text: string): string {
 	text = text.replaceAll(
-		/(?:https|http):\/\/\S+/gm,
+		/^(?:https|http):\/\/\S+$/gm,
 		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
 	);
 
 	text = text.replaceAll(
-		/#(\w+)/gm,
+		/^#(\w+)$/gm,
 		'<a href="https://www.youtube.com/hashtag/$1" target="_blank" class="link link-primary">$&</a>',
 	);
 
 	text = text.replaceAll(
-		/@(\w+)/gm,
+		/^@(\w+)$/gm,
 		'<a href="https://www.youtube.com/@$1" target="_blank" class="link link-primary">$&</a>',
 	);
 

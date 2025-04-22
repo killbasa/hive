@@ -23,7 +23,7 @@ describe('utils', () => {
 			);
 		});
 
-		it.skip('should work with multiline strings', () => {
+		it('should work with multiline strings', () => {
 			const input = `Multiline test
 https://google.com
 #FuriFuriFuri
