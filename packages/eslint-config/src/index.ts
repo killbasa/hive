@@ -171,6 +171,7 @@ const baseConfig: TSESLint.FlatConfig.ConfigArray = tsEslint.config({
 		'@typescript-eslint/unbound-method': 'error',
 		'@typescript-eslint/unified-signatures': 'off',
 		'@typescript-eslint/return-await': ['error', 'always'],
+		'@typescript-eslint/require-await': 'error',
 		'accessor-pairs': 'off',
 		'array-callback-return': 'error',
 		'block-scoped-var': 'error',

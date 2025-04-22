@@ -20,9 +20,10 @@ export function humanFileSize(sizeBytes: number | bigint | string): string {
 	}).format(size);
 }
 
+// TODO - This doesn't handle parenthesis
 export function formatLinks(text: string): string {
 	text = text.replaceAll(
-		/(?:https|http):\/\/[^ \n\r\t\f)]+/gm,
+		/(?:https|http):\/\/\S+/gm,
 		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
 	);
 

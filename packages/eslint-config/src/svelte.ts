@@ -39,6 +39,8 @@ const baseConfig: TSESLint.FlatConfig.ConfigArray = tsEslint.config({
 		},
 	},
 	rules: {
+		'@typescript-eslint/require-await': 'error',
+		'require-await': 'off',
 		'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 		'import/no-duplicates': 'error',
 		'import/no-unresolved': 'off',
