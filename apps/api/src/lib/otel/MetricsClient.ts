@@ -1,8 +1,8 @@
 import { HiveGauges } from './Gauges.js';
-import { config } from '../config.js';
+import { server } from '../../server.js';
 import { PrometheusExporter, PrometheusSerializer } from '@opentelemetry/exporter-prometheus';
 import { metrics, resources } from '@opentelemetry/sdk-node';
-import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import type { Meter } from '@opentelemetry/api';
 
 export class HiveMetrics {
@@ -20,9 +20,9 @@ export class HiveMetrics {
 		this.serializer = new PrometheusSerializer();
 
 		this.provider = new metrics.MeterProvider({
-			resource: new resources.Resource({
-				[SEMRESATTRS_SERVICE_NAME]: 'hive',
-				[SEMRESATTRS_SERVICE_VERSION]: config.VERSION,
+			resource: resources.resourceFromAttributes({
+				[ATTR_SERVICE_NAME]: 'hive',
+				[ATTR_SERVICE_VERSION]: server.config.server.version,
 			}),
 			readers: [this.exporter],
 		});
@@ -43,4 +43,6 @@ export class HiveMetrics {
 		const data = await this.exporter.collect();
 		return this.serializer.serialize(data.resourceMetrics);
 	}
+
+	public static readonly contentType = 'text/plain; version=0.0.4; charset=utf-8';
 }

@@ -5,7 +5,7 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ fetch, depends, url }) => {
 	depends('state:channels');
 
-	const response = await client.GET('/channels', {
+	const response = await client.GET('/channels/', {
 		fetch,
 		params: {
 			query: {

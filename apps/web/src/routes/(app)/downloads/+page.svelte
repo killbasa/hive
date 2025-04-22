@@ -1,17 +1,17 @@
 <script lang="ts">
+	import { StatusEvent } from '@hive/common';
+	import { onMount } from 'svelte';
+	import type { DownloadProgress, DownloadStatus } from '@hive/common';
+	import type { PageData } from './$types';
 	import Card from '$components/Card.svelte';
 	import SearchInput from '$components/SearchInput.svelte';
-	import Pagination from '$components/navigation/Pagination.svelte';
 	import VideoTypeBadge from '$components/videos/VideoTypeBadge.svelte';
 	import { client } from '$lib/client';
 	import { config } from '$lib/config';
 	import { toast } from '$lib/stores/toasts';
 	import { formatDuration, formatFileSize } from '$lib/utils';
 	import { HiveWebSocket } from '$lib/ws';
-	import { StatusEvent } from '@hive/common';
-	import { onMount } from 'svelte';
-	import type { DownloadProgress, DownloadStatus } from '@hive/common';
-	import type { PageData } from './$types';
+	import Pagination from '$components/navigation/Pagination.svelte';
 	import { invalidate } from '$app/navigation';
 
 	type DownloadInfo = {
@@ -37,13 +37,13 @@
 	} = $props();
 
 	let ws: HiveWebSocket;
-	let allChecked = $state(false);
+	let allChecked: boolean = $state(false);
 
 	let downloadInfo: DownloadInfo | null = $state(null);
 	let scanInfo: ScanInfo | null = $state(null);
 
 	let selectedVideos: string[] = $state([]);
-	let disabled = $derived(selectedVideos.length === 0);
+	let disabled: boolean = $derived(selectedVideos.length === 0);
 
 	function selectVideo(videoId: string): void {
 		if (selectedVideos.includes(videoId)) {
@@ -75,7 +75,7 @@
 		}
 	}
 
-	async function scan() {
+	async function scan(): Promise<void> {
 		const { response } = await client.POST('/videos/scan', {
 			headers: { 'Content-Type': null },
 		});
@@ -87,13 +87,13 @@
 		}
 	}
 
-	async function stop() {
+	async function stop(): Promise<void> {
 		await client.POST('/downloads/stop', {
 			headers: { 'Content-Type': null },
 		});
 	}
 
-	async function ignore() {
+	async function ignore(): Promise<void> {
 		const response = await client.POST('/videos/ignore', {
 			body: {
 				videoIds: selectedVideos,
@@ -175,7 +175,14 @@
 </script>
 
 <svelte:head>
-	<title>Downloads</title>
+	{#if scanInfo}
+		<title
+			>Downloads [v: {scanInfo.videoPos}/{scanInfo.videoTotal}, c:{scanInfo.channelPos -
+				1}/{scanInfo.channelTotal}]</title
+		>
+	{:else}
+		<title>Downloads</title>
+	{/if}
 </svelte:head>
 
 <section class="flex flex-col gap-4">
@@ -185,7 +192,7 @@
 				<div class="flex items-center gap-3">
 					<div class="w-96">
 						<img
-							src="{config.apiUrl}/assets/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
+							src="{config.assetsPath}/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
 							alt="Video thumbnail"
 						/>
 					</div>
@@ -216,7 +223,7 @@
 				<div class="avatar">
 					<div class="mask mask-circle h-12 w-12">
 						<img
-							src="{config.apiUrl}/assets/{scanInfo.channelId}/assets/avatar.jpg"
+							src="{config.assetsPath}/{scanInfo.channelId}/assets/avatar.jpg"
 							alt="Channel avatar"
 						/>
 					</div>
@@ -229,10 +236,10 @@
 					{scanInfo.channelId}
 				</a>
 				<div>
-					<span>{scanInfo.channelPos} / {scanInfo.channelTotal}</span>
+					<span>{scanInfo.channelPos - 1} / {scanInfo.channelTotal}</span>
 					<progress
 						class="progress progress-success"
-						value={scanInfo.channelPos}
+						value={scanInfo.channelPos - 1}
 						max={scanInfo.channelTotal}
 					></progress>
 				</div>
@@ -250,9 +257,9 @@
 			{/if}
 		</Card>
 	</div>
+
 	<Card title="Downloads ({data.videos.length}/{data.total})">
 		<div class="justify-between flex">
-			{JSON.stringify(selectedVideos)}
 			<div class="flex gap-2">
 				<button class="btn btn-success" onclick={startDownloads}>Download</button>
 				<button class="btn btn-error" {disabled} onclick={ignore}>Ignore</button>
@@ -305,7 +312,7 @@
 							<div class="flex items-center gap-3">
 								<div class="w-48">
 									<img
-										src="{config.apiUrl}/assets/{video.channelId}/videos/{video.id}/thumbnail.png"
+										src="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
 										alt="Video thumbnail"
 										loading="lazy"
 									/>

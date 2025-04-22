@@ -8,7 +8,6 @@
 		"src",
 		"scripts",
 		"tests",
-		".lintstagedrc.js",
 		".prettierrc.cjs",
 		"drizzle.config.ts",
 		"eslint.config.js",

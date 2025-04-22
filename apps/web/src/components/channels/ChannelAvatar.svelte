@@ -14,6 +14,6 @@
 
 <div class="avatar {rest.class ?? ''}">
 	<div class="mask mask-circle h-{size} w-{size}">
-		<img src="{config.apiUrl}/assets/{channelId}/assets/avatar.jpg" alt="Channel avatar" />
+		<img src="{config.assetsPath}/{channelId}/assets/avatar.jpg" alt="Channel avatar" />
 	</div>
 </div>

@@ -1,3 +1,3 @@
-export * from './debounce';
-export * from './parseDurationString';
-export * from './throttle';
+export * from './debounce.js';
+export * from './parseDurationString.js';
+export * from './throttle.js';

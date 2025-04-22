@@ -1,10 +1,38 @@
-import { config } from '../../lib/config.js';
 import { MessageResponse } from '../../lib/responses.js';
 import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
+import { HiveMetrics } from '../../lib/otel/MetricsClient.js';
+import { isDev } from '../../lib/constants.js';
 import { Type } from '@fastify/type-provider-typebox';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const coreRoutes: HiveRoutes = {
+	authenticated: (server, _, done) => {
+		const ytdlpVersion = getYtdlpVersion();
+		server.get(
+			'/version',
+			{
+				schema: {
+					description: 'Get the version numbers for Hive',
+					tags: ['Core'],
+					security: [{ apikey: ['x-api-key'] }],
+					response: {
+						200: Type.Object({
+							api: Type.String(),
+							ytdlp: Type.String(),
+						}),
+					},
+				},
+			},
+			async (_, reply): Promise<void> => {
+				await reply.status(200).send({
+					api: server.config.server.version,
+					ytdlp: ytdlpVersion,
+				});
+			},
+		);
+
+		done();
+	},
 	public: (server, _, done) => {
 		server.get(
 			'/heartbeat',
@@ -50,10 +78,22 @@ export const coreRoutes: HiveRoutes = {
 
 				await reply //
 					.status(200)
-					.header('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')
+					.header('Content-Type', HiveMetrics.contentType)
 					.send(metrics);
 			},
 		);
+
+		if (isDev) {
+			server.post(
+				'/csp', //
+				{ schema: { hide: true } },
+				async (request, reply): Promise<void> => {
+					server.log.info(request.body);
+
+					await reply.status(200).send();
+				},
+			);
+		}
 
 		server.get(
 			'/favicon.ico', //
@@ -63,29 +103,11 @@ export const coreRoutes: HiveRoutes = {
 			},
 		);
 
-		done();
-	},
-	authenticated: (server, _, done) => {
-		const ytdlpVersion = getYtdlpVersion();
 		server.get(
-			'/version',
-			{
-				schema: {
-					description: 'Get the version numbers for Hive',
-					tags: ['Core'],
-					response: {
-						200: Type.Object({
-							api: Type.String(),
-							ytdlp: Type.String(),
-						}),
-					},
-				},
-			},
+			'/site.webmanifest', //
+			{ schema: { hide: true } },
 			async (_, reply): Promise<void> => {
-				await reply.status(200).send({
-					api: config.VERSION,
-					ytdlp: ytdlpVersion,
-				});
+				await reply.redirect('/ui/site.webmanifest');
 			},
 		);
 

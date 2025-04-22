@@ -1,14 +1,10 @@
 import { defineConfig } from 'tsup';
+import type { Options } from 'tsup';
 
-export default defineConfig({
+const options: Options = {
 	bundle: true,
 	clean: true,
 	dts: false,
-	entry: [
-		'src/main.ts', //
-		'!src/**/*.spec.ts',
-		'!src/**/*.spec-util.ts',
-	],
 	format: ['esm'],
 	keepNames: true,
 	minify: false,
@@ -18,11 +14,31 @@ export default defineConfig({
 	sourcemap: true,
 	target: 'esnext',
 	treeshake: true,
+	outDir: 'dist',
 	tsconfig: './tsconfig.json',
+	noExternal: ['@hive/common'],
 	env: {
 		NODE_ENV: process.env.NODE_ENV ?? 'production',
 		TESTING: 'false',
 		npm_package_version: process.env.npm_package_version!,
 		DISABLE_AUTODL: 'false',
 	},
+};
+
+const entry: string[] = [
+	'src/main.ts', //
+	'!src/**/*.spec.ts',
+	'!src/**/*.spec-util.ts',
+];
+
+if (process.env.NODE_ENV === 'development') {
+	entry.push(
+		'src/routes.ts', //
+		'src/server.ts',
+	);
+}
+
+export default defineConfig({
+	...options,
+	entry,
 });

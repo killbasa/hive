@@ -7,6 +7,7 @@
 	import { toast } from '$lib/stores/toasts';
 	import type { PageData } from './$types';
 	import { invalidate } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	let {
 		data,
@@ -18,7 +19,7 @@
 	let modal: HTMLDialogElement;
 
 	async function addChannel() {
-		const { response, error } = await client.PUT('/channels', {
+		const { response, error } = await client.PUT('/channels/', {
 			body: {
 				id: channelId,
 			},
@@ -70,7 +71,7 @@
 							<div class="flex items-center gap-3">
 								<ChannelAvatar channelId={channel.id} />
 								<div>
-									<a href="/channels/{channel.id}">
+									<a href="{base}/channels/{channel.id}">
 										<div class="font-bold">{channel.name}</div>
 									</a>
 								</div>

@@ -1,4 +1,3 @@
-import { config } from '../../src/lib/config.js';
 import server from '../vitest.setup.js';
 
 describe('authHandler', async () => {
@@ -20,7 +19,7 @@ describe('authHandler', async () => {
 			method: 'GET',
 			url: '/version',
 			cookies: {
-				[config.COOKIE_NAME]: token,
+				[server.config.auth.cookie]: token,
 			},
 		});
 

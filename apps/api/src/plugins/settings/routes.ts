@@ -9,11 +9,12 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const settingsRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Get the settings',
 					tags: ['Settings'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: SettingsSchema,
 					},
@@ -27,11 +28,12 @@ export const settingsRoutes: HiveRoutes = {
 		);
 
 		server.patch(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Update the settings',
 					tags: ['Settings'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: SettingsPatchBody,
 					response: {
 						204: EmptyResponse('Settings updated successfully'),

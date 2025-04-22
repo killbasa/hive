@@ -3,12 +3,13 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const notificationRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/', //
 			{
 				websocket: true,
 				schema: {
 					description: 'Websocket for server notifications',
 					tags: ['Websockets'],
+					security: [{ apikey: ['x-api-key'] }],
 				},
 			},
 			(socket) => {

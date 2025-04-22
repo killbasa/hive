@@ -50,6 +50,8 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 			case 'thumbnail':
 				this.data.push('--output', `thumbnail:${data}`);
 				break;
+			case 'none':
+			case undefined:
 			default:
 				this.data.push('--output', data);
 		}
@@ -85,14 +87,5 @@ export class YtdlpVideoArgs implements YtdlpArgs {
 	public arg(...args: string[]): this {
 		this.data.push(...args);
 		return this;
-	}
-
-	public static parseProgress(data: string): {
-		progress_percentage: string;
-		progress_total: string;
-		speed: string;
-		eta: string;
-	} {
-		return JSON.parse(data);
 	}
 }

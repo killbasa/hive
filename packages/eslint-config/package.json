@@ -1,12 +1,10 @@
 {
 	"name": "@hive/eslint-config",
-	"version": "0.0.1",
-	"author": "killbasa <contact@shaneb.xyz>",
+	"version": "0.1.0",
+	"author": "killbasa <git@killbasa.com>",
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
-	"main": "dist/cjs/index.cjs",
-	"module": "dist/esm/index.js",
 	"exports": {
 		".": {
 			"import": {
@@ -14,7 +12,7 @@
 				"default": "./dist/esm/index.js"
 			},
 			"require": {
-				"types": "./dist/cjs/index.d.cts",
+				"types": "./dist/cjs/index.d.ts",
 				"default": "./dist/cjs/index.cjs"
 			}
 		},
@@ -24,33 +22,40 @@
 				"default": "./dist/esm/svelte.js"
 			},
 			"require": {
-				"types": "./dist/cjs/svelte.d.cts",
+				"types": "./dist/cjs/svelte.d.ts",
 				"default": "./dist/cjs/svelte.cjs"
 			}
 		}
 	},
+	"files": [
+		"dist/"
+	],
 	"scripts": {
-		"build": "tsup",
-		"format": "prettier --write ."
+		"build": "tsup && mv dist/cjs/index.d.cts dist/cjs/index.d.ts && mv dist/cjs/svelte.d.cts dist/cjs/svelte.d.ts",
+		"format": "prettier --write .",
+		"clean": "rm -rf ./dist ./node_modules"
+	},
+	"peerDependencies": {
+		"eslint": "^9"
 	},
 	"dependencies": {
-		"@eslint/js": "^9.18.0",
-		"@typescript-eslint/eslint-plugin": "^8.19.1",
-		"@typescript-eslint/parser": "^8.19.1",
-		"@typescript-eslint/utils": "^8.19.1",
-		"eslint": "^9.18.0",
-		"eslint-import-resolver-typescript": "^3.7.0",
-		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-prettier": "^5.2.1",
-		"eslint-plugin-svelte": "^2.46.1",
-		"globals": "^15.14.0",
-		"prettier": "^3.4.2",
-		"svelte-eslint-parser": "^0.43.0",
-		"typescript-eslint": "^8.19.1"
+		"@eslint/js": "^9.25.1",
+		"@typescript-eslint/eslint-plugin": "^8.31.0",
+		"@typescript-eslint/parser": "^8.31.0",
+		"@typescript-eslint/utils": "^8.31.0",
+		"eslint": "^9.25.1",
+		"eslint-import-resolver-typescript": "^4.3.4",
+		"eslint-plugin-import": "^2.30.0",
+		"eslint-plugin-prettier": "^5.2.6",
+		"eslint-plugin-svelte": "^3.5.1",
+		"globals": "^16.0.0",
+		"prettier": "^3.5.3",
+		"svelte-eslint-parser": "^1.1.3",
+		"typescript-eslint": "^8.31.0"
 	},
 	"devDependencies": {
-		"tsup": "^8.3.5",
-		"typescript": "^5.7.3"
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.3"
 	},
 	"lint-staged": {
 		"*.{js,ts}": [
@@ -60,13 +65,9 @@
 			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
 		]
 	},
-	"engines": {
-		"node": "22.x"
-	},
-	"packageManager": "pnpm@9.15.3",
+	"packageManager": "pnpm@10.9.0",
 	"volta": {
-		"node": "22.13.0",
-		"npm": "11.0.0",
-		"pnpm": "9.15.3"
+		"node": "23.11.0",
+		"pnpm": "10.9.0"
 	}
 }

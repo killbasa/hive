@@ -1,9 +1,9 @@
-import { RedisConnectionOptions, config } from './lib/config.js';
 import { isDev, isTesting } from './lib/constants.js';
 import { HiveMetrics } from './lib/otel/MetricsClient.js';
 import { authHandler } from './plugins/auth/handler.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
 import { HiveSettings } from './plugins/settings/service.js';
+import { loadConfig } from './lib/config.js';
 import FastifyCookie from '@fastify/cookie';
 import FastifyCors from '@fastify/cors';
 import FastifyHelmet from '@fastify/helmet';
@@ -28,6 +28,7 @@ export async function buildServer(): Promise<FastifyInstance> {
 	}
 
 	const server = Fastify({
+		ignoreTrailingSlash: true,
 		disableRequestLogging: !isDev,
 		logger: {
 			level,
@@ -44,54 +45,28 @@ export async function buildServer(): Promise<FastifyInstance> {
 		.withTypeProvider<TypeBoxTypeProvider>()
 		.setValidatorCompiler(TypeBoxValidatorCompiler);
 
+	const config = loadConfig();
+	server.decorate('config', config);
+
 	/**
 	 * Plugins
 	 */
-
-	await server.register(FastifySwagger, {
-		mode: 'dynamic',
-		openapi: {
-			openapi: '3.1.0',
-			info: {
-				title: 'Hive',
-				version: config.VERSION,
-				description: 'Hive API',
-			},
-			tags: [
-				{ name: 'Core', description: 'End-points related to the server itself' },
-				{ name: 'Open API', description: 'Open API related endpoints' },
-				{ name: 'Auth', description: 'Authentication related end-points' },
-				{ name: 'Users', description: 'User related end-points' },
-				{ name: 'Settings', description: 'Settings related end-points' },
-				{ name: 'Channels', description: 'Channel related end-points' },
-				{ name: 'Videos', description: 'Video related end-points' },
-				{ name: 'Downloads', description: 'Download related end-points' },
-				{ name: 'Websockets', description: 'Websocket related end-points' },
-			],
-			components: {
-				securitySchemes: {
-					apikey: {
-						type: 'apiKey',
-						in: 'header',
-						name: 'x-api-key',
-					},
-				},
-			},
-		},
-	});
+	await registerSwagger(server);
 
 	await server.register(FastifyCookie);
 	await server.register(FastifyJwt, {
-		secret: config.AUTH_SECRET,
+		secret: config.auth.secret,
 		cookie: {
-			cookieName: config.COOKIE_NAME,
+			cookieName: config.auth.cookie,
 			signed: false,
 		},
 	});
 
 	await server.register(FastifyCors, {
-		origin: config.AUTH_ORIGIN,
+		// TODO - Allow more
+		origin: config.auth.origin,
 		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 	});
 
 	await server.register(FastifyHelmet, {
@@ -102,9 +77,49 @@ export async function buildServer(): Promise<FastifyInstance> {
 	await server.register(FastifyWebsocket);
 
 	/**
-	 * Decorators
+	 * Parsers
 	 */
+	if (isDev) {
+		server.addContentTypeParser<string>(
+			'application/csp-report', //
+			{ parseAs: 'string' },
+			(_, payload, done) => {
+				done(null, JSON.parse(payload));
+			},
+		);
+	}
 
+	return server;
+}
+
+export function decorate(server: FastifyInstance): void {
+	server.decorate('settings', new HiveSettings());
+	server.decorate('notifications', new HiveNotifier());
+
+	if (server.config.metrics.enabled) {
+		server.decorate('metrics', new HiveMetrics());
+	}
+
+	const options: QueueOptions = {
+		connection: {
+			host: server.config.redis.host,
+			port: server.config.redis.port,
+			password: server.config.redis.password,
+		},
+		defaultJobOptions: {
+			removeOnComplete: true,
+			removeOnFail: true,
+		},
+	};
+
+	server.decorate('tasks', {
+		internal: new Queue('internal', options),
+		downloader: new Queue('downloader', options),
+		scanner: new Queue('scanner', options),
+	});
+}
+
+export async function registerSwagger(server: FastifyInstance): Promise<void> {
 	server.decorate('routes', async (routes, options = {}) => {
 		if (routes.subroutes) {
 			for (const [prefix, route] of Object.entries(routes.subroutes)) {
@@ -126,28 +141,37 @@ export async function buildServer(): Promise<FastifyInstance> {
 		}
 	});
 
-	server.decorate('settings', new HiveSettings());
-	server.decorate('notifications', new HiveNotifier());
-
-	if (config.METRICS_ENABLED) {
-		server.decorate('metrics', new HiveMetrics());
-	}
-
-	const options: QueueOptions = {
-		connection: RedisConnectionOptions,
-		defaultJobOptions: {
-			removeOnComplete: true,
-			removeOnFail: true,
+	await server.register(FastifySwagger, {
+		mode: 'dynamic',
+		openapi: {
+			openapi: '3.1.0',
+			info: {
+				title: 'Hive',
+				version: server.config.server.version,
+				description: 'Hive API',
+			},
+			tags: [
+				{ name: 'Core', description: 'End-points related to the server itself' },
+				{ name: 'OpenAPI', description: 'OpenAPI related endpoints' },
+				{ name: 'Auth', description: 'Authentication related end-points' },
+				{ name: 'Users', description: 'User related end-points' },
+				{ name: 'Settings', description: 'Settings related end-points' },
+				{ name: 'Channels', description: 'Channel related end-points' },
+				{ name: 'Videos', description: 'Video related end-points' },
+				{ name: 'Downloads', description: 'Download related end-points' },
+				{ name: 'Websockets', description: 'Websocket related end-points' },
+			],
+			components: {
+				securitySchemes: {
+					apikey: {
+						type: 'apiKey',
+						in: 'header',
+						name: 'x-api-key',
+					},
+				},
+			},
 		},
-	};
-
-	server.decorate('tasks', {
-		internal: new Queue('internal', options),
-		downloader: new Queue('downloader', options),
-		scanner: new Queue('scanner', options),
 	});
-
-	return server;
 }
 
 export const server = await buildServer();

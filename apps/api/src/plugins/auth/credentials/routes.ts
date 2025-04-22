@@ -1,7 +1,6 @@
 import { LoginBody, SignupBody } from './body.js';
 import { db } from '../../../db/client.js';
 import { users } from '../../../db/schema.js';
-import { config } from '../../../lib/config.js';
 import { EmptyResponse, MessageResponse } from '../../../lib/responses.js';
 import { cookies } from '../cookies.js';
 import { count, eq } from 'drizzle-orm';
@@ -53,7 +52,7 @@ export const credentialAuthRoutes: HiveRoutes = {
 				});
 
 				await reply //
-					.setCookie(config.COOKIE_NAME, token, cookie)
+					.setCookie(server.config.auth.cookie, token, cookie)
 					.code(200)
 					.send();
 			},

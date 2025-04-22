@@ -1,5 +1,5 @@
-import { parseDurationString } from './parseDurationString';
-import { Time } from '../enums';
+import { parseDurationString } from './parseDurationString.js';
+import { Time } from '../enums.js';
 
 describe('parseDurationString', () => {
 	test('valid', () => {

@@ -1,8 +1,7 @@
-import { UserPatchBody } from './body.js';
-import { UserSchema } from './schema.js';
+import { UserExistsBody, UserPatchBody } from './body.js';
+import { UserExistsSchema, UserSchema } from './schema.js';
 import { db } from '../../db/client.js';
 import { users } from '../../db/schema.js';
-import { config } from '../../lib/config.js';
 import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
 import { cookies } from '../auth/cookies.js';
 import { eq } from 'drizzle-orm';
@@ -12,11 +11,12 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const userRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/me', //
 			{
 				schema: {
 					description: 'Get the user for the current request',
 					tags: ['Users'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: UserSchema,
 						404: EmptyResponse('User not found'),
@@ -41,11 +41,12 @@ export const userRoutes: HiveRoutes = {
 		);
 
 		server.patch(
-			'', //
+			'/me', //
 			{
 				schema: {
 					description: 'Update a user',
 					tags: ['Users'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: UserPatchBody,
 					response: {
 						204: EmptyResponse('User updated successfully'),
@@ -85,9 +86,38 @@ export const userRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(config.COOKIE_NAME, cookie)
+					.clearCookie(server.config.auth.cookie, cookie)
 					.code(204)
 					.send();
+			},
+		);
+
+		done();
+	},
+	public: (server, _, done) => {
+		server.post(
+			'/exists', //
+			{
+				schema: {
+					description: 'Check if a user exists',
+					tags: ['Auth'],
+					body: UserExistsBody,
+					response: {
+						200: UserExistsSchema,
+					},
+				},
+			},
+			async (request, reply): Promise<void> => {
+				const { body } = request;
+
+				const user = await db.query.users.findFirst({
+					where: eq(users.name, body.username),
+					columns: { name: true },
+				});
+
+				await reply.status(200).send({
+					exists: user !== undefined,
+				});
 			},
 		);
 

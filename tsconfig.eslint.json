@@ -4,10 +4,6 @@
 		"allowJs": true,
 		"checkJs": true
 	},
-	"include": [
-		"scripts",
-		".lintstagedrc.js",
-		".prettierrc.cjs",
-		"eslint.config.js"
-	]
+	"include": [".prettierrc.cjs", "eslint.config.js"],
+	"exclude": ["data", "node_modules"]
 }

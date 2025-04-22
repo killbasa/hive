@@ -1,7 +1,6 @@
 import { cookies } from './cookies.js';
 import { credentialAuthRoutes } from './credentials/routes.js';
 import { apikeyAuthRoutes } from './apikey/routes.js';
-import { config } from '../../lib/config.js';
 import { EmptyResponse } from '../../lib/responses.js';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
@@ -17,6 +16,7 @@ export const authRoutes: HiveRoutes = {
 				schema: {
 					description: 'Verify the user is authenticated',
 					tags: ['Auth'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: EmptyResponse('User is authenticated'),
 					},
@@ -35,6 +35,7 @@ export const authRoutes: HiveRoutes = {
 				schema: {
 					description: 'Logout the user',
 					tags: ['Auth'],
+					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: EmptyResponse('Logged out successfully'),
 					},
@@ -44,7 +45,7 @@ export const authRoutes: HiveRoutes = {
 				const cookie = cookies.delete();
 
 				await reply //
-					.clearCookie(config.COOKIE_NAME, cookie)
+					.clearCookie(server.config.auth.cookie, cookie)
 					.code(200)
 					.send();
 			},

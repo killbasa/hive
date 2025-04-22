@@ -3,7 +3,7 @@ import { getNumberParam, getStringParam } from '$lib/navigation';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, url, params }) => {
-	const response = await client.GET('/videos', {
+	const response = await client.GET('/videos/', {
 		fetch,
 		params: {
 			query: {

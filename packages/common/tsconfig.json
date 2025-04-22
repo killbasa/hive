@@ -1,12 +1,7 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"rootDir": "src",
-		"outDir": "dist",
-		"noEmit": true,
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"tsBuildInfoFile": "dist/.tsbuildinfo"
+		"noEmit": true
 	},
 	"include": ["src"]
 }

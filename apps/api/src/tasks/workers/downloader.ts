@@ -1,4 +1,3 @@
-import { RedisConnectionOptions } from '../../lib/config.js';
 import { server } from '../../server.js';
 import { handleDownloadVideoTask } from '../handlers/downloader.js';
 import { Worker } from 'bullmq';
@@ -24,7 +23,11 @@ export async function initDownloaderWorker(): Promise<void> {
 			throw new Error(`Unknown task: ${task.name}`);
 		},
 		{
-			connection: RedisConnectionOptions,
+			connection: {
+				host: server.config.redis.host,
+				port: server.config.redis.port,
+				password: server.config.redis.password,
+			},
 			concurrency: 1,
 		},
 	);

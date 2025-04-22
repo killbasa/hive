@@ -80,6 +80,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "tailwindcss";
+
 	.toast-item {
 		@apply w-80 flex mb-2 items-center will-change-transform rounded-lg overflow-hidden min-h-14 h-auto;
 	}

@@ -15,11 +15,12 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const channelRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
 		server.get(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Get a list of channels',
 					tags: ['Channels'],
+					security: [{ apikey: ['x-api-key'] }],
 					querystring: ChannelQuerySchema,
 					response: {
 						200: ChanneListSchema,
@@ -48,11 +49,12 @@ export const channelRoutes: HiveRoutes = {
 		);
 
 		server.put(
-			'', //
+			'/', //
 			{
 				schema: {
 					description: 'Add a channel',
 					tags: ['Channels'],
+					security: [{ apikey: ['x-api-key'] }],
 					body: ChannelPostBody,
 					response: {
 						201: EmptyResponse('Channel added successfully'),
@@ -107,6 +109,7 @@ export const channelRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get a channel',
 					tags: ['Channels'],
+					security: [{ apikey: ['x-api-key'] }],
 					params: Type.Object({
 						channelId: Type.String(),
 					}),
@@ -139,6 +142,7 @@ export const channelRoutes: HiveRoutes = {
 				schema: {
 					description: 'Scan a channel for new metadata and assets',
 					tags: ['Channels'],
+					security: [{ apikey: ['x-api-key'] }],
 					params: Type.Object({
 						channelId: Type.String(),
 					}),
@@ -169,6 +173,7 @@ export const channelRoutes: HiveRoutes = {
 				schema: {
 					description: 'Get stats about a channel',
 					tags: ['Channels'],
+					security: [{ apikey: ['x-api-key'] }],
 					params: Type.Object({
 						channelId: Type.String(),
 					}),

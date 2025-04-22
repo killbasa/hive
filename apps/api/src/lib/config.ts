@@ -1,43 +1,95 @@
+import { isTesting } from './constants.js';
 import { z } from 'zod';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
-import type { ConnectionOptions } from 'bullmq';
 
-if (existsSync(resolve('.env'))) {
-	loadEnvFile();
-}
+type Unvalidated<T> = {
+	[K in keyof T]: T[K] extends object ? Unvalidated<T[K]> : unknown;
+};
 
 const ConfigSchema = z.object({
-	VERSION: z.string(),
-	PORT: z.coerce.number(),
-	AUTH_SECRET: z.string(),
-	AUTH_ORIGIN: z.string(),
-	COOKIE_NAME: z.string(),
-	REDIS_HOST: z.string().default('localhost'),
-	REDIS_PORT: z.coerce.number().default(6379),
-	REDIS_PASSWORD: z.string().default('password'),
-	YT_API_KEY: z.string(),
-	METRICS_ENABLED: z.coerce.boolean().default(false),
+	server: z.object({
+		version: z.string(),
+		port: z.coerce.number(),
+		ui: z.boolean(),
+	}),
+	auth: z.object({
+		secret: z.string(),
+		origin: z.string(),
+		cookie: z.string(),
+	}),
+	redis: z.object({
+		host: z.string().default('localhost'),
+		port: z.coerce.number().default(6379),
+		password: z.string().default('password'),
+	}),
+	youtube: z.object({
+		apikey: z.string(),
+	}),
+	metrics: z.object({
+		enabled: z.coerce.boolean().default(false),
+	}),
 });
 
-const obj = {
-	VERSION: process.env.npm_package_version,
-	PORT: 3002,
-	AUTH_SECRET: process.env.AUTH_SECRET,
-	AUTH_ORIGIN: process.env.AUTH_ORIGIN,
-	COOKIE_NAME: 'hive',
-	REDIS_HOST: process.env.REDIS_HOST,
-	REDIS_PORT: process.env.REDIS_PORT,
-	REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-	YT_API_KEY: process.env.YT_API_KEY,
-	METRICS_ENABLED: process.env.METRICS_ENABLED,
-} satisfies Record<keyof z.infer<typeof ConfigSchema>, unknown>;
+export type HiveConfig = z.infer<typeof ConfigSchema>;
 
-export const config = ConfigSchema.parse(obj);
+export function loadConfig(): HiveConfig {
+	if (isTesting) {
+		return {
+			server: {
+				version: '0.1.0',
+				port: 0,
+				ui: false,
+			},
+			auth: {
+				secret: 'secret',
+				origin: 'http://localhost',
+				cookie: 'hive',
+			},
+			redis: {
+				host: 'redis_host',
+				port: 6379,
+				password: 'redis_password',
+			},
+			youtube: {
+				apikey: 'apikey',
+			},
+			metrics: {
+				enabled: false,
+			},
+		};
+	}
 
-export const RedisConnectionOptions: ConnectionOptions = {
-	host: config.REDIS_HOST,
-	port: config.REDIS_PORT,
-	password: config.REDIS_PASSWORD,
-};
+	if (existsSync(resolve('.env'))) {
+		loadEnvFile();
+	}
+
+	const flags = process.argv.slice(2);
+
+	const obj = {
+		server: {
+			version: process.env.npm_package_version,
+			port: 3002,
+			ui: flags.includes('--ui'),
+		},
+		auth: {
+			secret: process.env.AUTH_SECRET,
+			origin: process.env.AUTH_ORIGIN,
+			cookie: 'hive',
+		},
+		redis: {
+			host: process.env.REDIS_HOST,
+			port: process.env.REDIS_PORT,
+			password: process.env.REDIS_PASSWORD,
+		},
+		youtube: {
+			apikey: process.env.YT_API_KEY,
+		},
+		metrics: {
+			enabled: process.env.METRICS_ENABLED,
+		},
+	} satisfies Unvalidated<HiveConfig>;
+
+	return ConfigSchema.parse(obj);
+}

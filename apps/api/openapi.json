@@ -1,0 +1,1966 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hive",
+    "version": "0.1.0",
+    "description": "Hive API"
+  },
+  "components": {
+    "securitySchemes": {
+      "apikey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {}
+  },
+  "paths": {
+    "/heartbeat": {
+      "get": {
+        "tags": [
+          "Core"
+        ],
+        "description": "Check if the server is running",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "OK"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "Core"
+        ],
+        "description": "Get Prometheus metrics for the server",
+        "responses": {
+          "200": {
+            "description": "Prometheus metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Prometheus metrics",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Metrics are not enabled for the instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Metrics are not enabled for the instance",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "Core"
+        ],
+        "description": "Get the version numbers for Hive",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "api": {
+                      "type": "string"
+                    },
+                    "ytdlp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "api",
+                    "ytdlp"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reference/spec.json": {
+      "get": {
+        "tags": [
+          "OpenAPI"
+        ],
+        "description": "Get the OpenAPI JSON spec",
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/reference/spec.yaml": {
+      "get": {
+        "tags": [
+          "OpenAPI"
+        ],
+        "description": "Get the OpenAPI YAML spec",
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/auth/credentials/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Login to the application",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "password": {
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "remember": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password",
+                  "remember"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Logged in successfully",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid username or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Invalid username or password",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/credentials/signup": {
+      "put": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Signup for the application",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "password": {
+                    "minLength": 8,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Account created"
+          },
+          "403": {
+            "description": "User registration is disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "User registration is disabled",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "User already exists",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/apikey/create": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Create an API key",
+        "responses": {}
+      }
+    },
+    "/auth/apikey/delete": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Delete an API key",
+        "responses": {}
+      }
+    },
+    "/auth/apikey/list": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Get a list of API keys",
+        "responses": {}
+      }
+    },
+    "/auth/verify": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Verify the user is authenticated",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is authenticated"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Logout the user",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          }
+        }
+      }
+    },
+    "/users/exists": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Check if a user exists",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "minLength": 3,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "exists"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Get the user for the current request",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Update a user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "minLength": 8,
+                    "type": "string"
+                  },
+                  "oldPassword": {
+                    "minLength": 8,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "newPassword",
+                  "oldPassword"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User updated successfully"
+          },
+          "401": {
+            "description": "Invalid username or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Invalid username or password",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settings/": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "description": "Get the settings",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cronCheckSubscriptions": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "cronDownloadPending": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "cronChannelMetadata": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "downloadLimit": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "cronCheckSubscriptions",
+                    "cronDownloadPending",
+                    "cronChannelMetadata",
+                    "downloadLimit"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Settings"
+        ],
+        "description": "Update the settings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cronCheckSubscriptions": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "cronDownloadPending": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "cronChannelMetadata": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "downloadLimit": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "cronCheckSubscriptions",
+                  "cronDownloadPending",
+                  "cronChannelMetadata"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Settings updated successfully"
+          }
+        }
+      }
+    },
+    "/channels/": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "description": "Get a list of channels",
+        "parameters": [
+          {
+            "schema": {
+              "default": 1,
+              "type": "number"
+            },
+            "in": "query",
+            "name": "page",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "channels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "customUrl": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "description",
+                          "tags",
+                          "customUrl",
+                          "name"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "channels",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Channels"
+        ],
+        "description": "Add a channel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Channel added successfully"
+          },
+          "404": {
+            "description": "Channel does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Channel does not exist",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Channel already downloaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Channel already downloaded",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channelId}": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "description": "Get a channel",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "channelId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "customUrl": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description",
+                    "tags",
+                    "customUrl",
+                    "name"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Channel not found"
+          }
+        }
+      }
+    },
+    "/channels/{channelId}/scan": {
+      "post": {
+        "tags": [
+          "Channels"
+        ],
+        "description": "Scan a channel for new metadata and assets",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "channelId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Scan started successfully"
+          }
+        }
+      }
+    },
+    "/channels/{channelId}/stats": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "description": "Get stats about a channel",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "channelId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "videos": {
+                      "type": "number"
+                    },
+                    "streams": {
+                      "type": "number"
+                    },
+                    "shorts": {
+                      "type": "number"
+                    },
+                    "directorySize": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "videos",
+                    "streams",
+                    "shorts",
+                    "directorySize"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Channel not found"
+          }
+        }
+      }
+    },
+    "/videos/": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Get a list of videos",
+        "parameters": [
+          {
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            },
+            "in": "query",
+            "name": "page",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "video"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "short"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "stream"
+                    ]
+                  }
+                ]
+              }
+            },
+            "in": "query",
+            "name": "type",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "none"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "live"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "upcoming"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "past"
+                    ]
+                  }
+                ]
+              }
+            },
+            "in": "query",
+            "name": "status",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "ignored"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "pending"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "done"
+                    ]
+                  }
+                ]
+              }
+            },
+            "in": "query",
+            "name": "downloadStatus",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "channelId",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "search",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "inProgress",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "videos": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "channelId": {
+                            "type": "string"
+                          },
+                          "playlistId": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "duration": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "watchProgress": {
+                            "type": "number"
+                          },
+                          "watchCompleted": {
+                            "type": "boolean"
+                          },
+                          "fileSize": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "uploadDate": {
+                            "anyOf": [
+                              {
+                                "type": "null"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "type": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unknown"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "video"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "short"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "stream"
+                                ]
+                              }
+                            ]
+                          },
+                          "status": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unknown"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "none"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "live"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "upcoming"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "past"
+                                ]
+                              }
+                            ]
+                          },
+                          "downloadStatus": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "ignored"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "pending"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "done"
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "channelId",
+                          "playlistId",
+                          "title",
+                          "description",
+                          "duration",
+                          "watchProgress",
+                          "watchCompleted",
+                          "fileSize",
+                          "uploadDate",
+                          "type",
+                          "status",
+                          "downloadStatus"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "videos",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/videos/ignore": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Ignore videos",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "videoIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "videoIds"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Videos IDs ignored"
+          }
+        }
+      }
+    },
+    "/videos/scan": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Scan all channels for new videos",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Scan started successfully"
+          }
+        }
+      }
+    },
+    "/videos/{videoId}": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Get a video",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "videoId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "channelId": {
+                      "type": "string"
+                    },
+                    "playlistId": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "duration": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "watchProgress": {
+                      "type": "number"
+                    },
+                    "watchCompleted": {
+                      "type": "boolean"
+                    },
+                    "fileSize": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "uploadDate": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "unknown"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "video"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "short"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "stream"
+                          ]
+                        }
+                      ]
+                    },
+                    "status": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "unknown"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "none"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "live"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "upcoming"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "past"
+                          ]
+                        }
+                      ]
+                    },
+                    "downloadStatus": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "ignored"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "pending"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "done"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "channelId",
+                    "playlistId",
+                    "title",
+                    "description",
+                    "duration",
+                    "watchProgress",
+                    "watchCompleted",
+                    "fileSize",
+                    "uploadDate",
+                    "type",
+                    "status",
+                    "downloadStatus"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Update a video",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "watchProgress": {
+                    "type": "number"
+                  },
+                  "watchCompleted": {
+                    "type": "boolean"
+                  },
+                  "downloadStatus": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "ignored"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "pending"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "videoId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "channelId": {
+                      "type": "string"
+                    },
+                    "playlistId": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "duration": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "watchProgress": {
+                      "type": "number"
+                    },
+                    "watchCompleted": {
+                      "type": "boolean"
+                    },
+                    "fileSize": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "uploadDate": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "unknown"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "video"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "short"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "stream"
+                          ]
+                        }
+                      ]
+                    },
+                    "status": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "unknown"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "none"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "live"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "upcoming"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "past"
+                          ]
+                        }
+                      ]
+                    },
+                    "downloadStatus": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "ignored"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "pending"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "done"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "channelId",
+                    "playlistId",
+                    "title",
+                    "description",
+                    "duration",
+                    "watchProgress",
+                    "watchCompleted",
+                    "fileSize",
+                    "uploadDate",
+                    "type",
+                    "status",
+                    "downloadStatus"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/downloads/start": {
+      "post": {
+        "tags": [
+          "Downloads"
+        ],
+        "description": "Start downloading the currently pending videos",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "videoIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "videoIds"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Download started successfully"
+          }
+        }
+      }
+    },
+    "/downloads/stop": {
+      "post": {
+        "tags": [
+          "Downloads"
+        ],
+        "description": "Stop all downloads",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Downloads stopped successfully"
+          }
+        }
+      }
+    },
+    "/downloads/status": {
+      "get": {
+        "tags": [
+          "Websockets"
+        ],
+        "description": "Websocket for download updates",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/downloads/stats": {
+      "get": {
+        "tags": [
+          "Downloads"
+        ],
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/notifications/": {
+      "get": {
+        "tags": [
+          "Websockets"
+        ],
+        "description": "Websocket for server notifications",
+        "security": [
+          {
+            "apikey": [
+              "x-api-key"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Core",
+      "description": "End-points related to the server itself"
+    },
+    {
+      "name": "OpenAPI",
+      "description": "OpenAPI related endpoints"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication related end-points"
+    },
+    {
+      "name": "Users",
+      "description": "User related end-points"
+    },
+    {
+      "name": "Settings",
+      "description": "Settings related end-points"
+    },
+    {
+      "name": "Channels",
+      "description": "Channel related end-points"
+    },
+    {
+      "name": "Videos",
+      "description": "Video related end-points"
+    },
+    {
+      "name": "Downloads",
+      "description": "Download related end-points"
+    },
+    {
+      "name": "Websockets",
+      "description": "Websocket related end-points"
+    }
+  ]
+}

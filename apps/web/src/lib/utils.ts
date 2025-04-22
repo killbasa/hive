@@ -20,16 +20,35 @@ export function humanFileSize(sizeBytes: number | bigint | string): string {
 	}).format(size);
 }
 
+const PLACEHOLDER = '___LINK___';
 export function formatLinks(text: string): string {
-	text = text.replace(
-		/(?:https|http):\/\/\S+/g,
-		'<a href="$&" target="_blank" class="link link-primary">$&</a>',
+	const links: string[] = [];
+
+	text = text.replaceAll(
+		/(?:https?:\/\/)[^\s()"]+(?:\([^\s)]*\)[^\s)]*)*[^\s,.'")]/gm,
+		(match) => {
+			links.push(`<a href="${match}" target="_blank" class="link link-primary">${match}</a>`);
+			return `${PLACEHOLDER}${links.length - 1}`;
+		},
 	);
 
-	text = text.replace(
-		/#(\w+)/g,
-		'<a href="https://www.youtube.com/hashtag/$1" target="_blank" class="link link-primary">$&</a>',
-	);
+	text = text.replaceAll(/#(\w+)/gm, (match, tag) => {
+		links.push(
+			`<a href="https://www.youtube.com/hashtag/${tag}" target="_blank" class="link link-primary">${match}</a>`,
+		);
+		return `${PLACEHOLDER}${links.length - 1}`;
+	});
+
+	text = text.replaceAll(/@(\w+)/gm, (match, username) => {
+		links.push(
+			`<a href="https://www.youtube.com/@${username}" target="_blank" class="link link-primary">${match}</a>`,
+		);
+		return `${PLACEHOLDER}${links.length - 1}`;
+	});
+
+	links.forEach((link, index) => {
+		text = text.replace(`${PLACEHOLDER}${index}`, link);
+	});
 
 	return text;
 }
@@ -42,8 +61,8 @@ export function formatTimestamps(videoId: string, text: string): string {
 			const seconds = parseDurationString(timestamp);
 
 			text = text.replace(
-				new RegExp(timestamp, 'g'), //
-				`<a href="/watch/${videoId}?t=${seconds}" class="link link-primary">${timestamp}</a>`,
+				new RegExp(`^${timestamp}$`, 'g'), //
+				`<a href="/ui/watch/${videoId}?t=${seconds}" class="link link-primary">${timestamp}</a>`,
 			);
 		}
 	}

@@ -5,11 +5,11 @@
 	import TextInput from '$components/TextInput.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
-	import CronPreview from '$lib/components/misc/CronPreview.svelte';
-	import { writable } from 'svelte/store';
-	import type { PageData } from './$types';
+	import CronPreview from '$components/misc/CronPreview.svelte';
 	import type { FormEventHandler } from 'svelte/elements';
+	import type { PageData } from './$types';
 	import { goto, invalidate } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	type CronStore = {
 		checkSubscriptions: string | null;
@@ -23,28 +23,28 @@
 		data: PageData;
 	} = $props();
 
-	const auth = writable({
+	let auth = $state({
 		password: '',
 		oldPassword: '',
 	});
 
-	const schedule = writable<CronStore>({
+	let schedule = $state<CronStore>({
 		checkSubscriptions: data.settings.cronCheckSubscriptions,
 		downloadPending: data.settings.cronDownloadPending,
 		channelMetadata: data.settings.cronChannelMetadata,
 	});
 
-	const cronSelector = writable<keyof CronStore | null>(null);
+	let cronSelector = $state<keyof CronStore | null>(null);
 
 	let accountUpdateDisabled: boolean = $derived(
-		$auth.password === '' || //
-			$auth.oldPassword === '' ||
-			$auth.password === $auth.oldPassword,
+		auth.password === '' || //
+			auth.oldPassword === '' ||
+			auth.password === auth.oldPassword,
 	);
 
 	let scheduleUpdateDisabled: boolean = $derived(
-		$schedule.checkSubscriptions === data.settings.cronCheckSubscriptions && //
-			$schedule.downloadPending === data.settings.cronDownloadPending,
+		schedule.checkSubscriptions === data.settings.cronCheckSubscriptions && //
+			schedule.downloadPending === data.settings.cronDownloadPending,
 	);
 
 	async function handleSubmit() {
@@ -52,21 +52,21 @@
 			headers: { 'Content-Type': null },
 		});
 
-		await goto('/login');
+		await goto(`${base}/login`);
 	}
 
 	const handleAccountUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault();
 
-		const response = await client.PATCH('/users', {
+		const response = await client.PATCH('/users/me', {
 			body: {
-				newPassword: $auth.password,
-				oldPassword: $auth.oldPassword,
+				newPassword: auth.password,
+				oldPassword: auth.oldPassword,
 			},
 		});
 
 		if (response.response.ok) {
-			await goto('/login');
+			await goto(`${base}/login`);
 		} else {
 			toast.error(response.error?.message ?? 'An error occurred');
 		}
@@ -75,11 +75,11 @@
 	const handleScheduleUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault();
 
-		const { response } = await client.PATCH('/settings', {
+		const { response } = await client.PATCH('/settings/', {
 			body: {
-				cronCheckSubscriptions: $schedule.checkSubscriptions,
-				cronDownloadPending: $schedule.downloadPending,
-				cronChannelMetadata: $schedule.channelMetadata,
+				cronCheckSubscriptions: schedule.checkSubscriptions,
+				cronDownloadPending: schedule.downloadPending,
+				cronChannelMetadata: schedule.channelMetadata,
 			},
 		});
 
@@ -124,7 +124,6 @@
 					type="password"
 					name="api-key"
 					class="input input-bordered join-item focus:input-primary w-full"
-					bind:value={$auth.password}
 					required
 				/>
 			</div>
@@ -137,7 +136,7 @@
 					name="new-password"
 					placeholder="New password"
 					class="input input-bordered focus:input-primary"
-					bind:value={$auth.password}
+					bind:value={auth.password}
 					required
 				/>
 				<input
@@ -145,7 +144,7 @@
 					name="old-password"
 					placeholder="Old password"
 					class="input input-bordered focus:input-primary"
-					bind:value={$auth.oldPassword}
+					bind:value={auth.oldPassword}
 					required
 				/>
 				<div class="flex justify-end">
@@ -163,26 +162,26 @@
 					<TextInput
 						id="check-subscriptions"
 						title="Check subscriptions"
-						bind:value={$schedule.checkSubscriptions}
-						onfocus={() => cronSelector.set('checkSubscriptions')}
-						onblur={() => cronSelector.set(null)}
+						bind:value={schedule.checkSubscriptions}
+						onfocus={() => (cronSelector = 'checkSubscriptions')}
+						onblur={() => (cronSelector = null)}
 					/>
 					<TextInput
 						id="download-queue"
 						title="Download queue"
-						bind:value={$schedule.downloadPending}
-						onfocus={() => cronSelector.set('downloadPending')}
-						onblur={() => cronSelector.set(null)}
+						bind:value={schedule.downloadPending}
+						onfocus={() => (cronSelector = 'downloadPending')}
+						onblur={() => (cronSelector = null)}
 					/>
 					<TextInput
 						id="update-channels"
 						title="Update channels"
-						bind:value={$schedule.channelMetadata}
-						onfocus={() => cronSelector.set('channelMetadata')}
-						onblur={() => cronSelector.set(null)}
+						bind:value={schedule.channelMetadata}
+						onfocus={() => (cronSelector = 'channelMetadata')}
+						onblur={() => (cronSelector = null)}
 					/>
 				</div>
-				<CronPreview expression={$cronSelector ? $schedule[$cronSelector] : null} />
+				<CronPreview expression={cronSelector ? schedule[cronSelector] : null} />
 			</div>
 			<div class="flex justify-end">
 				<button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}

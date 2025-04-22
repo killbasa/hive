@@ -12,8 +12,13 @@ type ServerConfig struct {
 	URL string `mapstructure:"url"`
 }
 
+type AuthenticationConfig struct {
+	ApiKey string `mapstructure:"apikey"`
+}
+
 type Config struct {
-	Server ServerConfig `mapstructure:"server"`
+	Server         ServerConfig         `mapstructure:"server"`
+	Authentication AuthenticationConfig `mapstructure:"authentication"`
 }
 
 var (
@@ -24,7 +29,7 @@ var (
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file path")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file path")
 }
 
 func initConfig() {

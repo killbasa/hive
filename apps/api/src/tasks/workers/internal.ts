@@ -1,4 +1,3 @@
-import { RedisConnectionOptions } from '../../lib/config.js';
 import { scanAllChannels } from '../../plugins/videos/utils.js';
 import { server } from '../../server.js';
 import { downloadPendingVideos } from '../handlers/downloadPending.js';
@@ -39,7 +38,11 @@ export async function initInternalWorker(): Promise<void> {
 			throw new Error(`Unknown task: ${task.name}`);
 		},
 		{
-			connection: RedisConnectionOptions,
+			connection: {
+				host: server.config.redis.host,
+				port: server.config.redis.port,
+				password: server.config.redis.password,
+			},
 		},
 	);
 

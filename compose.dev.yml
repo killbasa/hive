@@ -7,7 +7,7 @@ services:
     env_file:
       - apps/api/.env
     environment:
-      REDIS_HOST: valkey
+      REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
     volumes:
@@ -15,21 +15,9 @@ services:
     ports:
       - 127.0.0.1:3001:3001
     depends_on:
-      - valkey
+      - redis
 
-  web:
-    image: killbasa/hive-web
-    build:
-      dockerfile: apps/web/Dockerfile
-      context: .
-    environment:
-      VITE_API_URL: http://localhost:3001
-    ports:
-      - 127.0.0.1:3000:3000
-    depends_on:
-      - hive
-
-  valkey:
-    image: valkey/valkey:8.0.1-alpine3.20
+  redis:
+    image: redis:7.4.2-alpine3.21
     restart: unless-stopped
-    command: ["valkey-server", "--requirepass password"]
+    command: ["redis-server", "--requirepass password"]
