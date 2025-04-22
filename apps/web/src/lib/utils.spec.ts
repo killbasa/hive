@@ -26,13 +26,19 @@ describe('utils', () => {
 		it('should work with multiline strings', () => {
 			const input = `Multiline test
 https://google.com
+some text https://google.com
 #FuriFuriFuri
-@FuriFerntail`;
+some text #FuriFuriFuri
+@FuriFerntail
+some text @FuriFerntail`;
 
 			const output = `Multiline test
 <a href="https://google.com" target="_blank" class="link link-primary">https://google.com</a>
+some text <a href="https://google.com" target="_blank" class="link link-primary">https://google.com</a>
 <a href="https://www.youtube.com/hashtag/FuriFuriFuri" target="_blank" class="link link-primary">#FuriFuriFuri</a>
-<a href="https://www.youtube.com/@FuriFerntail" target="_blank" class="link link-primary">@FuriFerntail</a>`;
+some text <a href="https://www.youtube.com/hashtag/FuriFuriFuri" target="_blank" class="link link-primary">#FuriFuriFuri</a>
+<a href="https://www.youtube.com/@FuriFerntail" target="_blank" class="link link-primary">@FuriFerntail</a>
+some text <a href="https://www.youtube.com/@FuriFerntail" target="_blank" class="link link-primary">@FuriFerntail</a>`;
 
 			const result = formatLinks(input);
 			expect(result).toBe(output);
