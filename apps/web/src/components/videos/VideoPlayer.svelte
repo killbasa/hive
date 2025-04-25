@@ -8,6 +8,8 @@
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { base } from '$app/paths';
+	import ExpandIcon from '@lucide/svelte/icons/expand';
+	import XIcon from '@lucide/svelte/icons/x';
 
 	const video = getVideoContext();
 
@@ -135,8 +137,12 @@
 	{#if $video}
 		{#if !isWatchPage}
 			<div class="p-1 bg-slate-800 justify-end flex gap-1">
-				<a href="{base}/watch/{$video.id}" title="Expand video">Max</a>
-				<button onclick={closeVideo} title="Close video">X</button>
+				<a href="{base}/watch/{$video.id}" title="Expand video">
+					<ExpandIcon class="p-0.5" />
+				</a>
+				<button onclick={closeVideo} title="Close video" class="cursor-pointer">
+					<XIcon />
+				</button>
 			</div>
 			<progress
 				class="progress-primary h-2"

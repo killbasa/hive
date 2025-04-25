@@ -1,6 +1,6 @@
 import server from '../vitest.setup.js';
 
-describe('authHandler', async () => {
+describe('authHandler', () => {
 	it('should return 401', async () => {
 		const response = await server.inject({
 			method: 'GET',

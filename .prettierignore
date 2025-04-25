@@ -2,6 +2,7 @@
 .idea/
 .husky/
 .turbo/
+cache/
 coverage/
 data/
 dist/

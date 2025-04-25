@@ -2,7 +2,7 @@
 	"folders": [
 		{
 			"name": "root",
-			"path": "../",
+			"path": "..",
 		},
 		{
 			"name": "api",

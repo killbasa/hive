@@ -26,7 +26,7 @@
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.14.1",
+		"@types/node": "^22.15.0",
 		"eslint": "^9.25.1",
 		"lint-staged": "^15.5.1",
 		"prettier": "^3.5.3",
@@ -51,7 +51,7 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"vite": "6.3.2"
+			"vite": "6.3.3"
 		},
 		"onlyBuiltDependencies": [
 			"@swc/core",

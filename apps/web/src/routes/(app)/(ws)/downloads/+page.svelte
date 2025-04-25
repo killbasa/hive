@@ -2,7 +2,7 @@
 	import { StatusEvent } from '@hive/common';
 	import { onMount } from 'svelte';
 	import type { DownloadProgress, DownloadStatus } from '@hive/common';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 	import Card from '$components/Card.svelte';
 	import SearchInput from '$components/SearchInput.svelte';
 	import VideoTypeBadge from '$components/videos/VideoTypeBadge.svelte';
@@ -22,25 +22,11 @@
 		percentage: string;
 	};
 
-	type ScanInfo = {
-		channelId: string;
-		channelPos: number;
-		channelTotal: number;
-		videoPos: number;
-		videoTotal: number;
-	};
+	let { data }: PageProps = $props();
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
-
-	let ws: HiveWebSocket;
 	let allChecked: boolean = $state(false);
 
 	let downloadInfo: DownloadInfo | null = $state(null);
-	let scanInfo: ScanInfo | null = $state(null);
 
 	let selectedVideos: string[] = $state([]);
 	let disabled: boolean = $derived(selectedVideos.length === 0);
@@ -75,18 +61,6 @@
 		}
 	}
 
-	async function scan(): Promise<void> {
-		const { response } = await client.POST('/videos/scan', {
-			headers: { 'Content-Type': null },
-		});
-
-		if (response.ok) {
-			toast.success('Video scan started');
-		} else {
-			toast.error('Something went wrong');
-		}
-	}
-
 	async function stop(): Promise<void> {
 		await client.POST('/downloads/stop', {
 			headers: { 'Content-Type': null },
@@ -112,7 +86,7 @@
 	}
 
 	onMount(() => {
-		ws = new HiveWebSocket('/downloads/status');
+		const ws = new HiveWebSocket('/downloads/status');
 
 		ws.onOpen(() => {
 			console.log('[hive] connected');
@@ -148,24 +122,6 @@
 				toast.error('Download cancelled');
 				return;
 			}
-
-			// Check channel total
-			// Don't refresh if there's more channels?
-			if (update.type === StatusEvent.ScanComplete) {
-				scanInfo = null;
-				await invalidate('state:downloads');
-				return;
-			}
-
-			if (update.type === StatusEvent.ScanUpdate) {
-				scanInfo = {
-					channelId: update.channelId,
-					channelPos: update.channelPos,
-					channelTotal: update.channelTotal,
-					videoPos: update.videoPos,
-					videoTotal: update.videoTotal,
-				};
-			}
 		});
 
 		return () => {
@@ -175,95 +131,44 @@
 </script>
 
 <svelte:head>
-	{#if scanInfo}
-		<title
-			>Downloads [v: {scanInfo.videoPos}/{scanInfo.videoTotal}, c:{scanInfo.channelPos -
-				1}/{scanInfo.channelTotal}]</title
-		>
-	{:else}
-		<title>Downloads</title>
-	{/if}
+	<title>Downloads</title>
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<div class="grid grid-cols-2 gap-4">
-		<Card title="Downloading">
-			{#if downloadInfo}
-				<div class="flex items-center gap-3">
-					<div class="w-96">
-						<img
-							src="{config.assetsPath}/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
-							alt="Video thumbnail"
-						/>
-					</div>
+	<Card title="Downloading">
+		{#if downloadInfo}
+			<div class="flex items-center gap-3">
+				<div class="w-96">
+					<img
+						src="{config.assetsPath}/{downloadInfo.channelId}/videos/{downloadInfo.id}/thumbnail.png"
+						alt="Video thumbnail"
+					/>
 				</div>
-				<a
-					class="font-bold"
-					target="_blank"
-					href="https://www.youtube.com/watch?v={downloadInfo.id}"
-				>
-					{downloadInfo.title}
-				</a>
-				<div>
-					<span>{downloadInfo.percentage}%</span>
-					<span>({downloadInfo.progress.eta} @ {downloadInfo.progress.speed})</span>
-				</div>
-				<progress
-					class="progress progress-success"
-					value={downloadInfo.percentage}
-					max="100"
-				></progress>
-				<button class="btn btn-error w-min" type="button" onclick={stop}>Stop</button>
-			{:else}
-				None
-			{/if}
-		</Card>
-		<Card title="Scanning">
-			{#if scanInfo}
-				<div class="avatar">
-					<div class="mask mask-circle h-12 w-12">
-						<img
-							src="{config.assetsPath}/{scanInfo.channelId}/assets/avatar.jpg"
-							alt="Channel avatar"
-						/>
-					</div>
-				</div>
-				<a
-					class="font-bold"
-					target="_blank"
-					href="https://www.youtube.com/channel/{scanInfo.channelId}"
-				>
-					{scanInfo.channelId}
-				</a>
-				<div>
-					<span>{scanInfo.channelPos - 1} / {scanInfo.channelTotal}</span>
-					<progress
-						class="progress progress-success"
-						value={scanInfo.channelPos - 1}
-						max={scanInfo.channelTotal}
-					></progress>
-				</div>
-				<div>
-					<span>{scanInfo.videoPos} / {scanInfo.videoTotal}</span>
-					<progress
-						class="progress progress-success"
-						value={scanInfo.videoPos}
-						max={scanInfo.videoTotal}
-					>
-					</progress>
-				</div>
-			{:else}
-				None
-			{/if}
-		</Card>
-	</div>
+			</div>
+			<a
+				class="font-bold"
+				target="_blank"
+				href="https://www.youtube.com/watch?v={downloadInfo.id}"
+			>
+				{downloadInfo.title}
+			</a>
+			<div>
+				<span>{downloadInfo.percentage}%</span>
+				<span>({downloadInfo.progress.eta} @ {downloadInfo.progress.speed})</span>
+			</div>
+			<progress class="progress progress-success" value={downloadInfo.percentage} max="100"
+			></progress>
+			<button class="btn btn-error w-min" type="button" onclick={stop}>Stop</button>
+		{:else}
+			None
+		{/if}
+	</Card>
 
 	<Card title="Downloads ({data.videos.length}/{data.total})">
 		<div class="justify-between flex">
 			<div class="flex gap-2">
 				<button class="btn btn-success" onclick={startDownloads}>Download</button>
 				<button class="btn btn-error" {disabled} onclick={ignore}>Ignore</button>
-				<button class="btn btn-success" onclick={scan}>Scan channels</button>
 			</div>
 			<div class="flex gap-4">
 				<SearchInput placeholder="Filter videos" />
