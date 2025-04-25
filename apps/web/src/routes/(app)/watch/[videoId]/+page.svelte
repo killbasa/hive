@@ -1,13 +1,10 @@
 <script lang="ts">
+	import Card from '$components/Card.svelte';
 	import Description from '$components/Description.svelte';
 	import { setVideoContext } from '$lib/stores/video';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 
 	setVideoContext(data);
 </script>
@@ -18,11 +15,19 @@
 
 <section class="flex flex-col gap-4">
 	<div id="video-element" class="justify-center flex"></div>
-	<div>
-		<h2>{data.title}</h2>
-		<Description videoId={data.id} text={data.description} />
-		<a href="https://www.youtube.com/watch?v={data.id}" target="_blank" class="btn">
-			Watch on YouTube
-		</a>
+	<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-2">
+			<h2 class="font-bold text-3xl">{data.title}</h2>
+			<a
+				href="https://www.youtube.com/watch?v={data.id}"
+				target="_blank"
+				class="btn btn-primary w-min text-nowrap"
+			>
+				Watch on YouTube
+			</a>
+		</div>
+		<Card>
+			<Description videoId={data.id} text={data.description} />
+		</Card>
 	</div>
 </section>

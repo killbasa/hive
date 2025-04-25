@@ -5,15 +5,10 @@
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
-	import type { PageData } from './$types';
-	import { invalidate } from '$app/navigation';
+	import type { PageProps } from './$types';
 	import { base } from '$app/paths';
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 
 	let channelId = $state('');
 	let modal: HTMLDialogElement;
@@ -41,10 +36,6 @@
 		channelId = '';
 		modal.showModal();
 	}
-
-	async function refresh() {
-		await invalidate('state:channels');
-	}
 </script>
 
 <svelte:head>
@@ -55,7 +46,6 @@
 	<Card title="Channels">
 		<div class="flex gap-2">
 			<button class="btn btn-success" onclick={toggleModal}>Add</button>
-			<button class="btn btn-primary" onclick={refresh}>Refresh</button>
 		</div>
 		<table class="table">
 			<thead>

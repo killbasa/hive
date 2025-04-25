@@ -83,7 +83,7 @@
 </nav>
 
 <style lang="postcss">
-	@reference "tailwindcss";
+	@reference "$lib/styles/tailwind.css";
 
 	button {
 		@apply flex items-center px-4 h-10 leading-tight border border-gray-700;

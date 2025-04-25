@@ -3,13 +3,9 @@
 	import SearchInput from '$components/SearchInput.svelte';
 	import VideoCard from '$components/videos/VideoCard.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>

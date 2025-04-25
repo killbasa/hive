@@ -7,7 +7,7 @@
 	import { toast } from '$lib/stores/toasts';
 	import CronPreview from '$components/misc/CronPreview.svelte';
 	import type { FormEventHandler } from 'svelte/elements';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 	import { goto, invalidate } from '$app/navigation';
 	import { base } from '$app/paths';
 
@@ -17,11 +17,7 @@
 		channelMetadata: string | null;
 	};
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 
 	let auth = $state({
 		password: '',

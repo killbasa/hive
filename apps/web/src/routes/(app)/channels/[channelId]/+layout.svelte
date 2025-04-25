@@ -1,37 +1,15 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
-	import { client } from '$lib/client';
 	import { config } from '$lib/config';
-	import { toast } from '$lib/stores/toasts';
 	import { humanFileSize } from '$lib/utils';
-	import type { Snippet } from 'svelte';
-	import type { LayoutData } from './$types';
+	import type { LayoutProps } from './$types';
 	import { base } from '$app/paths';
 
-	let {
-		data,
-		children,
-	}: {
-		data: LayoutData;
-		children: Snippet;
-	} = $props();
+	let { data, children }: LayoutProps = $props();
 
 	const channelUrl = `${config.assetsPath}/${data.channel.id}`;
-	const navStyle = 'text-xl link-primary';
-
-	async function scan() {
-		const response = await client.POST('/channels/{channelId}/scan', {
-			headers: { 'Content-Type': null },
-			params: { path: { channelId: data.channel.id } },
-		});
-
-		if (response.response.ok) {
-			toast.success('Channel scan started');
-		} else {
-			toast.error('Something went wrong');
-		}
-	}
+	const navStyle = 'text-md btn btn-primary';
 </script>
 
 <section class="flex flex-col gap-4">
@@ -41,18 +19,38 @@
 				<img src="{channelUrl}/assets/banner.jpg" alt="Channel banner" />
 			</figure>
 		{/snippet}
-		<div class="flex items-center">
-			<ChannelAvatar channelId={data.channel.id} size={24} class="mr-4" />
-			<span class="text-5xl font-bold">{data.channel.name}</span>
+
+		<div class="flex flex-col">
+			<div class="flex items-center">
+				<ChannelAvatar channelId={data.channel.id} size={24} class="mr-4" />
+				<span class="text-4xl font-bold">{data.channel.name}</span>
+			</div>
+			<div class="stats w-min">
+				<div class="stat">
+					<div class="stat-title">Videos</div>
+					<div class="stat-value">{data.stats.videos}</div>
+				</div>
+
+				<div class="stat">
+					<div class="stat-title">Streams</div>
+					<div class="stat-value">{data.stats.streams}</div>
+				</div>
+
+				<div class="stat">
+					<div class="stat-title">Shorts</div>
+					<div class="stat-value">{data.stats.shorts}</div>
+				</div>
+
+				<div class="stat">
+					<div class="stat-title">Size</div>
+					<div class="stat-value">
+						{humanFileSize(data.stats.directorySize)}
+					</div>
+				</div>
+			</div>
 		</div>
-		<div>
-			<span>videos: {data.stats.videos}</span>
-			<span>streams: {data.stats.streams}</span>
-			<span>shorts: {data.stats.shorts}</span>
-			<span>size: {humanFileSize(data.stats.directorySize)}</span>
-			<button class="btn btn-success" onclick={scan}>Scan channel</button>
-		</div>
-		<ul class="flex flex-row mx-auto gap-4">
+
+		<ul class="flex flex-row mx-auto gap-2">
 			<a href="{base}/channels/{data.channel.id}" class={navStyle}>
 				<li>Videos</li>
 			</a>

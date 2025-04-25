@@ -81,8 +81,11 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
+	<Card title="Actions">
+		<button class="btn btn-success w-min text-nowrap" onclick={scan}>Scan channels</button>
+	</Card>
+
 	<Card title="Scanning">
-		<button class="btn btn-success" onclick={scan}>Scan channels</button>
 		{#if scanInfo}
 			<div class="avatar">
 				<div class="mask mask-circle h-12 w-12">

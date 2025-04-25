@@ -14,7 +14,7 @@
 	const channelUrl = `${config.assetsPath}/${video.channelId}`;
 </script>
 
-<div class="card border overflow-hidden rounded-lg">
+<div class="card border overflow-hidden rounded-lg border-slate-500">
 	<a href="{base}/watch/{video.id}">
 		<div class="flex flex-col">
 			<img

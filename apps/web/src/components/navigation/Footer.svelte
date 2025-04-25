@@ -2,7 +2,7 @@
 	import { config } from '$lib/config';
 </script>
 
-<div class="h-24 bg-slate-800 text-slate-50 flex justify-center items-center">
+<div class="h-24 text-slate-50 flex justify-center items-center">
 	<nav>
 		<ul class="flex gap-2">
 			<a href="https://github.com/killbasa/hive" target="_blank">

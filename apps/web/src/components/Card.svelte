@@ -14,18 +14,18 @@
 	} = $props();
 </script>
 
-<div class="card border rounded-md">
+<div class="card border border-slate-700 rounded-md bg-slate-800/30">
 	{@render figure?.()}
 	<div class="card-body">
 		{#if title}
-			<h2 class="card-title border-b">{title}</h2>
+			<h2 class="card-title border-b border-slate-700">{title}</h2>
 		{/if}
 		<div class="flex flex-col gap-2">
 			{@render children?.()}
 		</div>
 	</div>
 	{#if footer}
-		<div class="card-actions justify-center border-t py-4 mx-6">
+		<div class="card-actions justify-center border-t py-4 mx-6 border-slate-700">
 			{@render footer?.()}
 		</div>
 	{/if}

@@ -130,7 +130,7 @@
 </script>
 
 <div
-	class="flex flex-col rounded-lg overflow-hidden {$video && isWatchPage //
+	class="flex flex-col rounded-lg overflow-hidden z-[9999] {$video && isWatchPage //
 		? 'w-full'
 		: 'fixed bottom-2 right-2 w-[400px]'}"
 >

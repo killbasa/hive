@@ -3,17 +3,13 @@
 	import '$lib/styles/typography.css';
 
 	import Toaster from '$components/Toaster.svelte';
-	import type { Snippet } from 'svelte';
+	import type { LayoutProps } from './$types';
 
-	let {
-		children,
-	}: {
-		children: Snippet;
-	} = $props();
+	let { children }: LayoutProps = $props();
 </script>
 
 <Toaster />
 
-<main class="flex flex-col">
+<main>
 	{@render children()}
 </main>

@@ -4,13 +4,12 @@ import type { Video } from '$lib/types/videos';
 import type { Writable } from 'svelte/store';
 
 const STORE_KEY = 'video';
-type VideoContext = Video | null;
 
-export function getVideoContext(): Writable<VideoContext> {
-	return getContext<Writable<VideoContext>>(STORE_KEY);
+export function getVideoContext(): Writable<Video | null> {
+	return getContext<Writable<Video | null>>(STORE_KEY);
 }
 
-export function setVideoContext(video: VideoContext): void {
+export function setVideoContext(video: Video | null): void {
 	const ctx = getVideoContext();
 	if (ctx === undefined) {
 		throw new Error('No video context found');
@@ -19,8 +18,8 @@ export function setVideoContext(video: VideoContext): void {
 	ctx.set(video);
 }
 
-export function initVideoContext(video: VideoContext = null): Writable<VideoContext> {
-	const store = writable<VideoContext>(video);
+export function initVideoContext(video: Video | null = null): Writable<Video | null> {
+	const store = writable<Video | null>(video);
 	setContext(STORE_KEY, store);
 
 	return store;

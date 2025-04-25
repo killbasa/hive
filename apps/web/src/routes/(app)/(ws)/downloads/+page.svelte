@@ -233,8 +233,8 @@
 								{video.title}
 							</a>
 						</td>
-						<td>{formatDuration(video.duration ?? 0)}</td>
-						<td>{formatFileSize(video.fileSize)}</td>
+						<td class="text-nowrap">{formatDuration(video.duration ?? 0)}</td>
+						<td class="text-nowrap">{formatFileSize(video.fileSize)}</td>
 					</tr>
 				{/each}
 			</tbody>
