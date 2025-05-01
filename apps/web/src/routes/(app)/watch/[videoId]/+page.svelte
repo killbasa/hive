@@ -7,6 +7,8 @@
 	let { data }: PageProps = $props();
 
 	setVideoContext(data);
+
+	let open = $state<boolean>(false);
 </script>
 
 <svelte:head>
@@ -26,8 +28,17 @@
 				Watch on YouTube
 			</a>
 		</div>
-		<Card>
+		<Card classBody="overflow-y-hidden {open ? 'h-auto' : 'h-32'}">
 			<Description videoId={data.id} text={data.description} />
+			{#snippet footer()}
+				<button type="button" class="cursor-pointer" onclick={() => (open = !open)}>
+					{#if open}
+						Show less
+					{:else}
+						Show more
+					{/if}
+				</button>
+			{/snippet}
 		</Card>
 	</div>
 </section>

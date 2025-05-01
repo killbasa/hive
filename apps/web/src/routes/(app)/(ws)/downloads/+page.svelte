@@ -13,6 +13,9 @@
 	import { HiveWebSocket } from '$lib/ws';
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import { invalidate } from '$app/navigation';
+	import { updatePage } from '$lib/navigation';
+	import { page } from '$app/state';
+	import { logger } from '$lib/logger';
 
 	type DownloadInfo = {
 		id: string;
@@ -24,6 +27,7 @@
 
 	let { data }: PageProps = $props();
 
+	let status = $derived(page.url.searchParams.get('status') ?? 'pending');
 	let allChecked: boolean = $state(false);
 
 	let downloadInfo: DownloadInfo | null = $state(null);
@@ -89,10 +93,10 @@
 		const ws = new HiveWebSocket('/downloads/status');
 
 		ws.onOpen(() => {
-			console.log('[hive] connected');
+			logger.info('connected');
 		});
 		ws.onClose(() => {
-			console.log('[hive] disconnected');
+			logger.info('disconnected');
 		});
 
 		ws.onMessage<string>(async (event) => {
@@ -134,6 +138,10 @@
 	<title>Downloads</title>
 </svelte:head>
 
+{#snippet footer()}
+	<Pagination count={data.videos.length} total={data.total} />
+{/snippet}
+
 <section class="flex flex-col gap-4">
 	<Card title="Downloading">
 		{#if downloadInfo}
@@ -158,89 +166,192 @@
 			</div>
 			<progress class="progress progress-success" value={downloadInfo.percentage} max="100"
 			></progress>
-			<button class="btn btn-error w-min" type="button" onclick={stop}>Stop</button>
+			<div class="flex gap-2">
+				<button class="btn btn-success" type="button" disabled>Resume</button>
+				<button class="btn btn-error" type="button" disabled>Pause</button>
+				<button class="btn btn-error" type="button" onclick={stop}>Stop</button>
+			</div>
 		{:else}
 			None
 		{/if}
 	</Card>
 
-	<Card title="Downloads ({data.videos.length}/{data.total})">
-		<div class="justify-between flex">
-			<div class="flex gap-2">
-				<button class="btn btn-success" onclick={startDownloads}>Download</button>
-				<button class="btn btn-error" {disabled} onclick={ignore}>Ignore</button>
+	<div class="tabs tabs-lift">
+		<input
+			type="radio"
+			name="my_tabs_3"
+			class="tab card-tab"
+			aria-label="Downloads"
+			checked={status === 'pending'}
+			onclick={async () => {
+				await updatePage((params) => {
+					params.delete('page');
+					params.delete('search');
+					params.set('status', 'pending');
+				});
+			}}
+		/>
+		<Card title="Downloads ({data.videos.length}/{data.total})" {footer} tab>
+			<div class="justify-between flex">
+				<div class="flex gap-2">
+					<button class="btn btn-success" onclick={startDownloads}>Download</button>
+					<button class="btn btn-error" {disabled} onclick={ignore}>Ignore</button>
+				</div>
+				<div class="flex gap-4">
+					<SearchInput placeholder="Filter videos" />
+				</div>
 			</div>
-			<div class="flex gap-4">
-				<SearchInput placeholder="Filter videos" />
-			</div>
-		</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>
-						<label>
-							<input
-								type="checkbox"
-								class="checkbox"
-								onclick={selectAll}
-								bind:checked={allChecked}
-							/>
-						</label>
-					</th>
-					<th>Type</th>
-					<th>Thumbnail</th>
-					<th>Title</th>
-					<th>Duration</th>
-					<th>Size</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.videos as video (video.id)}
+			<table class="table">
+				<thead>
 					<tr>
 						<th>
 							<label>
 								<input
-									name="select-video"
 									type="checkbox"
 									class="checkbox"
-									onchange={() => {
-										selectVideo(video.id);
-									}}
-									checked={selectedVideos.includes(video.id)}
+									onclick={selectAll}
+									bind:checked={allChecked}
 								/>
 							</label>
 						</th>
-						<td>
-							<VideoTypeBadge type={video.type} />
-						</td>
-						<td>
-							<div class="flex items-center gap-3">
-								<div class="w-48">
-									<img
-										src="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
-										alt="Video thumbnail"
-										loading="lazy"
-									/>
-								</div>
-							</div>
-						</td>
-						<td>
-							<a
-								class="font-bold"
-								target="_blank"
-								href="https://www.youtube.com/watch?v={video.id}"
-							>
-								{video.title}
-							</a>
-						</td>
-						<td class="text-nowrap">{formatDuration(video.duration ?? 0)}</td>
-						<td class="text-nowrap">{formatFileSize(video.fileSize)}</td>
+						<th>Thumbnail</th>
+						<th>Title</th>
+						<th>Duration</th>
+						<th>Size</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
-		{#snippet footer()}
-			<Pagination count={data.videos.length} total={data.total} />
-		{/snippet}
-	</Card>
+				</thead>
+				<tbody>
+					{#each data.videos as video (video.id)}
+						<tr>
+							<th>
+								<label>
+									<input
+										name="select-video"
+										type="checkbox"
+										class="checkbox"
+										onchange={() => {
+											selectVideo(video.id);
+										}}
+										checked={selectedVideos.includes(video.id)}
+									/>
+								</label>
+							</th>
+							<td>
+								<div class="flex items-center gap-3">
+									<div class="w-48">
+										<img
+											src="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
+											alt="Video thumbnail"
+											loading="lazy"
+										/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<a
+									class="font-bold"
+									target="_blank"
+									href="https://www.youtube.com/watch?v={video.id}"
+								>
+									{video.title}
+								</a>
+							</td>
+							<td class="text-nowrap">{formatDuration(video.duration ?? 0)}</td>
+							<td class="text-nowrap">{formatFileSize(video.fileSize)}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</Card>
+
+		<input
+			type="radio"
+			name="my_tabs_3"
+			class="tab card-tab"
+			aria-label="Ignored"
+			checked={status === 'ignored'}
+			onclick={async () => {
+				await updatePage((params) => {
+					params.delete('page');
+					params.delete('search');
+					params.set('status', 'ignored');
+				});
+			}}
+		/>
+		<Card title="Ignored ({data.videos.length}/{data.total})" {footer} tab>
+			<div class="justify-between flex">
+				<div class="flex gap-2">
+					<button class="btn btn-error">Unignore</button>
+				</div>
+				<div class="flex gap-4">
+					<SearchInput placeholder="Filter videos" />
+				</div>
+			</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							<label>
+								<input
+									type="checkbox"
+									class="checkbox"
+									onclick={selectAll}
+									bind:checked={allChecked}
+								/>
+							</label>
+						</th>
+						<th>Type</th>
+						<th>Thumbnail</th>
+						<th>Title</th>
+						<th>Duration</th>
+						<th>Size</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each data.videos as video (video.id)}
+						<tr>
+							<th>
+								<label>
+									<input
+										name="select-video"
+										type="checkbox"
+										class="checkbox"
+										onchange={() => {
+											selectVideo(video.id);
+										}}
+										checked={selectedVideos.includes(video.id)}
+									/>
+								</label>
+							</th>
+							<td>
+								<VideoTypeBadge type={video.type} />
+							</td>
+							<td>
+								<div class="flex items-center gap-3">
+									<div class="w-48">
+										<img
+											src="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
+											alt="Video thumbnail"
+											loading="lazy"
+										/>
+									</div>
+								</div>
+							</td>
+							<td>
+								<a
+									class="font-bold"
+									target="_blank"
+									href="https://www.youtube.com/watch?v={video.id}"
+								>
+									{video.title}
+								</a>
+							</td>
+							<td class="text-nowrap">{formatDuration(video.duration ?? 0)}</td>
+							<td class="text-nowrap">{formatFileSize(video.fileSize)}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</Card>
+	</div>
 </section>

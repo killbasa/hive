@@ -25,13 +25,13 @@
 		"format": "prettier --write .",
 		"test": "vitest --coverage --run",
 		"test:watch": "vitest --watch",
-		"openapi": "openapi-typescript ../api/openapi.json -o ./src/api.d.ts",
+		"openapi": "turbo --filter @hive/api openapi && openapi-typescript ../api/openapi.json -o ./src/api.d.ts",
 		"clean": "rm -rf ./.svelte-kit ./dist ./node_modules"
 	},
 	"dependencies": {
 		"@hive/common": "workspace:^",
 		"@lucide/svelte": "^0.503.0",
-		"@sveltejs/kit": "^2.20.7",
+		"@sveltejs/kit": "^2.20.8",
 		"cron-schedule": "^5.0.4",
 		"openapi-fetch": "^0.13.5"
 	},
@@ -40,20 +40,20 @@
 		"@hive/eslint-config": "workspace:^",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@tailwindcss/typography": "^0.5.16",
-		"@tailwindcss/vite": "4.1.4",
-		"@types/node": "^22.15.0",
-		"@typescript-eslint/utils": "^8.31.0",
+		"@tailwindcss/vite": "4.1.5",
+		"@types/node": "^22.15.3",
+		"@typescript-eslint/utils": "^8.31.1",
 		"@vitest/coverage-v8": "3.1.2",
-		"daisyui": "5.0.28",
+		"daisyui": "5.0.34",
 		"eslint": "^9.25.1",
 		"openapi-typescript": "^7.6.1",
 		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.3.3",
 		"svelte": "^5.28.2",
 		"svelte-check": "^4.1.6",
-		"tailwindcss": "4.1.4",
+		"tailwindcss": "4.1.5",
 		"typescript": "5.8.3",
-		"vite": "6.3.3"
+		"vite": "6.3.4"
 	},
 	"lint-staged": {
 		"*.{js,ts,svelte}": [
@@ -66,9 +66,9 @@
 	"engines": {
 		"node": "23.x"
 	},
-	"packageManager": "pnpm@10.9.0",
+	"packageManager": "pnpm@10.10.0",
 	"volta": {
 		"node": "23.11.0",
-		"pnpm": "10.9.0"
+		"pnpm": "10.10.0"
 	}
 }

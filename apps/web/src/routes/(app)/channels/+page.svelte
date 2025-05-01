@@ -85,6 +85,7 @@
 			<Pagination count={data.channels.length} total={data.total} />
 		{/snippet}
 	</Card>
+
 	<dialog id="AddModal" class="modal" bind:this={modal}>
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">Add a channel</h3>
@@ -94,7 +95,7 @@
 			<div class="modal-action">
 				<form method="dialog">
 					<button class="btn" onclick={toggleModal}>Cancel</button>
-					<button class="btn" onclick={addChannel}>Submit</button>
+					<button class="btn btn-success" onclick={addChannel}>Submit</button>
 				</form>
 			</div>
 		</div>

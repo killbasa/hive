@@ -5,68 +5,58 @@
 	import { humanFileSize } from '$lib/utils';
 	import type { LayoutProps } from './$types';
 	import { base } from '$app/paths';
+	import { page } from '$app/state';
 
 	let { data, children }: LayoutProps = $props();
 
 	const channelUrl = `${config.assetsPath}/${data.channel.id}`;
-	const navStyle = 'text-md btn btn-primary';
+	const bannerUrl = `${channelUrl}/assets/banner.jpg`;
+
+	const tabs: { label: string; href: string }[] = [
+		{ label: 'Videos', href: `${base}/channels/${data.channel.id}` },
+		{ label: 'Streams', href: `${base}/channels/${data.channel.id}/streams` },
+		{ label: 'Shorts', href: `${base}/channels/${data.channel.id}/shorts` },
+		{ label: 'About', href: `${base}/channels/${data.channel.id}/about` },
+		{ label: 'Downloads', href: `${base}/channels/${data.channel.id}/downloads` },
+	];
 </script>
 
 <section class="flex flex-col gap-4">
-	<Card>
+	<Card classBody="pb-0">
 		{#snippet figure()}
 			<figure>
-				<img src="{channelUrl}/assets/banner.jpg" alt="Channel banner" />
+				<img src={bannerUrl} alt="Channel banner" />
 			</figure>
 		{/snippet}
 
 		<div class="flex flex-col">
-			<div class="flex items-center">
+			<div class="flex">
 				<ChannelAvatar channelId={data.channel.id} size={24} class="mr-4" />
-				<span class="text-4xl font-bold">{data.channel.name}</span>
-			</div>
-			<div class="stats w-min">
-				<div class="stat">
-					<div class="stat-title">Videos</div>
-					<div class="stat-value">{data.stats.videos}</div>
-				</div>
-
-				<div class="stat">
-					<div class="stat-title">Streams</div>
-					<div class="stat-value">{data.stats.streams}</div>
-				</div>
-
-				<div class="stat">
-					<div class="stat-title">Shorts</div>
-					<div class="stat-value">{data.stats.shorts}</div>
-				</div>
-
-				<div class="stat">
-					<div class="stat-title">Size</div>
-					<div class="stat-value">
-						{humanFileSize(data.stats.directorySize)}
+				<div class="flex flex-col">
+					<span class="text-4xl font-bold">{data.channel.name}</span>
+					<div>
+						<span>{data.stats.videos} videos</span> •
+						<span>{data.stats.streams} streams</span> •
+						<span>{data.stats.shorts} shorts</span>
 					</div>
+					<span>{humanFileSize(data.stats.directorySize)}</span>
 				</div>
 			</div>
 		</div>
 
-		<ul class="flex flex-row mx-auto gap-2">
-			<a href="{base}/channels/{data.channel.id}" class={navStyle}>
-				<li>Videos</li>
-			</a>
-			<a href="{base}/channels/{data.channel.id}/streams" class={navStyle}>
-				<li>Streams</li>
-			</a>
-			<a href="{base}/channels/{data.channel.id}/shorts" class={navStyle}>
-				<li>Shorts</li>
-			</a>
-			<a href="{base}/channels/{data.channel.id}/about" class={navStyle}>
-				<li>About</li>
-			</a>
-			<a href="{base}/channels/{data.channel.id}/downloads" class={navStyle}>
-				<li>Downloads</li>
-			</a>
-		</ul>
+		<div role="tablist" class="tabs tabs-border mx-auto tabs-xl">
+			{#each tabs as tab (tab.label)}
+				<a
+					role="tab"
+					class="tab"
+					href={tab.href}
+					class:tab-active={page.url.pathname === tab.href}
+				>
+					{tab.label}
+				</a>
+			{/each}
+		</div>
 	</Card>
+
 	{@render children()}
 </section>

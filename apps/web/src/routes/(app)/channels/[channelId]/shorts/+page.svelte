@@ -12,7 +12,7 @@
 	<title>Shorts</title>
 </svelte:head>
 
-<Card title="Streams ({data.total})">
+<Card title="Shorts ({data.total})">
 	<div>
 		<SearchInput placeholder="Filter videos" />
 	</div>

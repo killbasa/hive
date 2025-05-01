@@ -26,11 +26,23 @@ export function getNumberParam(url: URL, key: string, fallback = 1): number {
 	return Number.isNaN(coerce) ? fallback : coerce;
 }
 
-export function getStringParam(url: URL, key: string, valid?: string[]): string | undefined {
+export function getStringParam(
+	url: URL,
+	key: string,
+	valid?: Record<string, string> | string[],
+): string | undefined {
 	const value = url.searchParams.get(key);
-	if (value === null || !valid) {
+	if (value === null) {
 		return undefined;
 	}
 
-	return valid.includes(value) ? value : undefined;
+	if (!valid) {
+		return value;
+	}
+
+	if (Array.isArray(valid)) {
+		return valid.includes(value) ? value : undefined;
+	}
+
+	return Object.values(valid).includes(value) ? value : undefined;
 }

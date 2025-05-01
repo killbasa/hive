@@ -5,7 +5,7 @@
 </script>
 
 <aside
-	class="bg-slate-800 min-h-screen w-64 sticky top-0 col-span-1 justify-between border-r border-slate-700"
+	class="bg-slate-800 min-h-screen w-48 sticky top-0 col-span-1 justify-between border-r border-slate-700"
 >
 	<div class="flex flex-col h-full justify-between">
 		<div>
@@ -21,6 +21,9 @@
 			<ul class="menu w-full">
 				<li>
 					<a href="{base}/channels">Channels</a>
+				</li>
+				<li>
+					<a href="{base}/streams">Streams</a>
 				</li>
 				<li>
 					<a href="{base}/scans">Scans</a>

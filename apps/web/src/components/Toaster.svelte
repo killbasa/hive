@@ -10,7 +10,12 @@
 	const video = getVideoContext();
 
 	let isWatchPage = $derived(page.url.pathname.startsWith(`${base}/watch`));
-	let minimizedStyle = $derived($video !== null && !isWatchPage ? 'bottom-72' : 'bottom-4');
+	let minimizedStyle = $derived.by(() => {
+		if (isWatchPage || !$video) {
+			return 'bottom-4';
+		}
+		return 'bottom-72';
+	});
 </script>
 
 <ul class="right-4 fixed list-none pointer-events-none z-[9999] {minimizedStyle}">

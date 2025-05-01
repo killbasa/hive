@@ -12,12 +12,12 @@
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
 		"bootstrap": "pnpm install && ./apps/api/scripts/deps.sh && pnpm build",
-		"build": "pnpm -r run build",
-		"check": "pnpm -r run check",
-		"lint": "pnpm -r run lint",
-		"format": "pnpm -r run format",
-		"test": "pnpm -r run test",
-		"e2e": "pnpm -r run e2e",
+		"build": "turbo build",
+		"check": "turbo build check",
+		"lint": "turbo build lint",
+		"format": "turbo build format",
+		"test": "turbo build test",
+		"e2e": "turbo build e2e",
 		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
 		"docker": "docker compose -f compose.dev.yml",
 		"clean": "rm -rf node_modules && pnpm -r run clean"
@@ -26,10 +26,11 @@
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.15.0",
+		"@types/node": "^22.15.3",
 		"eslint": "^9.25.1",
 		"lint-staged": "^15.5.1",
 		"prettier": "^3.5.3",
+		"turbo": "^2.5.2",
 		"typescript": "5.8.3",
 		"vitest": "3.1.2"
 	},
@@ -44,14 +45,14 @@
 	"engines": {
 		"node": "23.x"
 	},
-	"packageManager": "pnpm@10.9.0",
+	"packageManager": "pnpm@10.10.0",
 	"volta": {
 		"node": "23.11.0",
-		"pnpm": "10.9.0"
+		"pnpm": "10.10.0"
 	},
 	"pnpm": {
 		"overrides": {
-			"vite": "6.3.3"
+			"vite": "6.3.4"
 		},
 		"onlyBuiltDependencies": [
 			"@swc/core",
@@ -63,5 +64,8 @@
 			"unrs-resolver",
 			"vue-demi"
 		]
+	},
+	"dependencies": {
+		"@hive/monorepo": "link:"
 	}
 }

@@ -3,6 +3,7 @@
 	import Card from '$components/Card.svelte';
 	import { client } from '$lib/client';
 	import { config } from '$lib/config';
+	import { logger } from '$lib/logger';
 	import { toast } from '$lib/stores/toasts';
 	import { HiveWebSocket } from '$lib/ws';
 	import { StatusEvent } from '@hive/common';
@@ -35,10 +36,10 @@
 		const ws = new HiveWebSocket('/downloads/status');
 
 		ws.onOpen(() => {
-			console.log('[hive] connected');
+			logger.info('connected');
 		});
 		ws.onClose(() => {
-			console.log('[hive] disconnected');
+			logger.info('disconnected');
 		});
 
 		ws.onMessage<string>(async (event) => {

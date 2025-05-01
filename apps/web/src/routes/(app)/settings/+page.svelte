@@ -93,26 +93,28 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<Card title="Info">
-		<span>Version: {data.version.api}</span>
-		<span>
-			yt-dlp version:
-			<a
-				href="https://github.com/yt-dlp/yt-dlp/releases/tag/{data.version.ytdlp}"
-				target="_blank"
-				class="link-primary link"
-			>
-				{data.version.ytdlp}
-			</a>
-		</span>
-	</Card>
-	<Card title="Account">
-		<span class="text-lg">User: {data.user.name}</span>
+	<div class="grid grid-cols-2 gap-4">
+		<Card title="Info">
+			<span>Version: {data.version.api}</span>
+			<span>
+				yt-dlp version:
+				<a
+					href="https://github.com/yt-dlp/yt-dlp/releases/tag/{data.version.ytdlp}"
+					target="_blank"
+					class="link-primary link"
+				>
+					{data.version.ytdlp}
+				</a>
+			</span>
+		</Card>
+		<Card title="Session">
+			<span class="text-lg">User: {data.user.name}</span>
 
-		<CardSection title="Session">
 			<button onclick={handleSubmit} class=" btn btn-error w-min">Logout</button>
-		</CardSection>
+		</Card>
+	</div>
 
+	<Card title="Account">
 		<CardSection title="API key">
 			<div class="join">
 				<button class="btn input-bordered join-item">Copy</button>
@@ -151,6 +153,7 @@
 			</form>
 		</CardSection>
 	</Card>
+
 	<Card title="Schedules">
 		<form onsubmit={handleScheduleUpdate} class="flex flex-col gap-2">
 			<div class="grid grid-cols-2 gap-4">
@@ -186,11 +189,15 @@
 			</div>
 		</form>
 	</Card>
+
 	<Card title="Downloads">
 		<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />
 		<div class="flex justify-end">
 			<button class="btn btn-success" type="button" disabled>Save</button>
 		</div>
 	</Card>
+
+	<Card title="Connections"></Card>
+
 	<Card title="File sharing"></Card>
 </section>

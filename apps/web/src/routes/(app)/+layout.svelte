@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Sidebar from '$components/navigation/Sidebar.svelte';
+	import Toaster from '$components/Toaster.svelte';
 	import VideoPlayer from '$components/videos/VideoPlayer.svelte';
 	import { initVideoContext } from '$lib/stores/video';
 	import type { LayoutProps } from './$types';
@@ -10,6 +11,8 @@
 </script>
 
 <VideoPlayer />
+
+<Toaster />
 
 <div class="grid grid-cols-[auto_1fr] h-screen">
 	<Sidebar />

@@ -1,3 +1,10 @@
 @import 'tailwindcss';
 @plugin 'daisyui';
 @plugin '@tailwindcss/typography';
+
+@layer utilities {
+	.card-tab {
+		--tab-bg: color-mix(in oklab, var(--color-slate-800) 30%, transparent);
+		--tab-border-color: var(--color-slate-700);
+	}
+}
