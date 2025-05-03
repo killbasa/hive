@@ -21,7 +21,7 @@
 	];
 </script>
 
-<section class="flex flex-col gap-4">
+<section class="flex flex-col gap-4 max-w-5xl mx-auto">
 	<Card classBody="pb-0">
 		{#snippet figure()}
 			<figure>

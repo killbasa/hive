@@ -26,14 +26,15 @@ export function getNumberParam(url: URL, key: string, fallback = 1): number {
 	return Number.isNaN(coerce) ? fallback : coerce;
 }
 
-export function getStringParam(
+export function getStringParam<T extends string>(
 	url: URL,
 	key: string,
-	valid?: Record<string, string> | string[],
-): string | undefined {
-	const value = url.searchParams.get(key);
+	valid?: Record<string, T> | T[] | undefined,
+	fallback?: T | undefined,
+): T | undefined {
+	const value = url.searchParams.get(key) as T | null;
 	if (value === null) {
-		return undefined;
+		return fallback;
 	}
 
 	if (!valid) {

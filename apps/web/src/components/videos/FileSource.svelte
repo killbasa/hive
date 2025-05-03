@@ -9,9 +9,11 @@
 	let {
 		video = $bindable(),
 		element = $bindable(null),
+		class: cls = '',
 	}: {
 		video: Video;
 		element: HTMLVideoElement | null;
+		class?: string;
 	} = $props();
 
 	let ready = $state(false);
@@ -90,6 +92,7 @@
 	playsinline
 	title={video.title}
 	style={video.type === 'short' ? 'width: 450px;' : 'width: 100%; aspect-ratio: 16/9;'}
+	class={cls}
 	bind:this={element}
 >
 	<source

@@ -17,7 +17,7 @@
 <div class="grid grid-cols-[auto_1fr] h-screen">
 	<Sidebar />
 	<div class="overflow-y-auto">
-		<div class="space-y-4 p-4 max-w-5xl mx-auto">
+		<div class="space-y-4 p-4 mx-auto">
 			{@render children()}
 		</div>
 	</div>

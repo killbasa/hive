@@ -15,8 +15,12 @@ export const UiContentSecurityPolicies: string = [
 	"style-src 'self' 'unsafe-inline'",
 	"font-src 'self'",
 	"connect-src 'self' ws:",
+	'object-src https://www.youtube.com',
+	'frame-src https://www.youtube.com',
 	"img-src 'self' data:",
 	"media-src 'self'",
 	"manifest-src 'self'",
+	"frame-ancestors 'self' https://www.youtube.com",
+	'upgrade-insecure-requests',
 	...(isDev ? ['report-uri /api/csp'] : []),
 ].join('; ');

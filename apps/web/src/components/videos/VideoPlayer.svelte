@@ -8,14 +8,19 @@
 	import XIcon from '@lucide/svelte/icons/x';
 	import { logger } from '$lib/logger';
 	import FileSource from './FileSource.svelte';
+	import YoutubeSource from './YoutubeSource.svelte';
 
 	const video = getVideoContext();
 
-	let videoElement = $state<HTMLVideoElement | null>(null);
+	// TODO - This probably needs to be handled properly
+	let videoElement = $state<HTMLVideoElement | HTMLEmbedElement | null>(null);
 	let miniplayerElement: HTMLDivElement;
 
 	let currentTime = $state(0);
 	let isWatchPage = $derived(page.url.pathname.startsWith(`${base}/watch`));
+	let isLivestream = $derived<boolean>(
+		$video?.type === 'stream' && ($video.status === 'live' || $video.status === 'upcoming'),
+	);
 
 	function closeVideo(): void {
 		logger.debug('closing video');
@@ -24,8 +29,6 @@
 	}
 
 	function mountVideo(): void {
-		console.log(videoElement?.id);
-
 		if (!videoElement) return;
 
 		if (isWatchPage) {
@@ -58,7 +61,10 @@
 
 		// Close video if it's a short or the video is paused
 		if (!isWatchPage) {
-			if (videoElement?.paused || $video?.type === 'short') {
+			if (
+				(videoElement && 'paused' in videoElement && videoElement?.paused) ||
+				$video?.type === 'short'
+			) {
 				return closeVideo();
 			}
 		}
@@ -106,7 +112,19 @@
 
 {#if $video}
 	{#key $video.id}
-		<FileSource video={$video} bind:element={videoElement} />
+		{#if isLivestream}
+			<YoutubeSource
+				video={$video}
+				class="rounded-lg"
+				bind:element={videoElement as HTMLEmbedElement}
+			/>
+		{:else}
+			<FileSource
+				video={$video}
+				class="rounded-lg"
+				bind:element={videoElement as HTMLVideoElement}
+			/>
+		{/if}
 	{/key}
 {/if}
 

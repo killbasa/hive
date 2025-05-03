@@ -1,8 +1,7 @@
 import { isDev } from '../../lib/constants.js';
+import { apiReferenceConfigurationSchema } from '@scalar/types/api-reference';
 import { resolve } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import type { z } from 'zod';
-import type { apiReferenceConfigurationSchema } from '@scalar/types/api-reference';
 
 export const ScalarHTML = getScalarHTML();
 export const ScalarJS = getScalarJS();
@@ -23,12 +22,10 @@ export const ScalarContentSecurityPolicies: string = [
 ].join('; ');
 
 function getScalarHTML(): string {
-	const config: Partial<z.infer<typeof apiReferenceConfigurationSchema>> = {
-		spec: {
-			url: '/api/reference/spec.json',
-		},
+	const config = apiReferenceConfigurationSchema.parse({
+		url: '/api/reference/spec.json',
 		isEditable: false,
-	};
+	});
 
 	return `
 	<!DOCTYPE html>
