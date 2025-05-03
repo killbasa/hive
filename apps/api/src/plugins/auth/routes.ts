@@ -7,7 +7,7 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const authRoutes: HiveRoutes = {
 	subroutes: {
 		credentials: credentialAuthRoutes,
-		apikey: apikeyAuthRoutes,
+		apikeys: apikeyAuthRoutes,
 	},
 	authenticated: (server, _, done) => {
 		server.get(
@@ -16,7 +16,6 @@ export const authRoutes: HiveRoutes = {
 				schema: {
 					description: 'Verify the user is authenticated',
 					tags: ['Auth'],
-					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: EmptyResponse('User is authenticated'),
 					},
@@ -29,13 +28,15 @@ export const authRoutes: HiveRoutes = {
 			},
 		);
 
+		done();
+	},
+	public: (server, _, done) => {
 		server.post(
 			'/logout', //
 			{
 				schema: {
 					description: 'Logout the user',
 					tags: ['Auth'],
-					security: [{ apikey: ['x-api-key'] }],
 					response: {
 						200: EmptyResponse('Logged out successfully'),
 					},

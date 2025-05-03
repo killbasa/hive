@@ -6,6 +6,7 @@
 			"outputs": ["dist/**"],
 			"outputLogs": "new-only"
 		},
+		"openapi": {},
 		"check": {
 			"dependsOn": ["^build"],
 			"outputs": [],
@@ -28,6 +29,12 @@
 			"dependsOn": [],
 			"outputs": [],
 			"outputLogs": "new-only"
+		},
+		"clean": {
+			"cache": false
+		},
+		"clean:turbo": {
+			"cache": false
 		}
 	}
 }

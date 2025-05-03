@@ -82,7 +82,7 @@
 </script>
 
 <video
-	id={Date.now().toString()}
+	id="video-player"
 	poster="{config.assetsPath}/{video.channelId}/videos/{video.id}/thumbnail.png"
 	onvolumechange={onVolumeChange}
 	onloadstart={loadPlayer}

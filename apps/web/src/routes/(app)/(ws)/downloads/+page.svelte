@@ -100,9 +100,10 @@
 		});
 
 		ws.onMessage<string>(async (event) => {
-			const update: DownloadStatus = JSON.parse(`${event.data}`);
+			const update: DownloadStatus = JSON.parse(event.data);
 
 			if (update.type === StatusEvent.DownloadComplete) {
+				logger.info(`download complete${downloadInfo ? ` (${downloadInfo.id})` : ''}`);
 				downloadInfo = null;
 
 				await invalidate('state:downloads');
@@ -122,6 +123,8 @@
 			}
 
 			if (update.type === StatusEvent.DownloadCancelled) {
+				logger.info(`download cancelled${downloadInfo ? ` (${downloadInfo.id})` : ''}`);
+
 				downloadInfo = null;
 				toast.error('Download cancelled');
 				return;
@@ -135,7 +138,11 @@
 </script>
 
 <svelte:head>
-	<title>Downloads</title>
+	{#if downloadInfo}
+		<title>Downloading ({downloadInfo.percentage}%)</title>
+	{:else}
+		<title>Downloads</title>
+	{/if}
 </svelte:head>
 
 {#snippet footer()}
@@ -191,7 +198,7 @@
 				});
 			}}
 		/>
-		<Card title="Downloads ({data.videos.length}/{data.total})" {footer} tab>
+		<Card title="Downloads ({data.total})" {footer} tab>
 			<div class="justify-between flex">
 				<div class="flex gap-2">
 					<button class="btn btn-success" onclick={startDownloads}>Download</button>

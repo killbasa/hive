@@ -53,7 +53,9 @@ function getScalarHTML(): string {
 
 function getScalarJS(): string {
 	const filePaths = [
-		resolve('node_modules/@scalar/api-reference/dist/browser/standalone.js'), //
+		resolve('node_modules/@scalar/api-reference/dist/browser/standalone.js'),
+		resolve('../../node_modules/@scalar/api-reference/dist/browser/standalone.js'),
+		resolve('../../../node_modules/@scalar/api-reference/dist/browser/standalone.js'),
 	];
 
 	const filePath = filePaths.find((file) => existsSync(file));

@@ -20,11 +20,11 @@
 	<title>{data.title}</title>
 </svelte:head>
 
-<section class="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-4">
-	<div id="video-element" class="justify-center flex xl:col-start-1"></div>
+<section class="grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-4 max-w-7xl mx-auto">
+	<div id="video-container" class="justify-center flex xl:col-start-1"></div>
 	<div class="flex flex-col gap-4 xl:col-start-1">
 		<div class="flex flex-col gap-2">
-			<h2 class="font-bold text-3xl">{data.title}</h2>
+			<h2 class="font-semibold text-2xl">{data.title}</h2>
 			<a
 				href="https://www.youtube.com/watch?v={data.id}"
 				target="_blank"

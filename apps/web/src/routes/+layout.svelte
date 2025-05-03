@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Toaster from '$components/Toaster.svelte';
 	import '$lib/styles/tailwind.css';
 	import '$lib/styles/typography.css';
 
@@ -6,6 +7,8 @@
 
 	let { children }: LayoutProps = $props();
 </script>
+
+<Toaster />
 
 <main>
 	{@render children()}

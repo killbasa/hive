@@ -16,7 +16,7 @@
 	<title>About</title>
 </svelte:head>
 
-<Card title="Downloads ({downloads.length}/{data.total})">
+<Card title="Downloads ({data.total})">
 	<div class="justify-end flex">
 		<div>
 			<SearchInput placeholder="Filter videos" />

@@ -26,7 +26,9 @@ export const userRoutes: HiveRoutes = {
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
 					where: eq(users.name, request.user.name),
-					columns: { name: true },
+					columns: {
+						name: true,
+					},
 				});
 
 				if (!user) {

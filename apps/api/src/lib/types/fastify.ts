@@ -31,10 +31,12 @@ declare module '@fastify/jwt' {
 	interface FastifyJWT {
 		// Signing and verifying tokens
 		payload: {
+			id: number;
 			name: string;
 		};
 		// User object
 		user: {
+			id: number;
 			name: string;
 		};
 	}

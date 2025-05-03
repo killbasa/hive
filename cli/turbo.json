@@ -3,13 +3,13 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build"],
-			"outputs": [".svelte-kit/**", "dist/**"],
+			"dependsOn": [],
+			"outputs": ["bin/**"],
 			"outputLogs": "new-only"
 		},
 		"openapi": {
 			"dependsOn": ["@hive/api#openapi"],
-			"outputs": ["src/api.d.ts"],
+			"outputs": ["client/**"],
 			"outputLogs": "new-only"
 		}
 	}

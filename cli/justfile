@@ -8,7 +8,7 @@ install: build
 	go install
 
 gen:
-	rm -r ./client
+	rm -rf ./client
 	openapi-generator generate -i ../apps/api/openapi.json \
 		-g go \
 		-o ./client \

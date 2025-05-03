@@ -33,7 +33,7 @@
 	"scripts": {
 		"build": "tsup && mv dist/cjs/index.d.cts dist/cjs/index.d.ts && mv dist/cjs/svelte.d.cts dist/cjs/svelte.d.ts",
 		"format": "prettier --write .",
-		"clean": "rm -rf ./dist ./node_modules"
+		"clean": "rm -rf ./.turbo ./dist ./node_modules"
 	},
 	"peerDependencies": {
 		"eslint": "^9"
@@ -45,7 +45,7 @@
 		"@typescript-eslint/utils": "^8.31.1",
 		"eslint": "^9.26.0",
 		"eslint-import-resolver-typescript": "^4.3.4",
-		"eslint-plugin-import": "^2.30.0",
+		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-prettier": "^5.2.6",
 		"eslint-plugin-svelte": "^3.5.1",
 		"globals": "^16.0.0",
@@ -65,9 +65,10 @@
 			"prettier --write --log-level=warn \"**/*.{js,ts,json}\""
 		]
 	},
-	"packageManager": "pnpm@10.10.0",
+	"engines": {
+		"node": "23.x"
+	},
 	"volta": {
-		"node": "23.11.0",
-		"pnpm": "10.10.0"
+		"node": "23.11.0"
 	}
 }

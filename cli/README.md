@@ -11,7 +11,7 @@
 ```
 cd apps/api
 docker compose up -d
-pnpm build && pnpm start
+yarn build && yarn start
 ```
 
 2. Generate the client

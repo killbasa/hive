@@ -33,13 +33,17 @@
 
 		if (isWatchPage) {
 			// Add video to watch page
-			const watchPageElement = document.getElementById('video-element');
+			const watchPageElement = document.getElementById('video-container');
 
 			if (watchPageElement && !watchPageElement.hasChildNodes()) {
+				unmountVideo();
+
 				logger.debug('mounting video');
 				watchPageElement.appendChild(videoElement);
 			}
 		} else if (!miniplayerElement.hasChildNodes()) {
+			unmountVideo();
+
 			// Show mini player
 			logger.debug('mounting mini video');
 			miniplayerElement.appendChild(videoElement);
@@ -47,12 +51,11 @@
 	}
 
 	function unmountVideo(): void {
-		if (!videoElement) return;
+		const element = document.getElementById('video-player');
 
-		// Remove mini player
-		if (!isWatchPage && miniplayerElement.hasChildNodes()) {
-			logger.debug('unmounting video');
-			miniplayerElement.removeChild(videoElement);
+		if (element) {
+			logger.debug('removing previous video');
+			element.remove();
 		}
 	}
 
@@ -62,9 +65,11 @@
 		// Close video if it's a short or the video is paused
 		if (!isWatchPage) {
 			if (
-				(videoElement && 'paused' in videoElement && videoElement?.paused) ||
+				(videoElement && 'paused' in videoElement && videoElement.paused) ||
 				$video?.type === 'short'
 			) {
+				return closeVideo();
+			} else if ($video?.type === 'stream' && $video?.status === 'upcoming') {
 				return closeVideo();
 			}
 		}
@@ -75,9 +80,9 @@
 	if (import.meta.hot) {
 		// Mount video if it was unmounted due to HMR
 		onMount(() => {
-			logger.debug('mounting video on redload');
+			logger.debug('mounting video on reload');
 
-			const watchPageElement = document.getElementById('video-element');
+			const watchPageElement = document.getElementById('video-container');
 			if (watchPageElement) watchPageElement.innerHTML = '';
 
 			mountVideo();
@@ -115,13 +120,13 @@
 		{#if isLivestream}
 			<YoutubeSource
 				video={$video}
-				class="rounded-lg"
+				class={isWatchPage ? 'rounded-lg' : 'rounded-b-lg'}
 				bind:element={videoElement as HTMLEmbedElement}
 			/>
 		{:else}
 			<FileSource
 				video={$video}
-				class="rounded-lg"
+				class={isWatchPage ? 'rounded-lg' : 'rounded-b-lg'}
 				bind:element={videoElement as HTMLVideoElement}
 			/>
 		{/if}

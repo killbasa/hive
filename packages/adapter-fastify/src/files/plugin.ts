@@ -75,7 +75,7 @@ export default fp<FastifyAdapterPluginOptions>(async (fastify, options) => {
 				});
 
 				if (options.csp) {
-					res.raw.setHeader('Content-Security-Policy', options.csp);
+					res.header('Content-Security-Policy', options.csp);
 				}
 
 				await setResponse(res.raw, response);
