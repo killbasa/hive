@@ -22,24 +22,13 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
       YT_API_KEY: <secret>
+	  METRICS_ENABLED: true
     volumes:
       - hive:/var/lib/hive
     ports:
       - 127.0.0.1:3001:3001
     depends_on:
       - redis
-    networks:
-      - hive
-
-  web:
-    image: ghcr.io/killbasa/hive-web:nightly
-    restart: unless-stopped
-    environment:
-      VITE_API_URL: http://localhost:3001
-    ports:
-      - 127.0.0.1:3000:3000
-    depends_on:
-      - hive
     networks:
       - hive
 
@@ -86,7 +75,6 @@ mv ./yt-dlp ./apps/api/bin
 
 ```sh
 cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
 ```
 
 3. Start services

@@ -5,13 +5,9 @@
 	import VideoStatusBadge from '$components/videos/VideoTypeBadge.svelte';
 	import { config } from '$lib/config';
 	import { formatDuration, formatFileSize } from '$lib/utils';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 
 	let downloads = $derived(data.videos);
 </script>
@@ -20,7 +16,7 @@
 	<title>About</title>
 </svelte:head>
 
-<Card title="Downloads ({downloads.length}/{data.total})">
+<Card title="Downloads ({data.total})">
 	<div class="justify-end flex">
 		<div>
 			<SearchInput placeholder="Filter videos" />
@@ -62,13 +58,13 @@
 							{video.title}
 						</a>
 					</td>
-					<td>{formatDuration(video.duration ?? 0)}</td>
-					<td>{formatFileSize(video.fileSize)}</td>
+					<td class="text-nowrap">{formatDuration(video.duration ?? 0)}</td>
+					<td class="text-nowrap">{formatFileSize(video.fileSize)}</td>
 				</tr>
 			{/each}
 		</tbody>
 	</table>
 	{#snippet footer()}
-		<Pagination count={data.videos.length} total={data.total} />
+		<Pagination count={data.videos.length} total={data.total} pageSize={24} />
 	{/snippet}
 </Card>

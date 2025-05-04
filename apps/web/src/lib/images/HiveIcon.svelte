@@ -1,21 +1,12 @@
 <script lang="ts">
 	let {
-		width = 36,
-		height = 36,
+		class: cls = '',
 	}: {
-		width?: number;
-		height?: number;
+		class?: string;
 	} = $props();
 </script>
 
-<svg
-	width="{width}px"
-	height="{height}px"
-	viewBox="0 0 93.562508 85.419678"
-	version="1.1"
-	id="svg1"
-	xmlns="http://www.w3.org/2000/svg"
->
+<svg class={cls} viewBox="0 0 93.562508 85.419678" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<defs />
 	<g transform="translate(-23.746451,-27.817866)">
 		<path

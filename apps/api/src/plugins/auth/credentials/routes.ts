@@ -44,6 +44,7 @@ export const credentialAuthRoutes: HiveRoutes = {
 				}
 
 				const token = server.jwt.sign({
+					id: user.id,
 					name: user.name,
 				});
 

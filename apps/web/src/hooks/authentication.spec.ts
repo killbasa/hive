@@ -13,7 +13,7 @@ vi.mock('@sveltejs/kit', () => {
 	};
 });
 
-describe('authentication hook', async () => {
+describe('authentication hook', () => {
 	it('should resolve for unauthenticated to login page', async () => {
 		const arg = {
 			event: {

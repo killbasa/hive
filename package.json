@@ -1,5 +1,5 @@
 {
-	"name": "@hive/monorepo",
+	"name": "monorepo",
 	"version": "0.1.0",
 	"author": "killbasa <git@killbasa.com>",
 	"license": "AGPL-3.0-or-later",
@@ -12,26 +12,43 @@
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
 		"bootstrap": "pnpm install && ./apps/api/scripts/deps.sh && pnpm build",
-		"build": "pnpm -r run build",
-		"check": "pnpm -r run check",
-		"lint": "pnpm -r run lint",
-		"format": "pnpm -r run format",
-		"test": "pnpm -r run test",
-		"e2e": "pnpm -r run e2e",
-		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
+		"build": "turbo run build",
+		"openapi": "turbo run openapi",
+		"check": "turbo run check",
+		"lint": "turbo run lint",
+		"format": "turbo run format",
+		"test": "turbo run test",
+		"e2e": "turbo run e2e",
+		"dry-run": "pnpm openapi && pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
 		"docker": "docker compose -f compose.dev.yml",
-		"clean": "rm -rf node_modules && pnpm -r run clean"
+		"clean": "pnpm -r run clean && rm -rf node_modules"
 	},
 	"devDependencies": {
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.14.1",
-		"eslint": "^9.25.1",
+		"@types/node": "^22.15.3",
+		"eslint": "^9.26.0",
 		"lint-staged": "^15.5.1",
 		"prettier": "^3.5.3",
+		"turbo": "2.5.2",
 		"typescript": "5.8.3",
 		"vitest": "3.1.2"
+	},
+	"pnpm": {
+		"overrides": {
+			"vite": "6.3.4"
+		},
+		"onlyBuiltDependencies": [
+			"@swc/core",
+			"argon2",
+			"better-sqlite3",
+			"esbuild",
+			"msgpackr-extract",
+			"protobufjs",
+			"unrs-resolver",
+			"vue-demi"
+		]
 	},
 	"lint-staged": {
 		"*.{js,cjs}": [
@@ -44,24 +61,9 @@
 	"engines": {
 		"node": "23.x"
 	},
-	"packageManager": "pnpm@10.9.0",
+	"packageManager": "pnpm@10.10.0",
 	"volta": {
 		"node": "23.11.0",
-		"pnpm": "10.9.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"vite": "6.3.2"
-		},
-		"onlyBuiltDependencies": [
-			"@swc/core",
-			"argon2",
-			"better-sqlite3",
-			"esbuild",
-			"msgpackr-extract",
-			"protobufjs",
-			"unrs-resolver",
-			"vue-demi"
-		]
+		"pnpm": "10.10.0"
 	}
 }

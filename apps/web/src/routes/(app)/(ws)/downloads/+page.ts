@@ -1,9 +1,16 @@
 import { client } from '$lib/client';
 import { getNumberParam, getStringParam } from '$lib/navigation';
+import type { Video } from '$lib/types/videos';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, depends, url }) => {
 	depends('state:downloads');
+
+	const status = getStringParam<Video['downloadStatus']>(url, 'status', [
+		'ignored',
+		'pending',
+		'done',
+	]);
 
 	const response = await client.GET('/videos/', {
 		fetch,
@@ -11,7 +18,7 @@ export const load: PageLoad = async ({ fetch, depends, url }) => {
 			query: {
 				status: ['none', 'past'],
 				type: ['video', 'short', 'stream'],
-				downloadStatus: ['pending'],
+				downloadStatus: status ? [status] : undefined,
 				search: getStringParam(url, 'search'),
 				page: getNumberParam(url, 'page', 1),
 			},

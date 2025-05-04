@@ -6,10 +6,12 @@
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
 	import CronPreview from '$components/misc/CronPreview.svelte';
-	import type { FormEventHandler } from 'svelte/elements';
-	import type { PageData } from './$types';
+	import type { FormEventHandler, MouseEventHandler } from 'svelte/elements';
+	import type { PageProps } from './$types';
 	import { goto, invalidate } from '$app/navigation';
 	import { base } from '$app/paths';
+	import CopyIcon from '@lucide/svelte/icons/copy';
+	import XIcon from '@lucide/svelte/icons/x';
 
 	type CronStore = {
 		checkSubscriptions: string | null;
@@ -17,11 +19,13 @@
 		channelMetadata: string | null;
 	};
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
+
+	let apikey = $state('');
+
+	let modal = $state<HTMLDialogElement>();
+	let newApikeyModal = $state<HTMLDialogElement>();
+	let revokeModal = $state<HTMLDialogElement>();
 
 	let auth = $state({
 		password: '',
@@ -47,13 +51,35 @@
 			schedule.downloadPending === data.settings.cronDownloadPending,
 	);
 
-	async function handleSubmit() {
-		await client.POST('/auth/logout', {
-			headers: { 'Content-Type': null },
+	const generateApikey: MouseEventHandler<HTMLButtonElement> = async () => {
+		const response = await client.POST('/auth/apikeys/refresh');
+
+		if (response.error) {
+			toast.error('Failed to generate API key');
+		} else {
+			toast.success('API key generated');
+			apikey = response.data.apikey;
+		}
+
+		modal?.close();
+		newApikeyModal?.showModal();
+	};
+
+	const revokeApikey = async (kid: string) => {
+		const response = await client.POST('/auth/apikeys/revoke', {
+			body: {
+				id: kid,
+			},
 		});
 
-		await goto(`${base}/login`);
-	}
+		if (response.error) {
+			toast.error('Failed to revoke API key');
+		} else {
+			toast.success('Revoked API key');
+		}
+
+		revokeModal?.close();
+	};
 
 	const handleAccountUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault();
@@ -110,25 +136,8 @@
 			</a>
 		</span>
 	</Card>
+
 	<Card title="Account">
-		<span class="text-lg">User: {data.user.name}</span>
-
-		<CardSection title="Session">
-			<button onclick={handleSubmit} class=" btn btn-error w-min">Logout</button>
-		</CardSection>
-
-		<CardSection title="API key">
-			<div class="join">
-				<button class="btn input-bordered join-item">Copy</button>
-				<input
-					type="password"
-					name="api-key"
-					class="input input-bordered join-item focus:input-primary w-full"
-					required
-				/>
-			</div>
-		</CardSection>
-
 		<CardSection title="Update account info">
 			<form onsubmit={handleAccountUpdate} class="flex flex-col gap-2">
 				<input
@@ -148,13 +157,108 @@
 					required
 				/>
 				<div class="flex justify-end">
-					<button class="btn btn-success" type="submit" disabled={accountUpdateDisabled}
-						>Save</button
-					>
+					<button class="btn btn-success" type="submit" disabled={accountUpdateDisabled}>
+						Save
+					</button>
 				</div>
 			</form>
 		</CardSection>
 	</Card>
+
+	<Card title="API Keys">
+		<CardSection title="Management">
+			<div class="join">
+				<button class="btn input-bordered btn-primary" onclick={() => modal?.showModal()}>
+					Generate
+				</button>
+
+				<dialog class="modal" bind:this={modal}>
+					<div class="modal-box">
+						<h3 class="text-lg font-bold">Generate a new API key</h3>
+						<p class="py-4">Are you sure you want to generate a new API key?</p>
+						<div class="modal-action">
+							<form method="dialog">
+								<button class="btn">Cancel</button>
+								<button
+									type="button"
+									class="btn btn-primary"
+									onclick={generateApikey}
+								>
+									Confirm
+								</button>
+							</form>
+						</div>
+					</div>
+				</dialog>
+
+				<dialog class="modal" bind:this={newApikeyModal}>
+					<div class="modal-box w-11/12 max-w-5xl">
+						<h3 class="text-lg font-bold">New API key</h3>
+						<p class="py-4">Please save this value, it will not be shown again.</p>
+						<div class="bg-neutral w-full p-2 flex gap-4 items-center rounded">
+							<button
+								type="button"
+								class="cursor-pointer p-1"
+								onclick={() => {
+									navigator.clipboard.writeText(apikey);
+									toast.success('Copied to clipboard');
+								}}
+							>
+								<CopyIcon />
+							</button>
+
+							<pre><code>{apikey}</code></pre>
+						</div>
+						<div class="modal-action">
+							<form method="dialog">
+								<button class="btn btn-success" onclick={() => (apikey = '')}>
+									OK
+								</button>
+							</form>
+						</div>
+					</div>
+				</dialog>
+			</div>
+		</CardSection>
+
+		<CardSection title="Active keys">
+			{#each data.apikeys as key (key.id)}
+				<div class="flex items-center gap-2 p-1">
+					<span>{key.id}</span>
+					Expires at: {key.expires ?? 'never'}
+					<button
+						type="button"
+						class="btn btn-error btn-sm"
+						onclick={revokeModal?.showModal}
+					>
+						<XIcon />
+					</button>
+
+					<dialog class="modal" bind:this={revokeModal}>
+						<div class="modal-box w-11/12 max-w-5xl">
+							<h3 class="text-lg font-bold">Confirmation</h3>
+							<p class="py-4">Are you sure you want to revoke that API key?</p>
+							<div class="modal-action">
+								<form method="dialog">
+									<button class="btn">Cancel</button>
+									<button
+										type="button"
+										class="btn btn-primary"
+										onclick={async () => {
+											await revokeApikey(key.id);
+										}}
+									>
+										Confirm
+									</button>
+								</form>
+							</div>
+						</div>
+					</dialog>
+				</div>
+			{/each}
+		</CardSection>
+	</Card>
+
 	<Card title="Schedules">
 		<form onsubmit={handleScheduleUpdate} class="flex flex-col gap-2">
 			<div class="grid grid-cols-2 gap-4">
@@ -190,11 +294,15 @@
 			</div>
 		</form>
 	</Card>
+
 	<Card title="Downloads">
 		<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />
 		<div class="flex justify-end">
 			<button class="btn btn-success" type="button" disabled>Save</button>
 		</div>
 	</Card>
+
+	<Card title="Connections"></Card>
+
 	<Card title="File sharing"></Card>
 </section>

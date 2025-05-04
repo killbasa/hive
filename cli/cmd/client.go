@@ -10,12 +10,12 @@ func Client() *client.APIClient {
 		Debug:     false,
 		Servers: client.ServerConfigurations{
 			{
-				URL: cfg.Server.URL,
+				URL: cfg.Server.Endpoint,
 			},
 		},
 		DefaultHeader: map[string]string{
 			// TODO - use api key
-			"Cookie": "hive=" + cfg.Authentication.ApiKey,
+			"x-api-key": cfg.Authentication.ApiKey,
 		},
 	}
 

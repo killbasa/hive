@@ -9,7 +9,7 @@ import (
 )
 
 type ServerConfig struct {
-	URL string `mapstructure:"url"`
+	Endpoint string `mapstructure:"endpoint"`
 }
 
 type AuthenticationConfig struct {

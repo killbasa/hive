@@ -4,6 +4,21 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 export const referenceRoutes: HiveRoutes = {
 	public: (server, _, done) => {
 		server.get(
+			'/', //
+			{
+				schema: { hide: true },
+			},
+			async (_, reply): Promise<void> => {
+				await reply
+					.headers({
+						'content-type': 'text/html; charset=utf-8',
+						'content-security-policy': ScalarContentSecurityPolicies,
+					})
+					.send(ScalarHTML);
+			},
+		);
+
+		server.get(
 			'/spec.json',
 			{
 				schema: {
@@ -78,21 +93,6 @@ export const referenceRoutes: HiveRoutes = {
 						'cache-control': 'public, max-age=604800',
 					})
 					.send(ScalarFonts.Mono);
-			},
-		);
-
-		server.get(
-			'/', //
-			{
-				schema: { hide: true },
-			},
-			async (_, reply): Promise<void> => {
-				await reply
-					.headers({
-						'content-type': 'text/html; charset=utf-8',
-						'content-security-policy': ScalarContentSecurityPolicies,
-					})
-					.send(ScalarHTML);
 			},
 		);
 

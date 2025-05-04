@@ -15,7 +15,7 @@ RUN apk update --no-cache && \
 ## Depdencies ##
 FROM alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS dependencies
 
-RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2025.03.31/yt-dlp \
+RUN wget -q https://github.com/yt-dlp/yt-dlp/releases/download/2025.04.30/yt-dlp \
 		-O /tmp/yt-dlp && \
 	chmod +x /tmp/yt-dlp
 
@@ -38,7 +38,7 @@ COPY packages ./packages/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 	corepack enable pnpm && \
-	corepack use pnpm@10.9.0 && \
+	corepack use pnpm@10.10.0 && \
 	pnpm install && \
 	pnpm --recursive run build && \
 	pnpm --filter @hive/api run build:prod && \
