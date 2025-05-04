@@ -28,10 +28,13 @@ export const channelRoutes: HiveRoutes = {
 				},
 			},
 			async (request, reply): Promise<void> => {
+				const { query } = request;
+				query.limit ??= 24;
+
 				const [result, countRes] = await Promise.all([
 					db.query.channels.findMany({
 						limit: 24,
-						offset: (request.query.page - 1) * 24,
+						offset: (request.query.page - 1) * query.limit,
 					}),
 					db.select({ total: count() }).from(channels),
 				]);

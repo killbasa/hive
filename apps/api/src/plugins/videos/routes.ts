@@ -26,6 +26,8 @@ export const videoRoutes: HiveRoutes = {
 			},
 			async (request, reply): Promise<void> => {
 				const { query } = request;
+				query.limit ??= 24;
+
 				const whereArgs: (SQLWrapper | undefined)[] = [
 					ne(videos.status, 'unknown'), //
 				];
@@ -60,8 +62,8 @@ export const videoRoutes: HiveRoutes = {
 					db.query.videos.findMany({
 						where,
 						orderBy: (video, { desc }) => desc(video.updatedAt),
-						limit: query.inProgress ? 4 : 24,
-						offset: (query.page - 1) * 24,
+						limit: query.inProgress ? 4 : query.limit,
+						offset: (query.page - 1) * query.limit,
 					}),
 					db //
 						.select({ total: count() })

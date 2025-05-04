@@ -710,6 +710,7 @@ export interface paths {
             parameters: {
                 query: {
                     page: number;
+                    limit?: number;
                 };
                 header?: never;
                 path?: never;
@@ -946,6 +947,7 @@ export interface paths {
                     channelId?: string;
                     search?: string;
                     inProgress?: boolean;
+                    limit?: number;
                 };
                 header?: never;
                 path?: never;

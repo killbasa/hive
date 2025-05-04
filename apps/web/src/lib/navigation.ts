@@ -47,3 +47,19 @@ export function getStringParam<T extends string>(
 
 	return Object.values(valid).includes(value) ? value : undefined;
 }
+
+export function getPaginationPages(page: number, lastPage: number): (number | null)[] {
+	if (lastPage < 6) {
+		return Array.from({ length: lastPage }, (_, i) => i + 1);
+	}
+
+	if (page < 4) {
+		return [1, 2, 3, 4, null, lastPage];
+	}
+
+	if (page > lastPage - 3) {
+		return [1, null, lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
+	}
+
+	return [1, null, page - 1, page, page + 1, null, lastPage];
+}

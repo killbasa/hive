@@ -65,6 +65,6 @@
 		</tbody>
 	</table>
 	{#snippet footer()}
-		<Pagination count={data.videos.length} total={data.total} />
+		<Pagination count={data.videos.length} total={data.total} pageSize={24} />
 	{/snippet}
 </Card>

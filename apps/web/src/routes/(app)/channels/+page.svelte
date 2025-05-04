@@ -82,7 +82,7 @@
 			</tbody>
 		</table>
 		{#snippet footer()}
-			<Pagination count={data.channels.length} total={data.total} />
+			<Pagination count={data.channels.length} total={data.total} pageSize={24} />
 		{/snippet}
 	</Card>
 
