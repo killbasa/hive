@@ -1,5 +1,5 @@
 ## Base ##
-FROM node:23.11.0-alpine3.21 AS base
+FROM node:24.0.0-alpine3.21 AS base
 
 # python: sqlite compilation and supervisord
 # ffmpeg: video post-processing
