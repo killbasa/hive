@@ -5,13 +5,6 @@
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
-	"exports": {
-		"./plugin": {
-			"types": "./dist/plugin.d.ts",
-			"import": "./dist/plugin.js",
-			"require": "./dist/plugin.js"
-		}
-	},
 	"files": [
 		"dist"
 	],
@@ -19,6 +12,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"start": "node --enable-source-maps dist/index.js",
 		"sync": "svelte-kit sync",
 		"check": "pnpm sync && svelte-check --tsconfig ./tsconfig.json",
 		"lint": "eslint --fix",
@@ -38,8 +32,8 @@
 		"openapi-fetch": "^0.14.0"
 	},
 	"devDependencies": {
-		"@hive/adapter-fastify": "workspace:^",
 		"@hive/eslint-config": "workspace:^",
+		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "4.1.6",

@@ -2,9 +2,7 @@
 	import { StatusEvent } from '@hive/common';
 	import { onMount } from 'svelte';
 	import type { DownloadProgress, DownloadStatus } from '@hive/common';
-	import type { PageProps } from './$types';
 	import Card from '$components/Card.svelte';
-	import SearchInput from '$components/SearchInput.svelte';
 	import VideoTypeBadge from '$components/videos/VideoTypeBadge.svelte';
 	import { client } from '$lib/client';
 	import { config } from '$lib/config';
@@ -16,6 +14,8 @@
 	import { updatePage } from '$lib/navigation';
 	import { page } from '$app/state';
 	import { logger } from '$lib/logger';
+	import type { Video } from '$lib/types/videos';
+	import SearchInput from '$components/inputs/SearchInput.svelte';
 
 	type DownloadInfo = {
 		id: string;
@@ -25,7 +25,15 @@
 		percentage: string;
 	};
 
-	let { data }: PageProps = $props();
+	let {
+		videos,
+		total,
+		invalidateKey,
+	}: {
+		videos: Video[];
+		total: number;
+		invalidateKey: string;
+	} = $props();
 
 	let status = $derived(page.url.searchParams.get('status') ?? 'pending');
 	let allChecked: boolean = $state(false);
@@ -47,7 +55,7 @@
 		if (allChecked) {
 			selectedVideos = [];
 		} else {
-			selectedVideos = data.videos.map(({ id }) => id);
+			selectedVideos = videos.map(({ id }) => id);
 		}
 	}
 
@@ -78,7 +86,7 @@
 			},
 		});
 
-		await invalidate('state:downloads');
+		await invalidate(invalidateKey);
 		allChecked = false;
 		selectedVideos = [];
 
@@ -106,7 +114,7 @@
 				logger.info(`download complete${downloadInfo ? ` (${downloadInfo.id})` : ''}`);
 				downloadInfo = null;
 
-				await invalidate('state:downloads');
+				await invalidate(invalidateKey);
 				return;
 			}
 
@@ -146,7 +154,7 @@
 </svelte:head>
 
 {#snippet footer()}
-	<Pagination count={data.videos.length} total={data.total} pageSize={24} />
+	<Pagination count={videos.length} {total} pageSize={24} />
 {/snippet}
 
 <section class="flex flex-col gap-4">
@@ -198,7 +206,7 @@
 				});
 			}}
 		/>
-		<Card title="Downloads ({data.total})" {footer} tab>
+		<Card title="Downloads ({total})" {footer} tab>
 			<div class="justify-between flex">
 				<div class="flex gap-2">
 					<button class="btn btn-success" onclick={startDownloads}>Download</button>
@@ -228,7 +236,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each data.videos as video (video.id)}
+					{#each videos as video (video.id)}
 						<tr>
 							<th>
 								<label>
@@ -285,7 +293,7 @@
 				});
 			}}
 		/>
-		<Card title="Ignored ({data.videos.length}/{data.total})" {footer} tab>
+		<Card title="Ignored ({videos.length}/{total})" {footer} tab>
 			<div class="justify-between flex">
 				<div class="flex gap-2">
 					<button class="btn btn-error">Unignore</button>
@@ -315,7 +323,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each data.videos as video (video.id)}
+					{#each videos as video (video.id)}
 						<tr>
 							<th>
 								<label>

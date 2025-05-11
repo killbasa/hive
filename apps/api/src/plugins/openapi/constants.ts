@@ -52,16 +52,17 @@ function getScalarHTML(): string {
 }
 
 function getScalarJS(): string {
+	const filename = 'node_modules/@scalar/api-reference/dist/browser/standalone.js';
+
 	const filePaths = [
-		resolve('node_modules/@scalar/api-reference/dist/browser/standalone.js'),
-		resolve('../../node_modules/@scalar/api-reference/dist/browser/standalone.js'),
-		resolve('../../../node_modules/@scalar/api-reference/dist/browser/standalone.js'),
+		resolve(`${filename}`), // Container
+		resolve(`../../${filename}`), // Local
 	];
 
 	const filePath = filePaths.find((file) => existsSync(file));
 
 	if (filePath === undefined) {
-		throw new Error('JavaScript file not found');
+		throw new Error('Scalar JavaScript file not found');
 	}
 
 	const file = readFileSync(filePath, 'utf8');

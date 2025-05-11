@@ -14,7 +14,6 @@
 	"scripts": {
 		"build": "pnpm check && NODE_ENV=development tsup",
 		"build:prod": "pnpm check && tsup",
-		"build:ui": "turbo --filter @hive/web build && pnpm build",
 		"start": "node --enable-source-maps dist/main.js",
 		"check": "tsc",
 		"lint": "eslint --fix",
@@ -42,7 +41,6 @@
 		"@fastify/type-provider-typebox": "^5.1.0",
 		"@fastify/websocket": "^11.0.2",
 		"@hive/common": "workspace:^",
-		"@hive/web": "workspace:^",
 		"@opentelemetry/api": "^1.9.0",
 		"@opentelemetry/exporter-prometheus": "^0.200.0",
 		"@opentelemetry/sdk-node": "^0.200.0",

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
 	import CardSection from '$components/CardSection.svelte';
-	import NumberInput from '$components/NumberInput.svelte';
-	import TextInput from '$components/TextInput.svelte';
+	import NumberInput from '$components/inputs/NumberInput.svelte';
+	import TextInput from '$components/inputs/TextInput.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
-	import CronPreview from '$components/misc/CronPreview.svelte';
+	import CronPreview from '$components/utilities/CronPreview.svelte';
 	import type { FormEventHandler, MouseEventHandler } from 'svelte/elements';
 	import type { PageProps } from './$types';
 	import { goto, invalidate } from '$app/navigation';
@@ -135,6 +135,12 @@
 				{data.version.ytdlp}
 			</a>
 		</span>
+		<span>
+			Source code:
+			<a href="https://github.com/killbasa/hive" target="_blank" class="link-primary link">
+				https://github.com/killbasa/hive
+			</a>
+		</span>
 	</Card>
 
 	<Card title="Account">
@@ -156,7 +162,7 @@
 					bind:value={auth.oldPassword}
 					required
 				/>
-				<div class="flex justify-end">
+				<div class="flex mt-2">
 					<button class="btn btn-success" type="submit" disabled={accountUpdateDisabled}>
 						Save
 					</button>
@@ -287,22 +293,24 @@
 				</div>
 				<CronPreview expression={cronSelector ? schedule[cronSelector] : null} />
 			</div>
-			<div class="flex justify-end">
-				<button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}
-					>Save</button
-				>
+			<div class="flex mt-2">
+				<button class="btn btn-success" type="submit" disabled={scheduleUpdateDisabled}>
+					Save
+				</button>
 			</div>
 		</form>
 	</Card>
 
-	<Card title="Downloads">
-		<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />
-		<div class="flex justify-end">
-			<button class="btn btn-success" type="button" disabled>Save</button>
-		</div>
-	</Card>
+	{#if import.meta.env.VITE_EXPERIMENTAL}
+		<Card title="Downloads">
+			<NumberInput id="download-limit" title="Download speed limit (KB/s)" positive />
+			<div class="flex mt-2">
+				<button class="btn btn-success" type="button" disabled>Save</button>
+			</div>
+		</Card>
 
-	<Card title="Connections"></Card>
+		<Card title="Connections"></Card>
 
-	<Card title="File sharing"></Card>
+		<Card title="File sharing"></Card>
+	{/if}
 </section>

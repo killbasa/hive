@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
-	import SearchInput from '$components/SearchInput.svelte';
+	import SearchInput from '$components/inputs/SearchInput.svelte';
 	import VideoCard from '$components/videos/VideoCard.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import type { PageProps } from './$types';

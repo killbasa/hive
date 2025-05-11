@@ -19,3 +19,4 @@ tsconfig.tsbuildinfo
 .turbo/
 .yarn/
 out/
+output/

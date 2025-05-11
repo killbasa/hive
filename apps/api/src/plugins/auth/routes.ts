@@ -10,6 +10,7 @@ export const authRoutes: HiveRoutes = {
 		apikeys: apikeyAuthRoutes,
 	},
 	authenticated: (server, _, done) => {
+		// Middleware checks if the user is authenticated
 		server.get(
 			'/verify', //
 			{

@@ -12,7 +12,6 @@ const ConfigSchema = z.object({
 	server: z.object({
 		version: z.string(),
 		port: z.coerce.number(),
-		ui: z.boolean(),
 	}),
 	auth: z.object({
 		secret: z.string(),
@@ -40,7 +39,6 @@ export function loadConfig(): HiveConfig {
 			server: {
 				version: '0.1.0',
 				port: 0,
-				ui: false,
 			},
 			auth: {
 				secret: 'secret',
@@ -65,13 +63,12 @@ export function loadConfig(): HiveConfig {
 		loadEnvFile();
 	}
 
-	const flags = process.argv.slice(2);
+	// const flags = process.argv.slice(2);
 
 	const obj = {
 		server: {
 			version: process.env.npm_package_version,
 			port: 3002,
-			ui: flags.includes('--ui'),
 		},
 		auth: {
 			secret: process.env.AUTH_SECRET,

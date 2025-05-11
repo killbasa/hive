@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
-	import Description from '$components/Description.svelte';
+	import EmbedLinks from '$components/videos/EmbedLinks.svelte';
 	import { client } from '$lib/client';
 	import { toast } from '$lib/stores/toasts';
 	import type { PageProps } from './$types';
@@ -26,7 +26,7 @@
 </svelte:head>
 
 <Card>
-	<Description text={data.channel.description} />
+	<EmbedLinks text={data.channel.description} />
 	{#if data.channel.tags.length > 0}
 		<div class="flex gap-1 flex-wrap">
 			{#each data.channel.tags as tag}

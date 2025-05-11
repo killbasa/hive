@@ -41,7 +41,7 @@
 						class="sidebar-item"
 						class:sidebar-active={page.url.pathname.startsWith(`${base}/channels`)}
 					>
-						<ListIcon />
+						<ListIcon class="h-5 w-5" />
 						<span class="hidden lg:block">Channels</span>
 					</a>
 				</li>
@@ -51,7 +51,7 @@
 						class="sidebar-item"
 						class:sidebar-active={page.url.pathname.startsWith(`${base}/streams`)}
 					>
-						<TvIcon />
+						<TvIcon class="h-5 w-5" />
 						<span class="hidden lg:block">Streams</span>
 					</a>
 				</li>
@@ -61,7 +61,7 @@
 						class="sidebar-item"
 						class:sidebar-active={page.url.pathname.startsWith(`${base}/scans`)}
 					>
-						<RadarIcon />
+						<RadarIcon class="h-5 w-5" />
 						<span class="hidden lg:block">Scans</span>
 					</a>
 				</li>
@@ -71,7 +71,7 @@
 						class="sidebar-item"
 						class:sidebar-active={page.url.pathname.startsWith(`${base}/downloads`)}
 					>
-						<DownloadIcon />
+						<DownloadIcon class="h-5 w-5" />
 						<span class="hidden lg:block">Downloads</span>
 					</a>
 				</li>
@@ -81,13 +81,13 @@
 		<ul class="w-full">
 			<li>
 				<a href="{base}/settings" class="sidebar-item">
-					<GearIcon />
+					<GearIcon class="h-5 w-5" />
 					<span class="hidden lg:block">Settings</span>
 				</a>
 			</li>
 			<li>
 				<button onclick={logout} class="sidebar-item cursor-pointer w-full">
-					<LogoutIcon />
+					<LogoutIcon class="h-5 w-5" />
 					<span class="hidden lg:block">Sign out</span>
 				</button>
 			</li>
@@ -107,7 +107,7 @@
 	}
 
 	.sidebar-item {
-		@apply flex p-2 justify-center lg:justify-start gap-2 text-slate-400 hover:text-slate-200 rounded;
+		@apply flex p-2 justify-center items-center lg:justify-start gap-2 text-slate-400 hover:text-slate-200 rounded;
 
 		&:hover {
 			@apply bg-slate-700;

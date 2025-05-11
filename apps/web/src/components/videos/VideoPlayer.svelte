@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getVideoContext } from '$lib/stores/video';
-	import { onMount } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { base } from '$app/paths';
@@ -9,6 +9,7 @@
 	import { logger } from '$lib/logger';
 	import FileSource from './FileSource.svelte';
 	import YoutubeSource from './YoutubeSource.svelte';
+	import { writable } from 'svelte/store';
 
 	const video = getVideoContext();
 
@@ -16,7 +17,9 @@
 	let videoElement = $state<HTMLVideoElement | HTMLEmbedElement | null>(null);
 	let miniplayerElement: HTMLDivElement;
 
-	let currentTime = $state(0);
+	let currentTime = writable(0);
+	setContext('video-time', currentTime);
+
 	let isWatchPage = $derived(page.url.pathname.startsWith(`${base}/watch`));
 	let isLivestream = $derived<boolean>(
 		$video?.type === 'stream' && ($video.status === 'live' || $video.status === 'upcoming'),
@@ -105,11 +108,13 @@
 					<XIcon />
 				</button>
 			</div>
-			<progress
-				class="progress-primary h-2"
-				value={Math.floor(currentTime)}
-				max={$video.duration}
-			></progress>
+			{#if !isLivestream}
+				<progress
+					class="progress-primary h-1"
+					value={Math.floor($currentTime)}
+					max={$video.duration}
+				></progress>
+			{/if}
 		{/if}
 	{/if}
 	<div bind:this={miniplayerElement}></div>

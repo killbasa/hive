@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Toaster from '$components/Toaster.svelte';
+	import Toaster from '$components/utilities/Toaster.svelte';
 	import '$lib/styles/tailwind.css';
 	import '$lib/styles/typography.css';
 

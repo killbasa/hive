@@ -20,7 +20,6 @@
 		"test": "turbo run test",
 		"e2e": "turbo run e2e",
 		"dry-run": "pnpm openapi && pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
-		"docker": "docker compose -f compose.dev.yml",
 		"clean": "pnpm -r run clean && rm -rf node_modules"
 	},
 	"devDependencies": {
@@ -37,6 +36,7 @@
 	},
 	"pnpm": {
 		"overrides": {
+			"eslint": "9.25.1",
 			"vite": "6.3.5"
 		},
 		"onlyBuiltDependencies": [

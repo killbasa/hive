@@ -5,6 +5,7 @@
 **/data/
 **/node_modules/
 cli/
+output/
 .editorconfig
 .gitattributes
 .gitignore

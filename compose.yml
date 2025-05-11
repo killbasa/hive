@@ -1,6 +1,7 @@
 services:
   hive:
     image: killbasa/hive
+    container_name: hive
     build:
       dockerfile: apps/api/Dockerfile
       context: .

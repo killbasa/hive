@@ -5,6 +5,8 @@
 	import type { EventHandler } from 'svelte/elements';
 	import { page } from '$app/state';
 	import type { Video } from '$lib/types/videos';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	let {
 		video = $bindable(),
@@ -18,7 +20,7 @@
 
 	let ready = $state(false);
 
-	let currentTime = $state(0);
+	let currentTime = getContext<Writable<number>>('video-time');
 
 	const onVolumeChange: EventHandler<Event, HTMLVideoElement> = () => {
 		if (!element) return;
@@ -43,12 +45,12 @@
 	const onTimeUpdate: EventHandler<Event, HTMLVideoElement> = async () => {
 		if (!ready || !element) return;
 
-		currentTime = element.currentTime;
+		debounceProgress(element.currentTime);
 
 		if (element.paused) {
-			await debounceUpdate(currentTime);
+			await debounceUpdate($currentTime);
 		} else {
-			await throttleUpdate(currentTime);
+			await throttleUpdate($currentTime);
 		}
 	};
 
@@ -60,9 +62,15 @@
 
 		if (Number.isNaN(value)) return;
 
-		currentTime = value;
-		element.currentTime = currentTime;
+		const t = value;
+
+		currentTime.set(t);
+		element.currentTime = t;
 	}
+
+	const debounceProgress = throttle((time: number) => {
+		currentTime.set(time);
+	}, Time.Second);
 
 	const debounceUpdate = debounce(postUpdate, Time.Second);
 	const throttleUpdate = throttle(postUpdate, Time.Second * 2);

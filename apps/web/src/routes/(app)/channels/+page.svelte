@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
-	import TextInput from '$components/TextInput.svelte';
+	import TextInput from '$components/inputs/TextInput.svelte';
 	import ChannelAvatar from '$components/channels/ChannelAvatar.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
 	import { client } from '$lib/client';
