@@ -10,7 +10,7 @@ import type { VideoStatus } from '../../plugins/videos/schema.js';
 import type { TaskHandler } from '../types.js';
 
 export const handleVideoStatus: TaskHandler<{ page: number; status: VideoStatus[] }> = async ({ page, status }): Promise<void> => {
-	server.log.info(`checking videos (page: ${page})`);
+	server.log.info(`checking videos (page: ${page + 1})`);
 
 	const result = await db.query.videos.findMany({
 		where: (videos, { eq, or }) => {

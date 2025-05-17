@@ -16,3 +16,7 @@ data/
 dist/
 cli/client/
 tsconfig.tsbuildinfo
+.turbo/
+.yarn/
+out/
+output/

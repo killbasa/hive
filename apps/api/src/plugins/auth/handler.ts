@@ -1,33 +1,39 @@
+import { verifyApiKey } from './apikey/service.js';
 import { db } from '../../db/client.js';
-import { users } from '../../db/schema.js';
+import { apikeys, users } from '../../db/schema.js';
 import { server } from '../../server.js';
 import { SQL, eq } from 'drizzle-orm';
-import type { onRequestAsyncHookHandler } from 'fastify';
+import type { FastifyReply, FastifyRequest, onRequestAsyncHookHandler } from 'fastify';
 
 export const authHandler: onRequestAsyncHookHandler = async (request, reply) => {
 	try {
 		let where: SQL;
-		const apiKey = request.headers['x-api-key'] as string | undefined;
+		const headerApikey = request.headers['x-api-key'];
 
-		if (apiKey === undefined) {
-			await request.jwtVerify();
-			where = eq(users.name, request.user.name);
+		if (headerApikey === undefined) {
+			where = await checkJwt(request);
 		} else {
-			where = eq(users.apiKey, apiKey);
+			if (typeof headerApikey !== 'string' || headerApikey.length === 0) {
+				return await reply.code(401).send();
+			}
+
+			where = await checkApikey(reply, headerApikey);
 		}
 
 		const user = await db.query.users.findFirst({
 			where,
 			columns: {
+				id: true,
 				name: true,
 			},
 		});
 
-		if (user === undefined) {
+		if (!user) {
 			return await reply.code(401).send();
 		}
 
 		request.user = {
+			id: user.id,
 			name: user.name,
 		};
 	} catch (err) {
@@ -35,3 +41,34 @@ export const authHandler: onRequestAsyncHookHandler = async (request, reply) => 
 		await reply.code(401).send();
 	}
 };
+
+async function checkJwt(request: FastifyRequest): Promise<SQL> {
+	await request.jwtVerify();
+	return eq(users.name, request.user.name);
+}
+
+async function checkApikey(reply: FastifyReply, apikey: string): Promise<SQL> {
+	const keyId = apikey.split('.').at(1);
+	if (!keyId) {
+		return await reply.code(401).send();
+	}
+
+	const storedApikey = await db.query.apikeys.findFirst({
+		where: eq(apikeys.id, keyId),
+		columns: {
+			apikey: true,
+			userId: true,
+			expires: false,
+		},
+	});
+	if (storedApikey === undefined) {
+		return await reply.code(401).send();
+	}
+
+	const isValid = verifyApiKey(apikey, storedApikey.apikey);
+	if (!isValid) {
+		return await reply.code(401).send();
+	}
+
+	return eq(users.id, storedApikey.userId);
+}

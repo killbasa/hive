@@ -1,12 +1,8 @@
 <script lang="ts">
 	import VideoCard from '$components/videos/VideoCard.svelte';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>
@@ -14,8 +10,8 @@
 </svelte:head>
 
 <section class="flex flex-col gap-4">
-	<h2>Continue watching</h2>
-	<div class="grid grid-cols-2 gap-4">
+	<h1 class="prose prose-2xl">Continue watching</h1>
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each data.videos as video (video.id)}
 			<VideoCard {video} showIcon />
 		{/each}

@@ -25,10 +25,6 @@ export async function startupLog(): Promise<void> {
 	print(`documentation: http://${API_HOST}:3001/api/reference`);
 	print(`metrics:       http://${API_HOST}:3001/api/metrics`);
 
-	if (server.config.server.ui) {
-		print(`ui:            http://localhost:3001/ui`);
-	}
-
 	server.log.info('');
 
 	const [internalCount, downloaderCount, scannerCount] = await Promise.all([

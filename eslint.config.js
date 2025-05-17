@@ -7,7 +7,7 @@ const config = [
 	...eslintConfig,
 	{
 		name: 'hive/base-ignore',
-		ignores: ['.husky/', 'node_modules/', '**/dist/', '**/*.d.ts', '**/coverage/', '**/data/'],
+		ignores: ['.husky/', 'node_modules/', '**/dist/', '**/*.d.ts', '**/coverage/', '**/data/', '**/cache/'],
 	},
 	{
 		rules: {

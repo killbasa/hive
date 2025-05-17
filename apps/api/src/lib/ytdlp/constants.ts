@@ -6,6 +6,10 @@ export const YTDLP_VIDEO_PATH = 'downloads/%(channel_id)s/videos/%(id)s';
 
 let YTDLP_VERSION: string | undefined;
 export function getYtdlpVersion(): string {
+	if (process.env.BUILDING) {
+		return '0.0.0';
+	}
+
 	if (YTDLP_VERSION) {
 		return YTDLP_VERSION;
 	}

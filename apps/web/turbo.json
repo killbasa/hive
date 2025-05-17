@@ -1,0 +1,16 @@
+{
+	"$schema": "https://turborepo.com/schema.v2.json",
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": [".svelte-kit/**", "dist/**"],
+			"outputLogs": "new-only"
+		},
+		"openapi": {
+			"dependsOn": ["@hive/api#openapi"],
+			"outputs": ["src/api.d.ts"],
+			"outputLogs": "new-only"
+		}
+	}
+}

@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { debounce } from '@hive/common';
 	import { base } from '$app/paths';
+	import HiveIcon from '$lib/images/HiveIcon.svelte';
 
 	let username = $state('');
 	let exists = $state<boolean>();
@@ -72,7 +73,7 @@
 
 		if (response.ok) {
 			toast.success('Account created');
-			await goto(`${base}/login`);
+			exists = true;
 		} else if (response.status === 403) {
 			toast.error('User registration is disabled');
 		} else if (response.status === 409) {
@@ -87,23 +88,24 @@
 	<title>Login</title>
 </svelte:head>
 
-<div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 flex flex-col items-center">
-	<h1>Hive</h1>
+<div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/3 flex flex-col">
+	<div class="select-none p-2 text-3xl flex h-full items-center gap-2">
+		<HiveIcon class="h-9 w-9" />
+		<h1>Hive</h1>
+	</div>
 
-	<div class="flex flex-col gap-2 w-80">
+	<div class="flex flex-col w-80">
 		<input
 			type="text"
 			name="username"
 			placeholder="Username"
-			class="input input-bordered focus:input-primary"
+			class="input input-bordered focus:input-primary mt-4 mb-2"
 			bind:value={username}
-			oninput={async () => {
-				await checkUsername();
-			}}
+			oninput={checkUsername}
 		/>
 
 		{#if exists === true}
-			<form onsubmit={handleLogin} class="flex flex-col gap-2">
+			<form onsubmit={handleLogin} class="flex flex-col gap-4">
 				<input
 					type="password"
 					name="password"
@@ -111,7 +113,6 @@
 					class="input input-bordered focus:input-primary"
 					bind:value={loginPassword}
 				/>
-				<button type="submit" class="btn btn-neutral">Log in</button>
 				<label class="label cursor-pointer justify-normal gap-2">
 					<input
 						type="checkbox"
@@ -120,26 +121,30 @@
 					/>
 					<span>Remember me</span>
 				</label>
+				<button type="submit" class="btn btn-primary">Log in</button>
 			</form>
 		{:else if exists === false}
-			<form onsubmit={handleSignup} class="flex flex-col gap-2">
-				<input
-					type="password"
-					name="password"
-					placeholder="Password"
-					class="input input-bordered focus:input-primary"
-					bind:value={signupPassword}
-				/>
-				<input
-					type="password"
-					name="password"
-					placeholder="Confirm password"
-					class="input input-bordered focus:input-primary"
-					bind:value={signupConfirmPassword}
-				/>
-				<button type="submit" class="btn btn-neutral" disabled={signupDisabled}
-					>Create account</button
-				>
+			<form onsubmit={handleSignup} class="flex flex-col gap-4">
+				<div class="flex flex-col gap-2">
+					<input
+						type="password"
+						name="password"
+						placeholder="Password"
+						class="input input-bordered focus:input-primary"
+						bind:value={signupPassword}
+					/>
+					<input
+						type="password"
+						name="password"
+						placeholder="Confirm password"
+						class="input input-bordered focus:input-primary"
+						bind:value={signupConfirmPassword}
+					/>
+				</div>
+
+				<button type="submit" class="btn btn-primary" disabled={signupDisabled}>
+					Create account
+				</button>
 			</form>
 		{/if}
 	</div>

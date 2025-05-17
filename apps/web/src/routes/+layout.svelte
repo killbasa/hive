@@ -1,19 +1,15 @@
 <script lang="ts">
+	import Toaster from '$components/utilities/Toaster.svelte';
 	import '$lib/styles/tailwind.css';
 	import '$lib/styles/typography.css';
 
-	import Toaster from '$components/Toaster.svelte';
-	import type { Snippet } from 'svelte';
+	import type { LayoutProps } from './$types';
 
-	let {
-		children,
-	}: {
-		children: Snippet;
-	} = $props();
+	let { children }: LayoutProps = $props();
 </script>
 
 <Toaster />
 
-<main class="flex flex-col">
+<main>
 	{@render children()}
 </main>

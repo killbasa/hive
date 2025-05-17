@@ -14,8 +14,8 @@ export default defineConfig({
 	optimizeDeps: {
 		entries: ['cron-scheduler', 'openapi-fetch'],
 	},
-	server: serverOptions,
 	preview: serverOptions,
+	server: serverOptions,
 	test: {
 		globals: true,
 		coverage: {
