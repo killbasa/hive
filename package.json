@@ -26,8 +26,8 @@
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.15.17",
-		"eslint": "^9.26.0",
+		"@types/node": "^22.15.18",
+		"eslint": "9.27.0",
 		"lint-staged": "^16.0.0",
 		"prettier": "^3.5.3",
 		"turbo": "2.5.3",
@@ -36,7 +36,6 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"eslint": "9.25.1",
 			"vite": "6.3.5"
 		},
 		"onlyBuiltDependencies": [
@@ -62,9 +61,9 @@
 	"engines": {
 		"node": "24.x"
 	},
-	"packageManager": "pnpm@10.10.0",
+	"packageManager": "pnpm@10.11.0",
 	"volta": {
-		"node": "24.0.0",
-		"pnpm": "10.10.0"
+		"node": "24.0.1",
+		"pnpm": "10.11.0"
 	}
 }

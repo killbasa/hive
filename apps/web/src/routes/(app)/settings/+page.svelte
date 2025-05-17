@@ -25,7 +25,6 @@
 
 	let modal = $state<HTMLDialogElement>();
 	let newApikeyModal = $state<HTMLDialogElement>();
-	let revokeModal = $state<HTMLDialogElement>();
 
 	let auth = $state({
 		password: '',
@@ -63,6 +62,7 @@
 
 		modal?.close();
 		newApikeyModal?.showModal();
+		invalidate((p) => p.pathname === `/api/auth/apikeys/`);
 	};
 
 	const revokeApikey = async (kid: string) => {
@@ -78,7 +78,8 @@
 			toast.success('Revoked API key');
 		}
 
-		revokeModal?.close();
+		toggleModal(`key-modal-${kid}`, false);
+		invalidate((p) => p.pathname === `/api/auth/apikeys/`);
 	};
 
 	const handleAccountUpdate: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -116,6 +117,17 @@
 			toast.error('Something went wrong');
 		}
 	};
+
+	function toggleModal(id: string, open: boolean) {
+		const modal = document.getElementById(id) as HTMLDialogElement | null;
+		if (!modal) return;
+
+		if (open) {
+			modal.showModal();
+		} else {
+			modal.close();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -228,40 +240,57 @@
 		</CardSection>
 
 		<CardSection title="Active keys">
-			{#each data.apikeys as key (key.id)}
-				<div class="flex items-center gap-2 p-1">
-					<span>{key.id}</span>
-					Expires at: {key.expires ?? 'never'}
-					<button
-						type="button"
-						class="btn btn-error btn-sm"
-						onclick={revokeModal?.showModal}
-					>
-						<XIcon />
-					</button>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Expiry</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each data.apikeys as key (key.id)}
+						<tr>
+							<th>{key.id}</th>
+							<td>Expires at: {key.expires ?? 'never'}</td>
+							<td>
+								<button
+									type="button"
+									class="btn btn-error btn-sm"
+									onclick={() => {
+										toggleModal(`key-modal-${key.id}`, true);
+									}}
+								>
+									<XIcon />
+								</button>
 
-					<dialog class="modal" bind:this={revokeModal}>
-						<div class="modal-box w-11/12 max-w-5xl">
-							<h3 class="text-lg font-bold">Confirmation</h3>
-							<p class="py-4">Are you sure you want to revoke that API key?</p>
-							<div class="modal-action">
-								<form method="dialog">
-									<button class="btn">Cancel</button>
-									<button
-										type="button"
-										class="btn btn-primary"
-										onclick={async () => {
-											await revokeApikey(key.id);
-										}}
-									>
-										Confirm
-									</button>
-								</form>
-							</div>
-						</div>
-					</dialog>
-				</div>
-			{/each}
+								<dialog id="key-modal-{key.id}" class="modal">
+									<div class="modal-box w-11/12 max-w-5xl">
+										<h3 class="text-lg font-bold">Confirmation</h3>
+										<p class="py-4">
+											Are you sure you want to revoke that API key?
+										</p>
+										<div class="modal-action">
+											<form method="dialog">
+												<button class="btn">Cancel</button>
+												<button
+													type="button"
+													class="btn btn-primary"
+													onclick={async () => {
+														await revokeApikey(key.id);
+													}}
+												>
+													Confirm
+												</button>
+											</form>
+										</div>
+									</div>
+								</dialog>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
 		</CardSection>
 	</Card>
 

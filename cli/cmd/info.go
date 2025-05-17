@@ -20,6 +20,7 @@ var channelInfoCmd = &cobra.Command{
 		data, _, err := req.Execute()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
 		}
 
 		fmt.Println(data.Name)

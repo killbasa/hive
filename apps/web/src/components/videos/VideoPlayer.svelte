@@ -11,6 +11,9 @@
 	import YoutubeSource from './YoutubeSource.svelte';
 	import { writable } from 'svelte/store';
 
+	// TODO - appendChild can eventually be replaced with moveBefore
+	// See: https://developer.mozilla.org/en-US/docs/Web/API/Element/moveBefore
+
 	const video = getVideoContext();
 
 	// TODO - This probably needs to be handled properly
