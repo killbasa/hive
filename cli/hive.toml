@@ -1,5 +1,0 @@
-[server]
-endpoint = "http://localhost:3001/api"
-
-[authentication]
-apikey = ""
