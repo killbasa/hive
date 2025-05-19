@@ -13,25 +13,24 @@
 			"path": "../apps/web",
 		},
 		{
-			"name": "packages",
-			"path": "../packages",
+			"name": "cli",
+			"path": "../apps/cli",
 		},
 		{
-			"name": "cli",
-			"path": "../cli",
+			"name": "packages",
+			"path": "../packages",
 		},
 	],
 	"settings": {
 		"files.exclude": {
 			"apps": true,
 			"packages": true,
-			"cli": true,
 			"**/coverage": true,
 			"**/dist": false,
 			"**/node_modules": false,
 		},
 		"search.exclude": {
-			"cli/client": true,
+			"apps/cli/client": true,
 			"**/.turbo": true,
 			"**/coverage": true,
 			"**/dist": true,

@@ -5,7 +5,6 @@ import { setupGracefulShutdown, startupLog } from './lib/lifecycle.js';
 import { validateDirs } from './lib/utils.js';
 import { initHandlers, initWorkers } from './tasks/loader.js';
 import { routes } from './routes.js';
-import { ZodError } from 'zod';
 
 await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
 
@@ -30,11 +29,7 @@ const start = async (): Promise<void> => {
 		setupGracefulShutdown();
 		await startupLog();
 	} catch (err: unknown) {
-		if (err instanceof ZodError) {
-			server.log.error(err.errors);
-		} else {
-			server.log.error(err);
-		}
+		server.log.error(err);
 
 		process.exit(1);
 	}

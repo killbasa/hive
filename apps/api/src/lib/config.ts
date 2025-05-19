@@ -1,5 +1,5 @@
 import { isTesting } from './constants.js';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
