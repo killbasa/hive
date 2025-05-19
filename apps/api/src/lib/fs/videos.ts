@@ -1,5 +1,5 @@
 import { mv } from './utils.js';
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { videos } from '../../db/schema.js';
 import { server } from '../../server.js';
 import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
@@ -16,7 +16,7 @@ export const VIDEO_PATH = (channelId: string, videoId: string): string => `${MED
 
 export async function indexVideo(channelId: string, videoId: string): Promise<void> {
 	server.log.debug(`indexing video: ${videoId}`);
-	const metadata = await readVideoMetadata(channelId, videoId);
+	const metadata = await getVideoMetadata(channelId, videoId);
 
 	let type: VideoType = 'video';
 	let status: Exclude<VideoStatus, 'unknown'> = 'none';
@@ -72,12 +72,12 @@ export async function moveVideoAssets(channelId: string, videoId: string): Promi
 		await mkdir(target, { recursive: true });
 
 		await Promise.all(
-			assets.map(async (asset) => {
+			// eslint-disable-next-line @typescript-eslint/promise-function-async
+			assets.map((asset) => {
 				if (asset === 'metadata.info.json') {
-					await mv(`${source}/metadata.info.json`, `${target}/metadata.json`);
-					return;
+					return mv(`${source}/metadata.info.json`, `${target}/metadata.json`);
 				}
-				await mv(`${source}/${asset}`, `${target}/${asset}`);
+				return mv(`${source}/${asset}`, `${target}/${asset}`);
 			}),
 		);
 
@@ -91,7 +91,7 @@ export async function moveVideoAssets(channelId: string, videoId: string): Promi
 	return false;
 }
 
-export async function readVideoMetadata(channelId: string, videoId: string): Promise<VideoMetadata> {
+export async function getVideoMetadata(channelId: string, videoId: string): Promise<VideoMetadata> {
 	const data = await readFile(`${VIDEO_PATH(channelId, videoId)}/metadata.json`, 'utf-8');
 	return JSON.parse(data);
 }

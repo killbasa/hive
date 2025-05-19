@@ -219,8 +219,6 @@ export interface paths {
                     "application/json": {
                         username: string;
                         password: string;
-                        /** @default false */
-                        remember: boolean;
                     };
                 };
             };

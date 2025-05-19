@@ -1,5 +1,5 @@
 import { decorate, registerSwagger, server } from './server.js';
-import { initDb } from './db/client.js';
+import { initSqlite } from './db/sqlite.js';
 import { API_HOST, DOWNLOADS_DIR, MEDIA_DIR } from './lib/constants.js';
 import { setupGracefulShutdown, startupLog } from './lib/lifecycle.js';
 import { validateDirs } from './lib/utils.js';
@@ -12,7 +12,7 @@ await validateDirs(DOWNLOADS_DIR, MEDIA_DIR);
 const start = async (): Promise<void> => {
 	try {
 		decorate(server);
-		initDb();
+		initSqlite();
 
 		await initWorkers();
 

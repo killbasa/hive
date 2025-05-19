@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
+import { execSync } from 'node:child_process';
 
 type Unvalidated<T> = {
 	[K in keyof T]: T[K] extends object ? Unvalidated<T[K]> : unknown;
@@ -41,7 +42,7 @@ export function loadConfig(): HiveConfig {
 				port: 0,
 			},
 			auth: {
-				secret: 'secret',
+				secret: execSync('openssl rand -base64 32').toString().trim(),
 				origin: 'http://localhost',
 				cookie: 'hive',
 			},

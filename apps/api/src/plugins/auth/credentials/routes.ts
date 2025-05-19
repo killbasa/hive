@@ -1,8 +1,7 @@
 import { LoginBody, SignupBody } from './body.js';
-import { db } from '../../../db/client.js';
+import { db } from '../../../db/sqlite.js';
 import { users } from '../../../db/schema.js';
 import { EmptyResponse, MessageResponse } from '../../../lib/responses.js';
-import { cookies } from '../cookies.js';
 import { count, eq } from 'drizzle-orm';
 import { hash, verify } from 'argon2';
 import type { HiveRoutes } from '../../../lib/types/hive.js';
@@ -43,17 +42,14 @@ export const credentialAuthRoutes: HiveRoutes = {
 					return;
 				}
 
-				const token = server.jwt.sign({
+				request.session.set('user', {
 					id: user.id,
 					name: user.name,
 				});
 
-				const cookie = cookies.create({
-					extendedExpiry: body.remember,
-				});
+				await request.session.save();
 
 				await reply //
-					.setCookie(server.config.auth.cookie, token, cookie)
 					.code(200)
 					.send();
 			},

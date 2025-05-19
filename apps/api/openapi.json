@@ -171,16 +171,11 @@
                   "password": {
                     "minLength": 8,
                     "type": "string"
-                  },
-                  "remember": {
-                    "default": false,
-                    "type": "boolean"
                   }
                 },
                 "required": [
                   "username",
-                  "password",
-                  "remember"
+                  "password"
                 ]
               }
             }

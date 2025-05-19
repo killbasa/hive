@@ -1,4 +1,4 @@
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { videos } from '../../db/schema.js';
 import { fetchVideos } from '../../lib/youtube/videos.js';
 import { server } from '../../server.js';
@@ -61,7 +61,7 @@ async function processVideos(
 	ytVideos: YouTubeVideo[],
 ): Promise<void> {
 	await Promise.all(
-		ytVideos.map(async (video) => {
+		ytVideos.map((video) => {
 			const dbVideo = dbVideos.find((row) => row.id === video.id);
 			if (!dbVideo) {
 				throw new Error(`Video not found in database (${video.id})`);
@@ -103,7 +103,7 @@ async function processVideos(
 				}
 			}
 
-			return await db //
+			return db //
 				.update(videos)
 				.set({
 					status,

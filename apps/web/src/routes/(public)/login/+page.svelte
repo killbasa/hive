@@ -7,11 +7,9 @@
 	import { base } from '$app/paths';
 	import HiveIcon from '$lib/images/HiveIcon.svelte';
 
-	let username = $state('');
 	let exists = $state<boolean>();
-
+	let username = $state('');
 	let loginPassword = $state('');
-	let loginRemember = $state(false);
 
 	let signupPassword = $state('');
 	let signupConfirmPassword = $state('');
@@ -45,7 +43,6 @@
 			body: {
 				username,
 				password: loginPassword,
-				remember: loginRemember,
 			},
 		});
 
@@ -113,14 +110,6 @@
 					class="input input-bordered focus:input-primary"
 					bind:value={loginPassword}
 				/>
-				<label class="label cursor-pointer justify-normal gap-2">
-					<input
-						type="checkbox"
-						class="checkbox checkbox-primary"
-						bind:checked={loginRemember}
-					/>
-					<span>Remember me</span>
-				</label>
 				<button type="submit" class="btn btn-primary">Log in</button>
 			</form>
 		{:else if exists === false}

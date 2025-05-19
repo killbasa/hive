@@ -1,7 +1,7 @@
 import { YtdlpVideoArgs } from './VideoArgs.js';
 import { ytdlp, ytdlpExec } from './cli.js';
 import { YTDLP_VIDEO_PATH } from './constants.js';
-import { readVideoMetadata } from '../fs/videos.js';
+import { getVideoMetadata } from '../fs/videos.js';
 import { server } from '../../server.js';
 import { StatusEvent, throttle } from '@hive/common';
 import type { YtdlpProgress } from './cli.js';
@@ -45,7 +45,7 @@ export async function downloadVideo(
 		args.live();
 	}
 
-	const metadata = await readVideoMetadata(channelId, videoId);
+	const metadata = await getVideoMetadata(channelId, videoId);
 
 	const emitUpdate = throttle((data: YtdlpProgress) => {
 		server.notifications.emit('status', {

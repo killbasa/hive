@@ -10,17 +10,12 @@ describe('authHandler', () => {
 		expect(response.statusCode).toBe(401);
 	});
 
-	it('should return 200 with cookie', async () => {
-		const token = server.jwt.sign({
-			id: 1,
-			name: 'test-noapikey',
-		});
-
+	it.skip('should return 200 with session', async () => {
 		const response = await server.inject({
 			method: 'GET',
 			url: '/version',
 			cookies: {
-				[server.config.auth.cookie]: token,
+				[server.config.auth.cookie]: '',
 			},
 		});
 

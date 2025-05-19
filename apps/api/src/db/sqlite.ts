@@ -7,7 +7,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 
 export let db: ReturnType<typeof drizzle<typeof schema>>;
 
-export const initDb = (): void => {
+export const initSqlite = (): void => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (db) {
 		return;

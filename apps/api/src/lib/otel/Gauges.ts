@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { channels, playlists, videos } from '../../db/schema.js';
 import { count } from 'drizzle-orm';
 import type { Meter } from '@opentelemetry/api';

@@ -1,7 +1,7 @@
 import { generateApiKey } from './service.js';
 import { ApikeyGetSchema, ApikeyRefreshSchema } from './schema.js';
 import { ApikeyRevokeBody } from './body.js';
-import { db } from '../../../db/client.js';
+import { db } from '../../../db/sqlite.js';
 import { apikeys, users } from '../../../db/schema.js';
 import { EmptyResponse } from '../../../lib/responses.js';
 import { eq } from 'drizzle-orm';
@@ -22,7 +22,7 @@ export const apikeyAuthRoutes: HiveRoutes = {
 			},
 			async (request, reply): Promise<void> => {
 				const result = await db.query.apikeys.findMany({
-					where: eq(apikeys.userId, request.user.id),
+					where: eq(apikeys.userId, request.session.user.id),
 					columns: {
 						id: true,
 						expires: true,
@@ -51,7 +51,7 @@ export const apikeyAuthRoutes: HiveRoutes = {
 			},
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
-					where: eq(users.name, request.user.name),
+					where: eq(users.name, request.session.user.name),
 				});
 				if (user === undefined) {
 					await reply.code(403).send();

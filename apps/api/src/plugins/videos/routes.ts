@@ -4,7 +4,7 @@ import { VideoListSchema, VideoSchema } from './schema.js';
 import { scanAllChannels } from './utils.js';
 import { EmptyResponse } from '../../lib/responses.js';
 import { videos } from '../../db/schema.js';
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { and, count, eq, inArray, like, ne } from 'drizzle-orm';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 import type { SQLWrapper } from 'drizzle-orm';
