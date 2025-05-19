@@ -22,6 +22,7 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: password
       YT_API_KEY: <secret>
+      METRICS_ENABLED: true
     volumes:
       - hive:/var/lib/hive
     ports:
@@ -31,20 +32,8 @@ services:
     networks:
       - hive
 
-  web:
-    image: ghcr.io/killbasa/hive-web:nightly
-    restart: unless-stopped
-    environment:
-      VITE_API_URL: http://localhost:3001
-    ports:
-      - 127.0.0.1:3000:3000
-    depends_on:
-      - hive
-    networks:
-      - hive
-
   redis:
-    image: redis:7.2.4-alpine3.19
+    image: redis:7.4.3-alpine3.21
     restart: unless-stopped
     command: ['redis-server', '--requirepass password']
     networks:
@@ -77,16 +66,21 @@ The only version of yt-dlp that is guarateed to work is the version that is bund
 1. Download yt-dlp binary
 
 ```sh
-wget https://github.com/yt-dlp/yt-dlp/releases/download/2024.08.06/yt-dlp
+wget https://github.com/yt-dlp/yt-dlp/releases/download/2025.04.30/yt-dlp
 chmod +x yt-dlp
 mv ./yt-dlp ./apps/api/bin
+```
+
+or run the setup script
+
+```sh
+sh ./apps/api/scripts/deps.sh
 ```
 
 1. Setup .env files
 
 ```sh
 cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
 ```
 
 3. Start services
@@ -95,7 +89,7 @@ cp apps/web/.env.example apps/web/.env
 docker compose -f apps/api/compose.yml up -d
 ```
 
-4. Build applications
+4. Build applications and dependencies
 
 ```sh
 pnpm build

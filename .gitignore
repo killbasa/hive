@@ -14,5 +14,9 @@ coverage/
 bin/
 data/
 dist/
-cli/client/
+apps/cli/client/
 tsconfig.tsbuildinfo
+.turbo/
+.yarn/
+out/
+output/

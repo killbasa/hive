@@ -1,3 +1,8 @@
+linkWorkspacePackages: true
+nodeLinker: "isolated"
+injectWorkspacePackages: true
+forceLegacyDeploy: true
 packages:
-  - "apps/*"
+  - "apps/api"
+  - "apps/web"
   - "packages/*"

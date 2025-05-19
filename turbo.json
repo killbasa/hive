@@ -1,0 +1,40 @@
+{
+	"$schema": "https://turborepo.com/schema.v2.json",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**"],
+			"outputLogs": "new-only"
+		},
+		"openapi": {},
+		"check": {
+			"dependsOn": ["^build"],
+			"outputs": [],
+			"outputLogs": "new-only"
+		},
+		"lint": {
+			"dependsOn": [],
+			"outputs": [],
+			"outputLogs": "new-only"
+		},
+		"format": {
+			"cache": false
+		},
+		"test": {
+			"dependsOn": ["^test"],
+			"outputs": [],
+			"outputLogs": "new-only"
+		},
+		"e2e": {
+			"dependsOn": [],
+			"outputs": [],
+			"outputLogs": "new-only"
+		},
+		"clean": {
+			"cache": false
+		},
+		"clean:turbo": {
+			"cache": false
+		}
+	}
+}

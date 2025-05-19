@@ -4,15 +4,17 @@ import { authHandler } from './plugins/auth/handler.js';
 import { HiveNotifier } from './plugins/notifications/emitter.js';
 import { HiveSettings } from './plugins/settings/service.js';
 import { loadConfig } from './lib/config.js';
+import { RedisStore } from './plugins/auth/session.js';
 import FastifyCookie from '@fastify/cookie';
 import FastifyCors from '@fastify/cors';
 import FastifyHelmet from '@fastify/helmet';
-import FastifyJwt from '@fastify/jwt';
+import FastifySession from '@fastify/session';
 import FastifySwagger from '@fastify/swagger';
 import { TypeBoxValidatorCompiler } from '@fastify/type-provider-typebox';
 import FastifyWebsocket from '@fastify/websocket';
 import { Queue } from 'bullmq';
 import Fastify from 'fastify';
+import { Time } from '@hive/common';
 import type { QueueOptions } from 'bullmq';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyInstance, LogLevel } from 'fastify';
@@ -54,12 +56,25 @@ export async function buildServer(): Promise<FastifyInstance> {
 	await registerSwagger(server);
 
 	await server.register(FastifyCookie);
-	await server.register(FastifyJwt, {
+	await server.register(FastifySession, {
 		secret: config.auth.secret,
+		saveUninitialized: false,
+		cookieName: config.auth.cookie,
 		cookie: {
-			cookieName: config.auth.cookie,
-			signed: false,
+			secure: 'auto',
+			sameSite: 'strict',
+			path: '/',
+			maxAge: Time.Day * 30, // 30 days
 		},
+		store: new RedisStore({
+			host: config.redis.host,
+			port: config.redis.port,
+			password: config.redis.password,
+			ttl: Time.Day * 30,
+			keyPrefix: 'hive:session:',
+			enableAutoPipelining: true,
+			lazyConnect: true,
+		}),
 	});
 
 	await server.register(FastifyCors, {

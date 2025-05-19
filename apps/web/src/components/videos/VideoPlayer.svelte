@@ -1,110 +1,67 @@
 <script lang="ts">
-	import { client } from '$lib/client';
-	import { config } from '$lib/config';
 	import { getVideoContext } from '$lib/stores/video';
-	import { Time, throttle, debounce } from '@hive/common';
-	import { onMount } from 'svelte';
-	import type { EventHandler } from 'svelte/elements';
+	import { onMount, setContext } from 'svelte';
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { base } from '$app/paths';
+	import ExpandIcon from '@lucide/svelte/icons/expand';
+	import XIcon from '@lucide/svelte/icons/x';
+	import { logger } from '$lib/logger';
+	import FileSource from './FileSource.svelte';
+	import YoutubeSource from './YoutubeSource.svelte';
+	import { writable } from 'svelte/store';
+
+	// TODO - appendChild can eventually be replaced with moveBefore
+	// See: https://developer.mozilla.org/en-US/docs/Web/API/Element/moveBefore
 
 	const video = getVideoContext();
 
-	let element = $state<HTMLVideoElement | null>(null);
-	let divElement: HTMLDivElement;
-	let ready = $state(false);
+	// TODO - This probably needs to be handled properly
+	let videoElement = $state<HTMLVideoElement | HTMLEmbedElement | null>(null);
+	let miniplayerElement: HTMLDivElement;
 
-	let currentTime = $state(0);
+	let currentTime = writable(0);
+	setContext('video-time', currentTime);
+
 	let isWatchPage = $derived(page.url.pathname.startsWith(`${base}/watch`));
-
-	const onVolumeChange: EventHandler<Event, HTMLVideoElement> = () => {
-		if (!element) return;
-
-		localStorage.setItem('videoVolume', element.volume.toString());
-	};
-
-	const loadPlayer: EventHandler<Event, HTMLVideoElement> = () => {
-		if (!$video || !element) return;
-
-		setTime(page.url.searchParams.get('t') ?? $video.watchProgress);
-
-		const local = localStorage.getItem('videoVolume') ?? '1';
-		const parsedVol = Number.parseFloat(local);
-		element.volume = Number.isNaN(parsedVol) ? 1 : parsedVol;
-
-		window.setTimeout(() => {
-			ready = true;
-		}, 500);
-	};
-
-	const onTimeUpdate: EventHandler<Event, HTMLVideoElement> = async () => {
-		if (!ready || !element) return;
-
-		currentTime = element.currentTime;
-
-		if (element.paused) {
-			await debounceUpdate(currentTime);
-		} else {
-			await throttleUpdate(currentTime);
-		}
-	};
-
-	function setTime(value: string | number | null): void {
-		if (value === null || !element) return;
-		if (typeof value === 'string') {
-			value = Number.parseInt(value);
-		}
-
-		if (Number.isNaN(value)) return;
-
-		currentTime = value;
-		element.currentTime = currentTime;
-	}
-
-	const debounceUpdate = debounce(postUpdate, Time.Second);
-	const throttleUpdate = throttle(postUpdate, Time.Second * 2);
-
-	async function postUpdate(time: number) {
-		// Don't need to save progress if it's a short
-		if (!$video || $video.type === 'short') return;
-
-		await client.PATCH('/videos/{videoId}', {
-			params: { path: { videoId: $video.id } },
-			body: {
-				watchProgress: time,
-				watchCompleted: $video.duration ? time / $video.duration > 0.9 : false,
-			},
-		});
-	}
+	let isLivestream = $derived<boolean>(
+		$video?.type === 'stream' && ($video.status === 'live' || $video.status === 'upcoming'),
+	);
 
 	function closeVideo(): void {
+		logger.debug('closing video');
 		video.set(null);
 		unmountVideo();
 	}
 
 	function mountVideo(): void {
-		if (!element) return;
+		if (!videoElement) return;
 
 		if (isWatchPage) {
 			// Add video to watch page
-			const watchPageElement = document.getElementById('video-element');
+			const watchPageElement = document.getElementById('video-container');
 
 			if (watchPageElement && !watchPageElement.hasChildNodes()) {
-				watchPageElement.appendChild(element);
+				unmountVideo();
+
+				logger.debug('mounting video');
+				watchPageElement.appendChild(videoElement);
 			}
-		} else if (!divElement.hasChildNodes()) {
-			// Show corner player
-			divElement.appendChild(element);
+		} else if (!miniplayerElement.hasChildNodes()) {
+			unmountVideo();
+
+			// Show mini player
+			logger.debug('mounting mini video');
+			miniplayerElement.appendChild(videoElement);
 		}
 	}
 
 	function unmountVideo(): void {
-		if (!element) return;
+		const element = document.getElementById('video-player');
 
-		// Remove corner player
-		if (!isWatchPage && divElement.hasChildNodes()) {
-			divElement.removeChild(element);
+		if (element) {
+			logger.debug('removing previous video');
+			element.remove();
 		}
 	}
 
@@ -112,8 +69,15 @@
 		if (!data.from || data.willUnload) return;
 
 		// Close video if it's a short or the video is paused
-		if (!isWatchPage && (element?.paused || $video?.type === 'short')) {
-			return closeVideo();
+		if (!isWatchPage) {
+			if (
+				(videoElement && 'paused' in videoElement && videoElement.paused) ||
+				$video?.type === 'short'
+			) {
+				return closeVideo();
+			} else if ($video?.type === 'stream' && $video?.status === 'upcoming') {
+				return closeVideo();
+			}
 		}
 
 		mountVideo();
@@ -122,52 +86,58 @@
 	if (import.meta.hot) {
 		// Mount video if it was unmounted due to HMR
 		onMount(() => {
+			logger.debug('mounting video on reload');
+
+			const watchPageElement = document.getElementById('video-container');
+			if (watchPageElement) watchPageElement.innerHTML = '';
+
 			mountVideo();
 		});
 	}
 </script>
 
 <div
-	class="flex flex-col rounded-lg overflow-hidden {$video && isWatchPage //
+	class="flex flex-col rounded-lg overflow-hidden z-[9999] {$video && isWatchPage //
 		? 'w-full'
 		: 'fixed bottom-2 right-2 w-[400px]'}"
 >
 	{#if $video}
 		{#if !isWatchPage}
 			<div class="p-1 bg-slate-800 justify-end flex gap-1">
-				<a href="{base}/watch/{$video.id}" title="Expand video">Max</a>
-				<button onclick={closeVideo} title="Close video">X</button>
+				<a href="{base}/watch/{$video.id}" title="Expand video">
+					<ExpandIcon class="p-0.5" />
+				</a>
+				<button onclick={closeVideo} title="Close video" class="cursor-pointer">
+					<XIcon />
+				</button>
 			</div>
-			<progress
-				class="progress-primary h-2"
-				value={Math.floor(currentTime)}
-				max={$video.duration}
-			></progress>
+			{#if !isLivestream}
+				<progress
+					class="progress-primary h-1"
+					value={Math.floor($currentTime)}
+					max={$video.duration}
+				></progress>
+			{/if}
 		{/if}
 	{/if}
-	<div bind:this={divElement}></div>
+	<div bind:this={miniplayerElement}></div>
 </div>
 
 {#if $video}
 	{#key $video.id}
-		<video
-			id={Date.now().toString()}
-			poster="{config.assetsPath}/{$video.channelId}/videos/{$video.id}/thumbnail.png"
-			onvolumechange={onVolumeChange}
-			onloadstart={loadPlayer}
-			ontimeupdate={onTimeUpdate}
-			onended={onTimeUpdate}
-			controls
-			playsinline
-			style={$video.type === 'short' ? 'width: 450px;' : 'width: 100%;'}
-			bind:this={element}
-		>
-			<source
-				src="{config.assetsPath}/{$video.channelId}/videos/{$video.id}/video.mp4"
-				type="video/mp4"
+		{#if isLivestream}
+			<YoutubeSource
+				video={$video}
+				class={isWatchPage ? 'rounded-lg' : 'rounded-b-lg'}
+				bind:element={videoElement as HTMLEmbedElement}
 			/>
-			<track kind="captions" />
-		</video>
+		{:else}
+			<FileSource
+				video={$video}
+				class={isWatchPage ? 'rounded-lg' : 'rounded-b-lg'}
+				bind:element={videoElement as HTMLVideoElement}
+			/>
+		{/if}
 	{/key}
 {/if}
 

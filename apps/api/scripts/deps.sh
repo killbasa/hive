@@ -1,4 +1,6 @@
-#! /bin/sh
+#! /bin/bash
+
+set -eo pipefail
 
 scriptdir="$(dirname "$0")"
 cd "$(dirname $scriptdir)"

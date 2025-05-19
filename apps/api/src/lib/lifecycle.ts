@@ -1,5 +1,5 @@
 import { API_HOST } from './constants.js';
-import { getYtdlpGitTag, getYtdlpVersion } from './ytdlp/constants.js';
+import { getYtdlpGitTag, getYtdlpLocalVersion } from './ytdlp/constants.js';
 import { server } from '../server.js';
 import { Time } from '@hive/common';
 import { setTimeout } from 'node:timers';
@@ -14,7 +14,7 @@ function print(msg: string): void {
 export async function startupLog(): Promise<void> {
 	server.log.info('');
 
-	const version = getYtdlpVersion();
+	const version = getYtdlpLocalVersion();
 	const tag = getYtdlpGitTag();
 	const updateString = tag === version ? '' : ` (latest: ${tag})`;
 
@@ -24,10 +24,6 @@ export async function startupLog(): Promise<void> {
 	print(`proxy:         http://${API_HOST}:3001`);
 	print(`documentation: http://${API_HOST}:3001/api/reference`);
 	print(`metrics:       http://${API_HOST}:3001/api/metrics`);
-
-	if (server.config.server.ui) {
-		print(`ui:            http://localhost:3001/ui`);
-	}
 
 	server.log.info('');
 

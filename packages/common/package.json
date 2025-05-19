@@ -21,15 +21,15 @@
 		"format": "prettier --write .",
 		"test": "vitest --coverage --run",
 		"test:watch": "vitest --coverage",
-		"clean": "rm -rf ./dist ./node_modules"
+		"clean": "rm -rf ./.turbo ./node_modules"
 	},
 	"devDependencies": {
-		"@vitest/coverage-v8": "3.1.2",
-		"eslint": "^9.25.1",
-		"eslint-config-prettier": "^10.1.2",
+		"@vitest/coverage-v8": "3.1.4",
+		"eslint": "9.27.0",
+		"eslint-config-prettier": "^10.1.5",
 		"prettier": "^3.5.3",
 		"typescript": "5.8.3",
-		"vitest": "3.1.2"
+		"vitest": "3.1.4"
 	},
 	"lint-staged": {
 		"*.{js,ts}": [
@@ -40,11 +40,9 @@
 		]
 	},
 	"engines": {
-		"node": "23.x"
+		"node": "24.x"
 	},
-	"packageManager": "pnpm@10.9.0",
 	"volta": {
-		"node": "23.11.0",
-		"pnpm": "10.9.0"
+		"node": "24.0.2"
 	}
 }

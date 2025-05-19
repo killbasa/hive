@@ -1,17 +1,19 @@
-import { ytFetch } from './fetch.js';
-import { db } from '../../db/client.js';
+import { youtubeFetch } from './fetch.js';
+import { db } from '../../db/sqlite.js';
 import type { YouTubeChannel, YouTubeChannelList } from './types.js';
 
-export function parseTags(tags: string): string[] {
+const TAG_DELIMITER = ',';
+
+export function parseChannelTags(tags: string): string[] {
 	if (tags.length === 0) {
 		return [];
 	}
 
-	return tags.split(',');
+	return tags.split(TAG_DELIMITER);
 }
 
-export function formatTags(tags: string[]): string {
-	return tags.join(',');
+export function formatChannelTags(tags: string[]): string {
+	return tags.join(TAG_DELIMITER);
 }
 
 export async function doesChannelExist(channelId: string, source: 'database' | 'youtube'): Promise<boolean> {
@@ -35,7 +37,7 @@ export async function doesChannelExist(channelId: string, source: 'database' | '
 
 // ref: https://developers.google.com/youtube/v3/docs/channels/list
 export async function fetchChannels(channelIds: string[]): Promise<YouTubeChannel[]> {
-	const response = await ytFetch<YouTubeChannelList>('/channels', {
+	const response = await youtubeFetch<YouTubeChannelList>('/channels', {
 		resources: ['snippet', 'brandingSettings'],
 		ids: channelIds,
 	});

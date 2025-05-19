@@ -171,16 +171,11 @@
                   "password": {
                     "minLength": 8,
                     "type": "string"
-                  },
-                  "remember": {
-                    "default": false,
-                    "type": "boolean"
                   }
                 },
                 "required": [
                   "username",
-                  "password",
-                  "remember"
+                  "password"
                 ]
               }
             }
@@ -304,49 +299,103 @@
         }
       }
     },
-    "/auth/apikey/create": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "Create an API key",
-        "responses": {}
-      }
-    },
-    "/auth/apikey/delete": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "Delete an API key",
-        "responses": {}
-      }
-    },
-    "/auth/apikey/list": {
+    "/auth/apikeys/": {
       "get": {
         "tags": [
           "Auth"
         ],
-        "description": "Get a list of API keys",
-        "responses": {}
-      }
-    },
-    "/auth/verify": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "Verify the user is authenticated",
-        "security": [
-          {
-            "apikey": [
-              "x-api-key"
-            ]
-          }
-        ],
+        "description": "Get all API keys for the user",
         "responses": {
           "200": {
-            "description": "User is authenticated"
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apikeys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "expires": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "apikeys"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/apikeys/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Generate a new API key",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apikey": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "apikey"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/apikeys/revoke": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Revoke an API key",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "API key revoked"
           }
         }
       }
@@ -357,16 +406,22 @@
           "Auth"
         ],
         "description": "Logout the user",
-        "security": [
-          {
-            "apikey": [
-              "x-api-key"
-            ]
-          }
-        ],
         "responses": {
           "200": {
             "description": "Logged out successfully"
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Verify the user is authenticated",
+        "responses": {
+          "200": {
+            "description": "User is authenticated"
           }
         }
       }
@@ -675,6 +730,17 @@
             "in": "query",
             "name": "page",
             "required": true
+          },
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 24,
+              "type": "number"
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
           }
         ],
         "security": [
@@ -1119,6 +1185,17 @@
             },
             "in": "query",
             "name": "inProgress",
+            "required": false
+          },
+          {
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 24,
+              "type": "number"
+            },
+            "in": "query",
+            "name": "limit",
             "required": false
           }
         ],

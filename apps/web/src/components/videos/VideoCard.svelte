@@ -14,13 +14,14 @@
 	const channelUrl = `${config.assetsPath}/${video.channelId}`;
 </script>
 
-<div class="card border overflow-hidden rounded-lg">
+<div class="card">
 	<a href="{base}/watch/{video.id}">
 		<div class="flex flex-col">
 			<img
 				src="{channelUrl}/videos/{video.id}/thumbnail.png"
 				alt="Video thumbnail"
 				loading="lazy"
+				class="rounded-lg"
 			/>
 			{#if video.watchProgress > 0}
 				<progress
@@ -40,7 +41,7 @@
 				/>
 			</a>
 		{/if}
-		<span class="font-bold text-lg">{video.title}</span>
+		<span class="text-lg font-semibold">{video.title}</span>
 	</div>
 </div>
 

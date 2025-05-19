@@ -1,4 +1,4 @@
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { server } from '../../server.js';
 
 export async function scanAllChannels(): Promise<void> {

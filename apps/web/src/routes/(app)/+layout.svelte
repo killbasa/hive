@@ -1,25 +1,21 @@
 <script lang="ts">
-	import Footer from '$components/navigation/Footer.svelte';
-	import Navbar from '$components/navigation/Navbar.svelte';
+	import Sidebar from '$components/navigation/Sidebar.svelte';
 	import VideoPlayer from '$components/videos/VideoPlayer.svelte';
 	import { initVideoContext } from '$lib/stores/video';
-	import type { Snippet } from 'svelte';
+	import type { LayoutProps } from './$types';
 
-	let {
-		children,
-	}: {
-		children: Snippet;
-	} = $props();
+	let { children }: LayoutProps = $props();
 
 	initVideoContext();
 </script>
 
-<Navbar />
-<div class="flex min-h-screen flex-col justify-between p-[7rem,2rem,2rem,4rem]">
-	<div class="mx-auto w-full max-w-7xl px-8 py-8 xl:px-0">
-		{@render children()}
+<VideoPlayer />
+
+<div class="grid grid-cols-[auto_1fr] h-screen">
+	<Sidebar />
+	<div class="overflow-y-auto">
+		<div class="space-y-4 p-4 mx-auto">
+			{@render children()}
+		</div>
 	</div>
 </div>
-<Footer />
-
-<VideoPlayer />

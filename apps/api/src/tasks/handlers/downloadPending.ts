@@ -1,4 +1,4 @@
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { server } from '../../server.js';
 import type { SQLWrapper } from 'drizzle-orm';
 import type { TaskHandler } from '../types.js';

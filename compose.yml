@@ -1,0 +1,24 @@
+services:
+  hive:
+    image: killbasa/hive
+    container_name: hive
+    build:
+      dockerfile: apps/api/Dockerfile
+      context: .
+    env_file:
+      - apps/api/.env
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+    volumes:
+      - ./data:/var/lib/hive
+    ports:
+      - 127.0.0.1:3001:3001
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.4.3-alpine3.21
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass password"]

@@ -26,11 +26,40 @@ export function getNumberParam(url: URL, key: string, fallback = 1): number {
 	return Number.isNaN(coerce) ? fallback : coerce;
 }
 
-export function getStringParam(url: URL, key: string, valid?: string[]): string | undefined {
-	const value = url.searchParams.get(key);
-	if (value === null || !valid) {
-		return undefined;
+export function getStringParam<T extends string>(
+	url: URL,
+	key: string,
+	valid?: Record<string, T> | T[] | undefined,
+	fallback?: T | undefined,
+): T | undefined {
+	const value = url.searchParams.get(key) as T | null;
+	if (value === null) {
+		return fallback;
 	}
 
-	return valid.includes(value) ? value : undefined;
+	if (!valid) {
+		return value;
+	}
+
+	if (Array.isArray(valid)) {
+		return valid.includes(value) ? value : undefined;
+	}
+
+	return Object.values(valid).includes(value) ? value : undefined;
+}
+
+export function getPaginationPages(page: number, lastPage: number): (number | null)[] {
+	if (lastPage < 6) {
+		return Array.from({ length: lastPage }, (_, i) => i + 1);
+	}
+
+	if (page < 4) {
+		return [1, 2, 3, 4, null, lastPage];
+	}
+
+	if (page > lastPage - 3) {
+		return [1, null, lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
+	}
+
+	return [1, null, page - 1, page, page + 1, null, lastPage];
 }

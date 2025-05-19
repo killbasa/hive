@@ -1,12 +1,12 @@
 import { ChannelPostBody } from './body.js';
 import { ChannelQuerySchema } from './query.js';
 import { ChanneListSchema, ChannelSchema, ChannelStatsSchema } from './schema.js';
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { channels, videos } from '../../db/schema.js';
 import { CHANNEL_PATH, isChannelDownloaded } from '../../lib/fs/channels.js';
 import { du } from '../../lib/fs/utils.js';
 import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
-import { doesChannelExist, parseTags } from '../../lib/youtube/channels.js';
+import { doesChannelExist, parseChannelTags } from '../../lib/youtube/channels.js';
 import { and, count, eq } from 'drizzle-orm';
 import { Type } from '@fastify/type-provider-typebox';
 import type { SQLWrapper } from 'drizzle-orm';
@@ -28,10 +28,13 @@ export const channelRoutes: HiveRoutes = {
 				},
 			},
 			async (request, reply): Promise<void> => {
+				const { query } = request;
+				query.limit ??= 24;
+
 				const [result, countRes] = await Promise.all([
 					db.query.channels.findMany({
 						limit: 24,
-						offset: (request.query.page - 1) * 24,
+						offset: (request.query.page - 1) * query.limit,
 					}),
 					db.select({ total: count() }).from(channels),
 				]);
@@ -40,7 +43,7 @@ export const channelRoutes: HiveRoutes = {
 					channels: result.map((channel) => {
 						return {
 							...channel,
-							tags: parseTags(channel.tags),
+							tags: parseChannelTags(channel.tags),
 						};
 					}),
 					total: countRes[0].total,
@@ -131,7 +134,7 @@ export const channelRoutes: HiveRoutes = {
 
 				await reply.status(200).send({
 					...result,
-					tags: parseTags(result.tags),
+					tags: parseChannelTags(result.tags),
 				});
 			},
 		);

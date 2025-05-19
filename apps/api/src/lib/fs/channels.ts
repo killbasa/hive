@@ -1,9 +1,9 @@
 import { mv } from './utils.js';
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { channels } from '../../db/schema.js';
 import { server } from '../../server.js';
 import { DOWNLOADS_DIR, MEDIA_DIR } from '../constants.js';
-import { formatTags } from '../youtube/channels.js';
+import { formatChannelTags } from '../youtube/channels.js';
 import { resolve } from 'node:path';
 import { open, readFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -14,7 +14,7 @@ export const CHANNEL_DL_PATH = (channelId: string): string => `${DOWNLOADS_DIR}/
 export const CHANNEL_PATH = (channelId: string): string => `${MEDIA_DIR}/${channelId}`;
 
 export async function indexChannel(channelId: string): Promise<void> {
-	const metadata = await readChannelMetadata(channelId);
+	const metadata = await getChannelMetadata(channelId);
 
 	await db
 		.insert(channels)
@@ -23,7 +23,7 @@ export async function indexChannel(channelId: string): Promise<void> {
 			customUrl: metadata.id,
 			name: metadata.channel,
 			description: metadata.description,
-			tags: formatTags(metadata.tags),
+			tags: formatChannelTags(metadata.tags),
 		})
 		.onConflictDoNothing({ target: channels.id })
 		.execute();
@@ -53,13 +53,11 @@ export async function moveChannel(channelId: string): Promise<boolean> {
 	return false;
 }
 
-export async function readChannelMetadata(channelId: string): Promise<ChannelMetadata> {
+export async function getChannelMetadata(channelId: string): Promise<ChannelMetadata> {
 	const data = await readFile(`${CHANNEL_PATH(channelId)}/assets/metadata.json`, 'utf-8');
 	return JSON.parse(data);
 }
 
 export function isChannelDownloaded(channelId: string): boolean {
-	const path = `${CHANNEL_PATH(channelId)}/assets/metadata.json`;
-
-	return existsSync(resolve(path));
+	return existsSync(resolve(`${CHANNEL_PATH(channelId)}/assets/metadata.json`));
 }

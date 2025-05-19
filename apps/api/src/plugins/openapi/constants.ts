@@ -1,8 +1,7 @@
 import { isDev } from '../../lib/constants.js';
+import { apiReferenceConfigurationSchema } from '@scalar/types/api-reference';
 import { resolve } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import type { z } from 'zod';
-import type { apiReferenceConfigurationSchema } from '@scalar/types/api-reference';
 
 export const ScalarHTML = getScalarHTML();
 export const ScalarJS = getScalarJS();
@@ -23,12 +22,10 @@ export const ScalarContentSecurityPolicies: string = [
 ].join('; ');
 
 function getScalarHTML(): string {
-	const config: Partial<z.infer<typeof apiReferenceConfigurationSchema>> = {
-		spec: {
-			url: '/api/reference/spec.json',
-		},
+	const config = apiReferenceConfigurationSchema.parse({
+		url: '/api/reference/spec.json',
 		isEditable: false,
-	};
+	});
 
 	return `
 	<!DOCTYPE html>
@@ -55,14 +52,17 @@ function getScalarHTML(): string {
 }
 
 function getScalarJS(): string {
+	const filename = 'node_modules/@scalar/api-reference/dist/browser/standalone.js';
+
 	const filePaths = [
-		resolve('node_modules/@scalar/api-reference/dist/browser/standalone.js'), //
+		resolve(`${filename}`), // Container
+		resolve(`../../${filename}`), // Local
 	];
 
 	const filePath = filePaths.find((file) => existsSync(file));
 
 	if (filePath === undefined) {
-		throw new Error('JavaScript file not found');
+		throw new Error('Scalar JavaScript file not found');
 	}
 
 	const file = readFileSync(filePath, 'utf8');
