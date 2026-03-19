@@ -16,7 +16,7 @@ export const credentialAuthRoutes: HiveRoutes = {
 					tags: ['Auth'],
 					body: LoginBody,
 					response: {
-						200: MessageResponse('Logged in successfully'),
+						200: EmptyResponse('Logged in successfully'),
 						401: MessageResponse('Invalid username or password'),
 					},
 				},

@@ -31,7 +31,7 @@
 		oldPassword: '',
 	});
 
-	let schedule = $state<CronStore>({
+	let schedule = $derived<CronStore>({
 		checkSubscriptions: data.settings.cronCheckSubscriptions,
 		downloadPending: data.settings.cronDownloadPending,
 		channelMetadata: data.settings.cronChannelMetadata,
@@ -57,7 +57,7 @@
 			toast.error('Failed to generate API key');
 		} else {
 			toast.success('API key generated');
-			apikey = response.data.apikey;
+			apikey = response.data!.apikey;
 		}
 
 		modal?.close();

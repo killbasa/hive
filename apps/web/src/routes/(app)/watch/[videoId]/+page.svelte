@@ -9,7 +9,9 @@
 
 	let { data }: PageProps = $props();
 
-	setVideoContext(data.video);
+	$effect(() => {
+		setVideoContext(data.video);
+	});
 
 	let isLivestream = $derived<boolean>(
 		data.video?.type === 'stream' &&
@@ -72,7 +74,7 @@
 	{#if isLivestream}
 		<ChatSidebar
 			video={data.video}
-			class="h-[512px] xl:h-screen w-full rounded row-start-2 xl:row-span-2 xl:col-start-2 xl:row-start-1"
+			class="h-128 xl:h-screen w-full rounded row-start-2 xl:row-span-2 xl:col-start-2 xl:row-start-1"
 		/>
 	{/if}
 </section>

@@ -9,6 +9,8 @@ export const VideoStatusSchema = HiveType.LiteralUnion(['unknown', 'none', 'live
 export type VideoStatus = Static<typeof VideoStatusSchema>;
 
 export const VideoDownloadStatusSchema = HiveType.LiteralUnion(['ignored', 'pending', 'done']);
+export const _VideoDownloadStatusSchema = Type.Union(['ignored', 'pending', 'done'].map((value) => Type.Literal(value)));
+export const __VideoDownloadStatusSchema = Type.Union([Type.Literal('ignored'), Type.Literal('pending'), Type.Literal('done')]);
 export type VideoDownloadStatus = Static<typeof VideoDownloadStatusSchema>;
 
 export const VideoSchema = Type.Object({

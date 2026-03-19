@@ -35,27 +35,24 @@
 		"format": "prettier --write .",
 		"clean": "rm -rf ./.turbo ./dist ./node_modules"
 	},
-	"peerDependencies": {
-		"eslint": "9.27.0"
-	},
 	"dependencies": {
-		"@eslint/js": "^9.27.0",
-		"@typescript-eslint/eslint-plugin": "^8.32.1",
-		"@typescript-eslint/parser": "^8.32.1",
-		"@typescript-eslint/utils": "^8.32.1",
-		"eslint": "9.27.0",
-		"eslint-import-resolver-typescript": "^4.3.5",
-		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-prettier": "^5.4.0",
-		"eslint-plugin-svelte": "^3.8.1",
-		"globals": "^16.1.0",
-		"prettier": "^3.5.3",
-		"svelte-eslint-parser": "^1.2.0",
-		"typescript-eslint": "^8.32.1"
+		"@eslint/js": "^9.39.4",
+		"@typescript-eslint/eslint-plugin": "^8.57.1",
+		"@typescript-eslint/parser": "^8.57.1",
+		"@typescript-eslint/utils": "^8.57.1",
+		"eslint": "9.39.4",
+		"eslint-import-resolver-typescript": "^4.4.4",
+		"eslint-plugin-import": "^2.32.0",
+		"eslint-plugin-prettier": "^5.5.5",
+		"eslint-plugin-svelte": "^3.15.2",
+		"globals": "^17.4.0",
+		"prettier": "^3.8.1",
+		"svelte-eslint-parser": "^1.6.0",
+		"typescript-eslint": "^8.57.1"
 	},
 	"devDependencies": {
-		"tsup": "^8.5.0",
-		"typescript": "^5.8.3"
+		"tsup": "^8.5.1",
+		"typescript": "^5.9.3"
 	},
 	"lint-staged": {
 		"*.{js,ts}": [
@@ -66,9 +63,9 @@
 		]
 	},
 	"engines": {
-		"node": "24.x"
+		"node": "25.x"
 	},
 	"volta": {
-		"node": "24.0.2"
+		"node": "25.8.1"
 	}
 }

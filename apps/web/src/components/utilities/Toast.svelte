@@ -11,9 +11,9 @@
 		item: SvelteToastOptions;
 	} = $props();
 
-	let next = item.initial;
-	let prev = next;
-	let paused = false;
+	let next: number | undefined = item.initial;
+	let prev: number | undefined = next;
+	let paused: boolean = false;
 
 	const progress = tweened(item.initial, { duration: item.duration, easing: linear });
 

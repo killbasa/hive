@@ -30,7 +30,6 @@ export async function buildServer(): Promise<FastifyInstance> {
 	}
 
 	const server = Fastify({
-		ignoreTrailingSlash: true,
 		disableRequestLogging: !isDev,
 		logger: {
 			level,
@@ -42,6 +41,9 @@ export async function buildServer(): Promise<FastifyInstance> {
 					ignore: 'pid,hostname',
 				},
 			},
+		},
+		routerOptions: {
+			ignoreTrailingSlash: true,
 		},
 	})
 		.withTypeProvider<TypeBoxTypeProvider>()

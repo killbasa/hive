@@ -29,6 +29,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string",
@@ -36,10 +39,7 @@
                         "OK"
                       ]
                     }
-                  },
-                  "required": [
-                    "message"
-                  ]
+                  }
                 }
               }
             }
@@ -59,8 +59,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Prometheus metrics",
-                  "type": "string"
+                  "type": "string",
+                  "description": "Prometheus metrics"
                 }
               }
             }
@@ -70,16 +70,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Metrics are not enabled for the instance",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "Metrics are not enabled for the instance"
                 }
               }
             }
@@ -107,6 +107,10 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "api",
+                    "ytdlp"
+                  ],
                   "properties": {
                     "api": {
                       "type": "string"
@@ -114,11 +118,7 @@
                     "ytdlp": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "api",
-                    "ytdlp"
-                  ]
+                  }
                 }
               }
             }
@@ -159,28 +159,28 @@
         ],
         "description": "Login to the application",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "username": {
-                    "minLength": 3,
-                    "type": "string"
-                  },
-                  "password": {
-                    "minLength": 8,
-                    "type": "string"
-                  }
-                },
                 "required": [
                   "username",
                   "password"
-                ]
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 3
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -188,16 +188,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Logged in successfully",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ]
+                  "not": {},
+                  "description": "Logged in successfully"
                 }
               }
             }
@@ -207,16 +199,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Invalid username or password",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "Invalid username or password"
                 }
               }
             }
@@ -231,48 +223,56 @@
         ],
         "description": "Signup for the application",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "username": {
-                    "minLength": 3,
-                    "type": "string"
-                  },
-                  "password": {
-                    "minLength": 8,
-                    "type": "string"
-                  }
-                },
                 "required": [
                   "username",
                   "password"
-                ]
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 3
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
-            "description": "Account created"
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Account created"
+                }
+              }
+            }
           },
           "403": {
             "description": "User registration is disabled",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "User registration is disabled",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "User registration is disabled"
                 }
               }
             }
@@ -282,16 +282,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "User already exists",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "User already exists"
                 }
               }
             }
@@ -312,11 +312,17 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "apikeys"
+                  ],
                   "properties": {
                     "apikeys": {
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "required": [
+                          "id"
+                        ],
                         "properties": {
                           "id": {
                             "type": "string"
@@ -324,16 +330,10 @@
                           "expires": {
                             "type": "string"
                           }
-                        },
-                        "required": [
-                          "id"
-                        ]
+                        }
                       }
                     }
-                  },
-                  "required": [
-                    "apikeys"
-                  ]
+                  }
                 }
               }
             }
@@ -354,14 +354,25 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "apikey"
+                  ],
                   "properties": {
                     "apikey": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "apikey"
-                  ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Forbidden"
                 }
               }
             }
@@ -376,26 +387,34 @@
         ],
         "description": "Revoke an API key",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "id"
+                ],
                 "properties": {
                   "id": {
                     "type": "string"
                   }
-                },
-                "required": [
-                  "id"
-                ]
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "204": {
-            "description": "API key revoked"
+            "description": "API key revoked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "API key revoked"
+                }
+              }
+            }
           }
         }
       }
@@ -408,7 +427,15 @@
         "description": "Logout the user",
         "responses": {
           "200": {
-            "description": "Logged out successfully"
+            "description": "Logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Logged out successfully"
+                }
+              }
+            }
           }
         }
       }
@@ -421,7 +448,15 @@
         "description": "Verify the user is authenticated",
         "responses": {
           "200": {
-            "description": "User is authenticated"
+            "description": "User is authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "User is authenticated"
+                }
+              }
+            }
           }
         }
       }
@@ -433,23 +468,23 @@
         ],
         "description": "Check if a user exists",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "username": {
-                    "minLength": 3,
-                    "type": "string"
-                  }
-                },
                 "required": [
                   "username"
-                ]
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "minLength": 3
+                  }
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -458,14 +493,14 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "exists"
+                  ],
                   "properties": {
                     "exists": {
                       "type": "boolean"
                     }
-                  },
-                  "required": [
-                    "exists"
-                  ]
+                  }
                 }
               }
             }
@@ -493,20 +528,28 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "name"
+                  ],
                   "properties": {
                     "name": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "name"
-                  ]
+                  }
                 }
               }
             }
           },
           "404": {
-            "description": "User not found"
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "User not found"
+                }
+              }
+            }
           }
         }
       },
@@ -516,28 +559,28 @@
         ],
         "description": "Update a user",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "newPassword": {
-                    "minLength": 8,
-                    "type": "string"
-                  },
-                  "oldPassword": {
-                    "minLength": 8,
-                    "type": "string"
-                  }
-                },
                 "required": [
                   "newPassword",
                   "oldPassword"
-                ]
+                ],
+                "properties": {
+                  "newPassword": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -548,23 +591,31 @@
         ],
         "responses": {
           "204": {
-            "description": "User updated successfully"
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "User updated successfully"
+                }
+              }
+            }
           },
           "401": {
             "description": "Invalid username or password",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Invalid username or password",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "Invalid username or password"
                 }
               }
             }
@@ -592,6 +643,12 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "cronCheckSubscriptions",
+                    "cronDownloadPending",
+                    "cronChannelMetadata",
+                    "downloadLimit"
+                  ],
                   "properties": {
                     "cronCheckSubscriptions": {
                       "anyOf": [
@@ -633,13 +690,7 @@
                         }
                       ]
                     }
-                  },
-                  "required": [
-                    "cronCheckSubscriptions",
-                    "cronDownloadPending",
-                    "cronChannelMetadata",
-                    "downloadLimit"
-                  ]
+                  }
                 }
               }
             }
@@ -652,10 +703,16 @@
         ],
         "description": "Update the settings",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "cronCheckSubscriptions",
+                  "cronDownloadPending",
+                  "cronChannelMetadata"
+                ],
                 "properties": {
                   "cronCheckSubscriptions": {
                     "anyOf": [
@@ -690,16 +747,10 @@
                   "downloadLimit": {
                     "type": "number"
                   }
-                },
-                "required": [
-                  "cronCheckSubscriptions",
-                  "cronDownloadPending",
-                  "cronChannelMetadata"
-                ]
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -710,7 +761,15 @@
         ],
         "responses": {
           "204": {
-            "description": "Settings updated successfully"
+            "description": "Settings updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Settings updated successfully"
+                }
+              }
+            }
           }
         }
       }
@@ -724,8 +783,8 @@
         "parameters": [
           {
             "schema": {
-              "default": 1,
-              "type": "number"
+              "type": "number",
+              "default": 1
             },
             "in": "query",
             "name": "page",
@@ -733,10 +792,10 @@
           },
           {
             "schema": {
+              "type": "number",
               "minimum": 1,
               "maximum": 100,
-              "default": 24,
-              "type": "number"
+              "default": 24
             },
             "in": "query",
             "name": "limit",
@@ -757,11 +816,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "channels",
+                    "total"
+                  ],
                   "properties": {
                     "channels": {
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "required": [
+                          "id",
+                          "description",
+                          "tags",
+                          "customUrl",
+                          "name"
+                        ],
                         "properties": {
                           "id": {
                             "type": "string"
@@ -781,24 +851,13 @@
                           "name": {
                             "type": "string"
                           }
-                        },
-                        "required": [
-                          "id",
-                          "description",
-                          "tags",
-                          "customUrl",
-                          "name"
-                        ]
+                        }
                       }
                     },
                     "total": {
                       "type": "number"
                     }
-                  },
-                  "required": [
-                    "channels",
-                    "total"
-                  ]
+                  }
                 }
               }
             }
@@ -811,22 +870,22 @@
         ],
         "description": "Add a channel",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "id"
+                ],
                 "properties": {
                   "id": {
                     "type": "string"
                   }
-                },
-                "required": [
-                  "id"
-                ]
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -837,23 +896,31 @@
         ],
         "responses": {
           "201": {
-            "description": "Channel added successfully"
+            "description": "Channel added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Channel added successfully"
+                }
+              }
+            }
           },
           "404": {
             "description": "Channel does not exist",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Channel does not exist",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "Channel does not exist"
                 }
               }
             }
@@ -863,16 +930,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Channel already downloaded",
                   "type": "object",
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "message"
-                  ]
+                  "description": "Channel already downloaded"
                 }
               }
             }
@@ -910,6 +977,13 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "id",
+                    "description",
+                    "tags",
+                    "customUrl",
+                    "name"
+                  ],
                   "properties": {
                     "id": {
                       "type": "string"
@@ -929,20 +1003,21 @@
                     "name": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "id",
-                    "description",
-                    "tags",
-                    "customUrl",
-                    "name"
-                  ]
+                  }
                 }
               }
             }
           },
           "404": {
-            "description": "Channel not found"
+            "description": "Channel not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Channel not found"
+                }
+              }
+            }
           }
         }
       }
@@ -972,7 +1047,15 @@
         ],
         "responses": {
           "201": {
-            "description": "Scan started successfully"
+            "description": "Scan started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Scan started successfully"
+                }
+              }
+            }
           }
         }
       }
@@ -1007,6 +1090,12 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "videos",
+                    "streams",
+                    "shorts",
+                    "directorySize"
+                  ],
                   "properties": {
                     "videos": {
                       "type": "number"
@@ -1020,19 +1109,21 @@
                     "directorySize": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "videos",
-                    "streams",
-                    "shorts",
-                    "directorySize"
-                  ]
+                  }
                 }
               }
             }
           },
           "404": {
-            "description": "Channel not found"
+            "description": "Channel not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Channel not found"
+                }
+              }
+            }
           }
         }
       }
@@ -1046,9 +1137,9 @@
         "parameters": [
           {
             "schema": {
+              "type": "number",
               "minimum": 1,
-              "default": 1,
-              "type": "number"
+              "default": 1
             },
             "in": "query",
             "name": "page",
@@ -1180,8 +1271,8 @@
           },
           {
             "schema": {
-              "default": false,
-              "type": "boolean"
+              "type": "boolean",
+              "default": false
             },
             "in": "query",
             "name": "inProgress",
@@ -1189,10 +1280,10 @@
           },
           {
             "schema": {
+              "type": "number",
               "minimum": 1,
               "maximum": 100,
-              "default": 24,
-              "type": "number"
+              "default": 24
             },
             "in": "query",
             "name": "limit",
@@ -1213,11 +1304,30 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "videos",
+                    "total"
+                  ],
                   "properties": {
                     "videos": {
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "required": [
+                          "id",
+                          "channelId",
+                          "playlistId",
+                          "title",
+                          "description",
+                          "duration",
+                          "watchProgress",
+                          "watchCompleted",
+                          "fileSize",
+                          "uploadDate",
+                          "type",
+                          "status",
+                          "downloadStatus"
+                        ],
                         "properties": {
                           "id": {
                             "type": "string"
@@ -1361,32 +1471,13 @@
                               }
                             ]
                           }
-                        },
-                        "required": [
-                          "id",
-                          "channelId",
-                          "playlistId",
-                          "title",
-                          "description",
-                          "duration",
-                          "watchProgress",
-                          "watchCompleted",
-                          "fileSize",
-                          "uploadDate",
-                          "type",
-                          "status",
-                          "downloadStatus"
-                        ]
+                        }
                       }
                     },
                     "total": {
                       "type": "number"
                     }
-                  },
-                  "required": [
-                    "videos",
-                    "total"
-                  ]
+                  }
                 }
               }
             }
@@ -1401,10 +1492,14 @@
         ],
         "description": "Ignore videos",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "videoIds"
+                ],
                 "properties": {
                   "videoIds": {
                     "type": "array",
@@ -1412,14 +1507,10 @@
                       "type": "string"
                     }
                   }
-                },
-                "required": [
-                  "videoIds"
-                ]
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -1430,7 +1521,15 @@
         ],
         "responses": {
           "204": {
-            "description": "Videos IDs ignored"
+            "description": "Videos IDs ignored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Videos IDs ignored"
+                }
+              }
+            }
           }
         }
       }
@@ -1450,7 +1549,15 @@
         ],
         "responses": {
           "201": {
-            "description": "Scan started successfully"
+            "description": "Scan started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Scan started successfully"
+                }
+              }
+            }
           }
         }
       }
@@ -1485,6 +1592,21 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "id",
+                    "channelId",
+                    "playlistId",
+                    "title",
+                    "description",
+                    "duration",
+                    "watchProgress",
+                    "watchCompleted",
+                    "fileSize",
+                    "uploadDate",
+                    "type",
+                    "status",
+                    "downloadStatus"
+                  ],
                   "properties": {
                     "id": {
                       "type": "string"
@@ -1628,28 +1750,21 @@
                         }
                       ]
                     }
-                  },
-                  "required": [
-                    "id",
-                    "channelId",
-                    "playlistId",
-                    "title",
-                    "description",
-                    "duration",
-                    "watchProgress",
-                    "watchCompleted",
-                    "fileSize",
-                    "uploadDate",
-                    "type",
-                    "status",
-                    "downloadStatus"
-                  ]
+                  }
                 }
               }
             }
           },
           "404": {
-            "description": "Video not found"
+            "description": "Video not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Video not found"
+                }
+              }
+            }
           }
         }
       },
@@ -1659,6 +1774,7 @@
         ],
         "description": "Update a video",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1715,6 +1831,21 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "id",
+                    "channelId",
+                    "playlistId",
+                    "title",
+                    "description",
+                    "duration",
+                    "watchProgress",
+                    "watchCompleted",
+                    "fileSize",
+                    "uploadDate",
+                    "type",
+                    "status",
+                    "downloadStatus"
+                  ],
                   "properties": {
                     "id": {
                       "type": "string"
@@ -1858,22 +1989,18 @@
                         }
                       ]
                     }
-                  },
-                  "required": [
-                    "id",
-                    "channelId",
-                    "playlistId",
-                    "title",
-                    "description",
-                    "duration",
-                    "watchProgress",
-                    "watchCompleted",
-                    "fileSize",
-                    "uploadDate",
-                    "type",
-                    "status",
-                    "downloadStatus"
-                  ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Video not found"
                 }
               }
             }
@@ -1888,10 +2015,14 @@
         ],
         "description": "Start downloading the currently pending videos",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "videoIds"
+                ],
                 "properties": {
                   "videoIds": {
                     "type": "array",
@@ -1899,14 +2030,10 @@
                       "type": "string"
                     }
                   }
-                },
-                "required": [
-                  "videoIds"
-                ]
+                }
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -1917,7 +2044,15 @@
         ],
         "responses": {
           "200": {
-            "description": "Download started successfully"
+            "description": "Download started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Download started successfully"
+                }
+              }
+            }
           }
         }
       }
@@ -1937,7 +2072,15 @@
         ],
         "responses": {
           "201": {
-            "description": "Downloads stopped successfully"
+            "description": "Downloads stopped successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "not": {},
+                  "description": "Downloads stopped successfully"
+                }
+              }
+            }
           }
         }
       }

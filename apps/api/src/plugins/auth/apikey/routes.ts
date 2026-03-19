@@ -46,6 +46,7 @@ export const apikeyAuthRoutes: HiveRoutes = {
 					tags: ['Auth'],
 					response: {
 						200: ApikeyRefreshSchema,
+						403: EmptyResponse('Forbidden'),
 					},
 				},
 			},

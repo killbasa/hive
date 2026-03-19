@@ -9,7 +9,7 @@ install: build
 
 gen:
 	rm -rf ./client
-	openapi-generator generate -i ../apps/api/openapi.json \
+	openapi-generator generate -i ../api/openapi.json \
 		-g go \
 		-o ./client \
 		--additional-properties=packageName=client,isGoSubmodule \

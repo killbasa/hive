@@ -165,6 +165,7 @@ export const videoRoutes: HiveRoutes = {
 					body: VideoPatchBody,
 					response: {
 						200: VideoSchema,
+						404: EmptyResponse('Video not found'),
 					},
 				},
 			},
@@ -181,7 +182,12 @@ export const videoRoutes: HiveRoutes = {
 					.where(and(eq(videos.id, videoId)))
 					.returning();
 
-				await reply.status(200).send(result.at(0));
+				const entry = result.at(0);
+				if (entry === undefined) {
+					return await reply.status(404).send();
+				}
+
+				await reply.status(200).send(entry);
 			},
 		);
 

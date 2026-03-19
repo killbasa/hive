@@ -5,13 +5,17 @@
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/killbasa/hive.git"
 	},
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
-		"bootstrap": "pnpm install && ./apps/api/scripts/deps.sh && pnpm build",
+		"bootstrap": "yarn install && ./apps/api/scripts/deps.sh && yarn build",
 		"build": "turbo run build",
 		"openapi": "turbo run openapi",
 		"check": "turbo run check",
@@ -19,36 +23,22 @@
 		"format": "turbo run format",
 		"test": "turbo run test",
 		"e2e": "turbo run e2e",
-		"dry-run": "pnpm openapi && pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
-		"clean": "pnpm -r run clean && rm -rf node_modules"
+		"dry-run": "yarn openapi && yarn build && yarn check && yarn lint && yarn format && yarn test && yarn e2e"
 	},
 	"devDependencies": {
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.15.19",
-		"eslint": "9.27.0",
-		"lint-staged": "^16.0.0",
-		"prettier": "^3.5.3",
-		"turbo": "2.5.3",
-		"typescript": "5.8.3",
-		"vitest": "3.1.4"
+		"@types/node": "^25.5.0",
+		"eslint": "9.39.4",
+		"lint-staged": "^16.4.0",
+		"prettier": "^3.8.1",
+		"turbo": "2.8.20",
+		"typescript": "5.9.3",
+		"vitest": "4.1.0"
 	},
-	"pnpm": {
-		"overrides": {
-			"vite": "6.3.5"
-		},
-		"onlyBuiltDependencies": [
-			"@swc/core",
-			"@tailwindcss/oxide",
-			"argon2",
-			"better-sqlite3",
-			"esbuild",
-			"msgpackr-extract",
-			"protobufjs",
-			"unrs-resolver",
-			"vue-demi"
-		]
+	"resolutions": {
+		"vite": "8.0.1"
 	},
 	"lint-staged": {
 		"*.{js,cjs}": [
@@ -59,11 +49,39 @@
 		]
 	},
 	"engines": {
-		"node": "24.x"
+		"node": "25.x"
 	},
-	"packageManager": "pnpm@10.11.0",
+	"packageManager": "yarn@4.13.0",
 	"volta": {
-		"node": "24.0.2",
-		"pnpm": "10.11.0"
+		"node": "25.8.1"
+	},
+	"dependenciesMeta": {
+		"@swc/core": {
+			"built": true
+		},
+		"@tailwindcss/oxide": {
+			"built": true
+		},
+		"argon2": {
+			"built": true
+		},
+		"better-sqlite3": {
+			"built": true
+		},
+		"esbuild": {
+			"built": true
+		},
+		"msgpackr-extract": {
+			"built": true
+		},
+		"protobufjs": {
+			"built": true
+		},
+		"unrs-resolver": {
+			"built": true
+		},
+		"vue-demi": {
+			"built": true
+		}
 	}
 }

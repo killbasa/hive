@@ -92,7 +92,7 @@ docker compose -f apps/api/compose.yml up -d
 4. Build applications and dependencies
 
 ```sh
-pnpm build
+yarn build
 ```
 
 ### Developing on Mac OS

@@ -9,16 +9,16 @@
 
 	let { data, children }: LayoutProps = $props();
 
-	const channelUrl = `${config.assetsPath}/${data.channel.id}`;
-	const bannerUrl = `${channelUrl}/assets/banner.jpg`;
+	const channelUrl = $derived(`${config.assetsPath}/${data.channel.id}`);
+	const bannerUrl = $derived(`${channelUrl}/assets/banner.jpg`);
 
-	const tabs: { label: string; href: string }[] = [
+	const tabs: { label: string; href: string }[] = $derived([
 		{ label: 'Videos', href: `${base}/channels/${data.channel.id}` },
 		{ label: 'Streams', href: `${base}/channels/${data.channel.id}/streams` },
 		{ label: 'Shorts', href: `${base}/channels/${data.channel.id}/shorts` },
 		{ label: 'About', href: `${base}/channels/${data.channel.id}/about` },
 		{ label: 'Downloads', href: `${base}/channels/${data.channel.id}/downloads` },
-	];
+	]);
 </script>
 
 <section class="flex flex-col gap-4 max-w-5xl mx-auto">

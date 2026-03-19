@@ -11,7 +11,7 @@
 		showIcon?: boolean;
 	} = $props();
 
-	const channelUrl = `${config.assetsPath}/${video.channelId}`;
+	const channelUrl = $derived(`${config.assetsPath}/${video.channelId}`);
 </script>
 
 <div class="card">

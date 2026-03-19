@@ -6,6 +6,11 @@
 			"dependsOn": ["build"],
 			"outputs": ["openapi.json"],
 			"outputLogs": "new-only"
+		},
+		"build:prod": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**"],
+			"outputLogs": "new-only"
 		}
 	}
 }

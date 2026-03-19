@@ -9,6 +9,7 @@ import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
 import { doesChannelExist, parseChannelTags } from '../../lib/youtube/channels.js';
 import { and, count, eq } from 'drizzle-orm';
 import { Type } from '@fastify/type-provider-typebox';
+import type { Static } from '@fastify/type-provider-typebox';
 import type { SQLWrapper } from 'drizzle-orm';
 import type { HiveRoutes } from '../../lib/types/hive.js';
 
@@ -215,7 +216,7 @@ export const channelRoutes: HiveRoutes = {
 					du(CHANNEL_PATH(channelId)),
 				]);
 
-				const stats: typeof ChannelStatsSchema.static = {
+				const stats: Static<typeof ChannelStatsSchema> = {
 					videos: videoCount[0].total,
 					streams: streamCount[0].total,
 					shorts: shortCount[0].total,

@@ -3,7 +3,6 @@ import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 import eslintPrettier from 'eslint-plugin-prettier/recommended';
-// @ts-expect-error - No types
 import importPlugin from 'eslint-plugin-import';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';

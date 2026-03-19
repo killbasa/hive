@@ -7,7 +7,6 @@ coverage/
 data/
 dist/
 node_modules/
-pnpm-lock.yaml
 yarn.lock
 LICENSE
 openapi.json

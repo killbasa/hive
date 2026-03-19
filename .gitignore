@@ -17,6 +17,7 @@ dist/
 apps/cli/client/
 tsconfig.tsbuildinfo
 .turbo/
-.yarn/
+.yarn/cache/
+.yarn/install-state.gz
 out/
 output/
