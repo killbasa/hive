@@ -1,4 +1,4 @@
-import { ytFetch } from './fetch.js';
+import { youtubeFetch } from './fetch.js';
 
 export type YouTubeVideoList = {
 	items: YouTubeVideo[];
@@ -25,7 +25,7 @@ export type YouTubeLiveStreamingDetails = {
 
 // ref: https://developers.google.com/youtube/v3/docs/videos/list
 export async function fetchVideos(videoIds: string[]): Promise<YouTubeVideo[]> {
-	const response = await ytFetch<YouTubeVideoList>('/videos', {
+	const response = await youtubeFetch<YouTubeVideoList>('/videos', {
 		resources: ['snippet', 'liveStreamingDetails'],
 		ids: videoIds,
 	});

@@ -1,0 +1,16 @@
+{
+	"$schema": "https://turborepo.com/schema.v2.json",
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"dependsOn": [],
+			"outputs": ["bin/**"],
+			"outputLogs": "new-only"
+		},
+		"openapi": {
+			"dependsOn": ["@hive/api#openapi"],
+			"outputs": ["client/**"],
+			"outputLogs": "new-only"
+		}
+	}
+}

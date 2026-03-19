@@ -1,6 +1,6 @@
 import { UserExistsBody, UserPatchBody } from './body.js';
 import { UserExistsSchema, UserSchema } from './schema.js';
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { users } from '../../db/schema.js';
 import { EmptyResponse, MessageResponse } from '../../lib/responses.js';
 import { cookies } from '../auth/cookies.js';
@@ -25,8 +25,10 @@ export const userRoutes: HiveRoutes = {
 			},
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
-					where: eq(users.name, request.user.name),
-					columns: { name: true },
+					where: eq(users.name, request.session.user.name),
+					columns: {
+						name: true,
+					},
 				});
 
 				if (!user) {
@@ -56,7 +58,7 @@ export const userRoutes: HiveRoutes = {
 			},
 			async (request, reply): Promise<void> => {
 				const user = await db.query.users.findFirst({
-					where: eq(users.name, request.user.name),
+					where: eq(users.name, request.session.user.name),
 				});
 				if (user === undefined) {
 					await reply.code(401).send({
@@ -80,7 +82,7 @@ export const userRoutes: HiveRoutes = {
 					.set({
 						password: newHash,
 					})
-					.where(eq(users.name, request.user.name))
+					.where(eq(users.name, request.session.user.name))
 					.execute();
 
 				const cookie = cookies.delete();

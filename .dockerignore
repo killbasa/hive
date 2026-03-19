@@ -4,7 +4,8 @@
 **/bin/
 **/data/
 **/node_modules/
-cli/
+apps/cli/
+output/
 .editorconfig
 .gitattributes
 .gitignore

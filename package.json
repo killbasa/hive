@@ -1,37 +1,44 @@
 {
-	"name": "@hive/monorepo",
+	"name": "monorepo",
 	"version": "0.1.0",
 	"author": "killbasa <git@killbasa.com>",
 	"license": "AGPL-3.0-or-later",
 	"private": true,
 	"type": "module",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/killbasa/hive.git"
 	},
 	"homepage": "https://github.com/killbasa/hive",
 	"scripts": {
-		"bootstrap": "pnpm install && ./apps/api/scripts/deps.sh && pnpm build",
-		"build": "pnpm -r run build",
-		"check": "pnpm -r run check",
-		"lint": "pnpm -r run lint",
-		"format": "pnpm -r run format",
-		"test": "pnpm -r run test",
-		"e2e": "pnpm -r run e2e",
-		"dry-run": "pnpm build && pnpm check && pnpm lint && pnpm format && pnpm test && pnpm e2e",
-		"docker": "docker compose -f compose.dev.yml",
-		"clean": "rm -rf node_modules && pnpm -r run clean"
+		"bootstrap": "yarn install && ./apps/api/scripts/deps.sh && yarn build",
+		"build": "turbo run build",
+		"openapi": "turbo run openapi",
+		"check": "turbo run check",
+		"lint": "turbo run lint",
+		"format": "turbo run format",
+		"test": "turbo run test",
+		"e2e": "turbo run e2e",
+		"dry-run": "yarn openapi && yarn build && yarn check && yarn lint && yarn format && yarn test && yarn e2e"
 	},
 	"devDependencies": {
 		"@hive/eslint-config": "workspace:^",
 		"@killbasa/prettier-config": "^1.0.2",
 		"@killbasa/ts-config": "^1.0.0",
-		"@types/node": "^22.14.1",
-		"eslint": "^9.25.1",
-		"lint-staged": "^15.5.1",
-		"prettier": "^3.5.3",
-		"typescript": "5.8.3",
-		"vitest": "3.1.2"
+		"@types/node": "^25.5.0",
+		"eslint": "9.39.4",
+		"lint-staged": "^16.4.0",
+		"prettier": "^3.8.1",
+		"turbo": "2.8.20",
+		"typescript": "5.9.3",
+		"vitest": "4.1.0"
+	},
+	"resolutions": {
+		"vite": "8.0.1"
 	},
 	"lint-staged": {
 		"*.{js,cjs}": [
@@ -42,26 +49,39 @@
 		]
 	},
 	"engines": {
-		"node": "23.x"
+		"node": "25.x"
 	},
-	"packageManager": "pnpm@10.9.0",
+	"packageManager": "yarn@4.13.0",
 	"volta": {
-		"node": "23.11.0",
-		"pnpm": "10.9.0"
+		"node": "25.8.1"
 	},
-	"pnpm": {
-		"overrides": {
-			"vite": "6.3.2"
+	"dependenciesMeta": {
+		"@swc/core": {
+			"built": true
 		},
-		"onlyBuiltDependencies": [
-			"@swc/core",
-			"argon2",
-			"better-sqlite3",
-			"esbuild",
-			"msgpackr-extract",
-			"protobufjs",
-			"unrs-resolver",
-			"vue-demi"
-		]
+		"@tailwindcss/oxide": {
+			"built": true
+		},
+		"argon2": {
+			"built": true
+		},
+		"better-sqlite3": {
+			"built": true
+		},
+		"esbuild": {
+			"built": true
+		},
+		"msgpackr-extract": {
+			"built": true
+		},
+		"protobufjs": {
+			"built": true
+		},
+		"unrs-resolver": {
+			"built": true
+		},
+		"vue-demi": {
+			"built": true
+		}
 	}
 }

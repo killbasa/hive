@@ -1,8 +1,8 @@
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { channels, videos } from '../../db/schema.js';
-import { readChannelMetadata } from '../../lib/fs/channels.js';
+import { getChannelMetadata } from '../../lib/fs/channels.js';
 import { indexVideo, isVideoDownloaded, moveVideoAssets } from '../../lib/fs/videos.js';
-import { formatTags } from '../../lib/youtube/channels.js';
+import { formatChannelTags } from '../../lib/youtube/channels.js';
 import { downloadChannel } from '../../lib/ytdlp/channels.js';
 import { downloadVideoAssets, getVideoIds } from '../../lib/ytdlp/videos.js';
 import { server } from '../../server.js';
@@ -14,7 +14,7 @@ export const handleDownloadChannelTask: TaskHandler<ScannerDownloadChannelTask> 
 	server.log.debug(`indexing channel: ${channelId}`);
 
 	await downloadChannel(channelId);
-	const metadata = await readChannelMetadata(channelId);
+	const metadata = await getChannelMetadata(channelId);
 
 	await db
 		.insert(channels)
@@ -23,7 +23,7 @@ export const handleDownloadChannelTask: TaskHandler<ScannerDownloadChannelTask> 
 			customUrl: metadata.uploader_id,
 			name: metadata.channel,
 			description: metadata.description,
-			tags: formatTags(metadata.tags),
+			tags: formatChannelTags(metadata.tags),
 		})
 		.onConflictDoNothing()
 		.execute();

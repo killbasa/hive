@@ -5,6 +5,7 @@ import { RepeatJobIds, setRepeatJob } from '../../tasks/handlers/repeat.js';
 import { EmptyResponse } from '../../lib/responses.js';
 import { server as serverCore } from '../../server.js';
 import type { HiveRoutes } from '../../lib/types/hive.js';
+import type { Static } from '@fastify/type-provider-typebox';
 
 export const settingsRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
@@ -54,7 +55,7 @@ export const settingsRoutes: HiveRoutes = {
 	},
 };
 
-async function applyCronChanges(data: typeof SettingsPatchBody.static): Promise<void> {
+async function applyCronChanges(data: Static<typeof SettingsPatchBody>): Promise<void> {
 	const {
 		cronCheckSubscriptions, //
 		cronDownloadPending,

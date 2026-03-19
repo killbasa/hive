@@ -1,9 +1,7 @@
 import { relations, sql } from 'drizzle-orm';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-/**
- * Channels
- */
+// #region Channels
 
 export const channels = sqliteTable(
 	'channels',
@@ -25,9 +23,9 @@ export const channelsRelations = relations(channels, ({ many }) => ({
 	playlists: many(playlists),
 }));
 
-/**
- * Videos
- */
+// #endregion
+// #region Videos
+
 export const videos = sqliteTable(
 	'videos',
 	{
@@ -68,9 +66,8 @@ export const videosRelations = relations(videos, ({ one }) => ({
 	}),
 }));
 
-/**
- * Playlists
- */
+// #endregion
+// #region Playlists
 
 export const playlists = sqliteTable(
 	'playlists',
@@ -92,9 +89,8 @@ export const playlistsRelations = relations(channels, ({ many }) => ({
 	videos: many(videos),
 }));
 
-/**
- * Settings
- */
+// #endregion
+// #region Settings
 
 export const settings = sqliteTable(
 	'settings',
@@ -110,9 +106,8 @@ export const settings = sqliteTable(
 	],
 );
 
-/**
- * Users
- */
+// #endregion
+// #region Users
 
 export const users = sqliteTable(
 	'users',
@@ -120,10 +115,40 @@ export const users = sqliteTable(
 		id: integer('id').primaryKey(),
 		name: text('name').unique().notNull(),
 		password: text('password').notNull(),
-		apiKey: text('api_key'),
 	},
 	(table) => [
 		index('user_idx').on(table.id), //
 		index('user_name_idx').on(table.name),
 	],
 );
+
+export const usersRelations = relations(users, ({ many }) => ({
+	apikeys: many(apikeys),
+}));
+
+// #endregion
+// #region Users
+
+export const apikeys = sqliteTable(
+	'apikeys',
+	{
+		id: text('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id)
+			.notNull(),
+		apikey: text('name').unique().notNull(),
+		descriptipon: text('description'),
+		expires: integer('expires', { mode: 'timestamp' }),
+		createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [index('apikey_idx').on(table.id)],
+);
+
+export const apikeysRelations = relations(apikeys, ({ one }) => ({
+	user: one(users, {
+		fields: [apikeys.userId],
+		references: [users.id],
+	}),
+}));
+
+// #endregion

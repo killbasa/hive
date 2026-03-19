@@ -9,6 +9,7 @@ export const VideoListGetQuery = Type.Object({
 	channelId: Type.Optional(Type.String()),
 	search: Type.Optional(Type.String()),
 	inProgress: Type.Optional(Type.Boolean({ default: false })),
+	limit: Type.Optional(Type.Number({ minimum: 1, maximum: 100, default: 24 })),
 });
 
 export const VideoGetQuery = Type.Object({

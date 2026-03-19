@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
 import 'fastify';
-import '@fastify/jwt';
+import '@fastify/session';
 
 import type { Queue } from 'bullmq';
 import type { RegisterOptions } from 'fastify';
@@ -25,16 +25,10 @@ declare module 'fastify' {
 			scanner: Queue<ScannerTasks>;
 		};
 	}
-}
 
-declare module '@fastify/jwt' {
-	interface FastifyJWT {
-		// Signing and verifying tokens
-		payload: {
-			name: string;
-		};
-		// User object
+	interface Session {
 		user: {
+			id: number;
 			name: string;
 		};
 	}

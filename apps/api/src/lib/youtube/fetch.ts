@@ -4,7 +4,7 @@ import { isTesting } from '../constants.js';
 const YT_BASE_URL = 'https://www.googleapis.com/youtube';
 const YT_API_VERSION = 'v3';
 
-export async function ytFetch<T>(
+export async function youtubeFetch<T>(
 	path: string,
 	options: {
 		resources?: string[];

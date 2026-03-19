@@ -1,5 +1,5 @@
 import { MessageResponse } from '../../lib/responses.js';
-import { getYtdlpVersion } from '../../lib/ytdlp/constants.js';
+import { getYtdlpLocalVersion } from '../../lib/ytdlp/constants.js';
 import { HiveMetrics } from '../../lib/otel/MetricsClient.js';
 import { isDev } from '../../lib/constants.js';
 import { Type } from '@fastify/type-provider-typebox';
@@ -7,7 +7,7 @@ import type { HiveRoutes } from '../../lib/types/hive.js';
 
 export const coreRoutes: HiveRoutes = {
 	authenticated: (server, _, done) => {
-		const ytdlpVersion = getYtdlpVersion();
+		const ytdlpVersion = getYtdlpLocalVersion();
 		server.get(
 			'/version',
 			{

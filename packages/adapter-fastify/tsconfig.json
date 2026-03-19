@@ -2,8 +2,9 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"module": "es2022",
+		"target": "es2022",
 		"moduleResolution": "bundler"
 	},
-	"include": ["src", "ambient.d.ts", "global.d.ts"],
+	"include": ["src", "ambient.d.ts"],
 	"exclude": ["dist", "node_modules"]
 }

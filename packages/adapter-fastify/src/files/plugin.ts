@@ -43,7 +43,7 @@ export default fp<FastifyAdapterPluginOptions>(async (fastify, options) => {
 				wildcard: false,
 				setHeaders: (res, pathname) => {
 					if (pathname.includes(`/${manifest.appPath}/immutable/`) && res.statusCode === 200) {
-						res.setHeader('cache-control', 'public,max-age=31536000,immutable');
+						res.setHeader('Cache-Control', 'public,max-age=31536000,immutable');
 					}
 				},
 			});
@@ -75,7 +75,7 @@ export default fp<FastifyAdapterPluginOptions>(async (fastify, options) => {
 				});
 
 				if (options.csp) {
-					res.raw.setHeader('content-security-policy', options.csp);
+					res.header('Content-Security-Policy', options.csp);
 				}
 
 				await setResponse(res.raw, response);
@@ -99,7 +99,7 @@ export default fp<FastifyAdapterPluginOptions>(async (fastify, options) => {
 
 					if (prerendered.has(url)) {
 						if (options.csp) {
-							res.header('content-security-policy', options.csp);
+							res.header('Content-Security-Policy', options.csp);
 						}
 
 						if (url.endsWith('/')) {

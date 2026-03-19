@@ -2,7 +2,9 @@ import { client } from '$lib/client';
 import { getNumberParam, getStringParam } from '$lib/navigation';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch, url, params }) => {
+export const load: PageLoad = async ({ fetch, url, params, depends }) => {
+	depends('state:downloads');
+
 	const response = await client.GET('/videos/', {
 		fetch,
 		params: {

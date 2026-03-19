@@ -3,7 +3,6 @@ import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 import eslintPrettier from 'eslint-plugin-prettier/recommended';
-// @ts-expect-error - No types
 import importPlugin from 'eslint-plugin-import';
 import type { TSESLint } from '@typescript-eslint/utils';
 

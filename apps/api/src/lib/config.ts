@@ -1,8 +1,9 @@
 import { isTesting } from './constants.js';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
+import { execSync } from 'node:child_process';
 
 type Unvalidated<T> = {
 	[K in keyof T]: T[K] extends object ? Unvalidated<T[K]> : unknown;
@@ -12,7 +13,6 @@ const ConfigSchema = z.object({
 	server: z.object({
 		version: z.string(),
 		port: z.coerce.number(),
-		ui: z.boolean(),
 	}),
 	auth: z.object({
 		secret: z.string(),
@@ -40,10 +40,9 @@ export function loadConfig(): HiveConfig {
 			server: {
 				version: '0.1.0',
 				port: 0,
-				ui: false,
 			},
 			auth: {
-				secret: 'secret',
+				secret: execSync('openssl rand -base64 32').toString().trim(),
 				origin: 'http://localhost',
 				cookie: 'hive',
 			},
@@ -65,13 +64,12 @@ export function loadConfig(): HiveConfig {
 		loadEnvFile();
 	}
 
-	const flags = process.argv.slice(2);
+	// const flags = process.argv.slice(2);
 
 	const obj = {
 		server: {
 			version: process.env.npm_package_version,
 			port: 3002,
-			ui: flags.includes('--ui'),
 		},
 		auth: {
 			secret: process.env.AUTH_SECRET,

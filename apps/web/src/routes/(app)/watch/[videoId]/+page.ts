@@ -9,5 +9,18 @@ export const load: PageLoad = async ({ fetch, params }) => {
 		},
 	});
 
-	return response.data!;
+	const video = response.data!;
+
+	const channel = await client.GET('/channels/{channelId}', {
+		fetch,
+		params: {
+			path: { channelId: video.channelId },
+		},
+	});
+
+	// TODO - Should be able to handle null for arbitrary streams that aren't in db, maybe?
+	return {
+		video,
+		channel: channel.data!,
+	};
 };

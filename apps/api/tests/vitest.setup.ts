@@ -1,4 +1,4 @@
-import { db, initDb } from '../src/db/client.js';
+import { db, initSqlite } from '../src/db/sqlite.js';
 import { users } from '../src/db/schema.js';
 import { routes } from '../src/routes.js';
 import { buildServer } from '../src/server.js';
@@ -6,7 +6,7 @@ import { buildServer } from '../src/server.js';
 const server = await buildServer();
 await server.register(routes);
 
-initDb();
+initSqlite();
 
 await db
 	.insert(users)

@@ -4,7 +4,7 @@
 import { Type } from '@fastify/type-provider-typebox';
 
 export const EmptyResponse = (description: string) =>
-	Type.Null({
+	Type.Never({
 		description,
 	});
 

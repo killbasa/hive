@@ -1,4 +1,4 @@
-import { db } from '../../db/client.js';
+import { db } from '../../db/sqlite.js';
 import { videos } from '../../db/schema.js';
 import { VIDEO_DL_PATH, moveVideoAssets } from '../../lib/fs/videos.js';
 import { downloadVideo } from '../../lib/ytdlp/videos.js';

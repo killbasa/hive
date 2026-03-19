@@ -8,11 +8,6 @@ import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { DeepPartial } from '@hive/common';
 import type { HiveConfig } from '../src/lib/config.js';
 
-if (process.env.CI) {
-	console.log('Skipping OpenAPI generation in CI');
-	process.exit(0);
-}
-
 const { registerSwagger } = await import(
 	// @ts-ignore - file might not exist
 	'../dist/server.js'

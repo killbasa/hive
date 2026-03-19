@@ -1,10 +1,10 @@
 import server from '../../vitest.setup.js';
 
-describe('/spec.json', async () => {
+describe('/spec.json', () => {
 	it('should return 200', async () => {
 		const response = await server.inject({
 			method: 'GET',
-			url: '/spec.json',
+			url: '/reference/spec.json',
 		});
 
 		expect(response.statusCode).toBe(200);

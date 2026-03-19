@@ -1,22 +1,18 @@
 <script lang="ts">
 	import Card from '$components/Card.svelte';
-	import SearchInput from '$components/SearchInput.svelte';
+	import SearchInput from '$components/inputs/SearchInput.svelte';
 	import VideoCard from '$components/videos/VideoCard.svelte';
 	import Pagination from '$components/navigation/Pagination.svelte';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let {
-		data,
-	}: {
-		data: PageData;
-	} = $props();
+	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>
 	<title>Shorts</title>
 </svelte:head>
 
-<Card title="Streams ({data.total})">
+<Card title="Shorts ({data.total})">
 	<div>
 		<SearchInput placeholder="Filter videos" />
 	</div>
@@ -26,6 +22,6 @@
 		{/each}
 	</div>
 	{#snippet footer()}
-		<Pagination count={data.videos.length} total={data.total} />
+		<Pagination count={data.videos.length} total={data.total} pageSize={24} />
 	{/snippet}
 </Card>

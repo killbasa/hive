@@ -1,10 +1,10 @@
 import server from '../../vitest.setup.js';
 
-describe('/spec.yaml', async () => {
+describe('/spec.yaml', () => {
 	it('should return 200', async () => {
 		const response = await server.inject({
 			method: 'GET',
-			url: '/spec.yaml',
+			url: '/reference/spec.yaml',
 		});
 
 		expect(response.statusCode).toBe(200);

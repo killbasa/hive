@@ -1,2 +1,6 @@
+bin/
+cache/
+data/
 dist/
+node_modules/
 openapi.json

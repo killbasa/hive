@@ -1,0 +1,9 @@
+{
+	"name": "@hive/cli",
+	"private": true,
+	"scripts": {
+		"build": "just build",
+		"openapi": "just gen",
+		"clean": "rm -rf ./.turbo ./bin ./client"
+	}
+}

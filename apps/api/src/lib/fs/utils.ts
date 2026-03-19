@@ -2,8 +2,11 @@ import { existsSync } from 'node:fs';
 import { lstat, mkdir, readdir, rename } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-export async function mv(oldPath: string, newPath: string): Promise<void> {
-	const source = resolve(oldPath);
+/**
+ * Move a file or directory from one location to another, creating parent directories if needed.
+ */
+export async function mv(currentPath: string, newPath: string): Promise<void> {
+	const source = resolve(currentPath);
 	const target = resolve(newPath);
 
 	if (!existsSync(target)) {
@@ -14,17 +17,17 @@ export async function mv(oldPath: string, newPath: string): Promise<void> {
 	await rename(source, target);
 }
 
-export async function mvDir(oldPath: string, newPath: string): Promise<void> {
-	const source = resolve(oldPath);
-	const target = resolve(newPath);
-
-	if (!existsSync(target)) {
-		await mkdir(target, { recursive: true });
-	}
-
-	await rename(source, target);
-}
-
+/**
+ * Calculates the total size of a directory and its contents recursively.
+ *
+ * @param rootPath - The path to the directory or file to calculate the size for
+ *
+ * @example
+ * ```typescript
+ * const size = await du('/path/to/directory');
+ * console.log(size); // Prints total size in bytes
+ * ```
+ */
 export async function du(rootPath: string): Promise<bigint> {
 	if (!existsSync(rootPath)) {
 		return 0n;
@@ -43,8 +46,9 @@ export async function du(rootPath: string): Promise<bigint> {
 		const dir = await readdir(path);
 
 		await Promise.all(
-			dir.map(async (directoryItem) => {
-				await checkDir(join(path, directoryItem));
+			// eslint-disable-next-line @typescript-eslint/promise-function-async
+			dir.map((directoryItem) => {
+				return checkDir(join(path, directoryItem));
 			}),
 		);
 	}

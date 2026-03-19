@@ -1,6 +1,5 @@
 import { existsSync } from 'node:fs';
 import { access, constants, mkdir } from 'node:fs/promises';
-import { setTimeout } from 'node:timers';
 
 export async function validateDirs(...dirs: string[]): Promise<void> {
 	const errors: string[] = [];
@@ -19,8 +18,4 @@ export async function validateDirs(...dirs: string[]): Promise<void> {
 	if (errors.length > 0) {
 		throw new Error(errors.join('\n'));
 	}
-}
-
-export async function sleep(ms: number): Promise<void> {
-	await new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -14,5 +14,10 @@ coverage/
 bin/
 data/
 dist/
-cli/client/
+apps/cli/client/
 tsconfig.tsbuildinfo
+.turbo/
+.yarn/cache/
+.yarn/install-state.gz
+out/
+output/
